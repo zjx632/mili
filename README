@@ -1,0 +1,19 @@
+MiLi: A set of minimal libraries composed only by 1 header file each.
+    Copyright (C) 2009  Daniel Gutson, FuDePAN
+
+See the online documentation, new versions, and issue tracking at http://mili.googlecode.com
+
+Basic usage:
+    * copy the content of the include directory to where your headers files are.
+    * just include "mili.h"
+    * if you want to enclose the MiLi classes into the mili namespace, #define MILI_NAMESPACE
+    * every library has it's own define to disable its inclusion:
+	* bitwise_enums:	NO_BITWISE_ENUMS
+	* promotion_disable:	NO_PROMOTION_DISABLE
+	* prepos_caller:	NO_PREPOS_CALLER
+	* delete_container:	NO_DELETE_CONTAINER
+
+Send comments to daniel.gutson@gmail.com
+
+Thanks!
+    Daniel.
