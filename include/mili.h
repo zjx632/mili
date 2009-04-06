@@ -44,6 +44,10 @@ namespace mili
 #include "promotion_disable.h"
 #endif
 
+#ifndef NO_FACTORY
+#include "factory.h"
+#endif
+
 #ifdef MILI_NAMESPACE
 }
 #endif

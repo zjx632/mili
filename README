@@ -12,6 +12,7 @@ Basic usage:
 	* promotion_disable:	NO_PROMOTION_DISABLE
 	* prepos_caller:	NO_PREPOS_CALLER
 	* delete_container:	NO_DELETE_CONTAINER
+	* factory:		NO_FACTORY
 
 Send comments to daniel.gutson@gmail.com
 

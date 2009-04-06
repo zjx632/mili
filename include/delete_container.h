@@ -32,6 +32,16 @@ struct deleter
    }
 };
 
+template <class T>
+struct pair_deleter
+{
+   void operator()(const T& p) const
+   {
+       delete p.second;
+   }
+};
+
+/* Non-associative containers */
 template <class T, class Alloc, template <class,class> class Container >
 inline void delete_container(Container<T*, Alloc>& cont)
 {
@@ -39,6 +49,13 @@ inline void delete_container(Container<T*, Alloc>& cont)
     cont.clear();
 }
 
+/* Associative containers */
+template <class Key, class T, class Comp, class Alloc, template <class,class,class,class> class Container >
+inline void delete_container(Container<Key, T*, Comp, Alloc>& cont)
+{
+    for_each(cont.begin(), cont.end(), pair_deleter<typename Container<Key, T*, Comp, Alloc>::value_type >());
+    cont.clear();
+}
 
 template <class T>
 struct vector_deleter
@@ -49,10 +66,27 @@ struct vector_deleter
    }
 };
 
+template <class T>
+struct vector_pair_deleter
+{
+   void operator()(const T& p) const
+   {
+       delete [] p.second;
+   }
+};
+
 template <class T, class Alloc, template <class,class> class Container >
 inline void vector_delete_container(Container<T*, Alloc>& cont)
 {
     for_each(cont.begin(), cont.end(), vector_deleter<T>());
+    cont.clear();
+}
+
+/* Associative containers */
+template <class Key, class T, class Comp, class Alloc, template <class,class,class,class> class Container >
+inline void vector_delete_container(Container<Key, T*, Comp, Alloc>& cont)
+{
+    for_each(cont.begin(), cont.end(), vector_pair_deleter<typename Container<Key, T*, Comp, Alloc>::value_type >());
     cont.clear();
 }
 
