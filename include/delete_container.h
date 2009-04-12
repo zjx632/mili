@@ -90,4 +90,22 @@ inline void vector_delete_container(Container<Key, T*, Comp, Alloc>& cont)
     cont.clear();
 }
 
+template <class Container>
+struct auto_delete_container : public Container
+{
+    ~auto_delete_container()
+    {
+	delete_container(static_cast<Container&>(*this));
+    }
+};
+
+template <class Container>
+struct auto_vector_delete_container : public Container
+{
+    ~auto_vector_delete_container()
+    {
+	vector_delete_container(static_cast<Container&>(*this));
+    }
+};
+
 #endif

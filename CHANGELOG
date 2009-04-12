@@ -1,3 +1,7 @@
+Version 4.1
+===========
+    * classes auto_delete_container and auto_vector_delete_container added.
+
 Version 4.0
 ===========
     * Type mapper added.
