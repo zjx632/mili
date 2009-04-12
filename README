@@ -14,6 +14,7 @@ Basic usage:
 	* delete_container:	NO_DELETE_CONTAINER
 	* factory:		NO_FACTORY
 	* invariants:		NO_INVARIANTS
+	* type_mapper:		NO_TYPE_MAPPER
 
 Send comments to daniel.gutson@gmail.com
 

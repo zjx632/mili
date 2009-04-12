@@ -1,5 +1,5 @@
 /*
-MiLi: A set of minimal libraries composed only by 1 header file each.
+type_mapper: A minimal library that implements a type mapper.
     Copyright (C) 2009  Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
@@ -16,48 +16,32 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
-
-    This is the main include file.
 */
 
-#ifndef MILI_H
-#define MILI_H
+#ifndef TYPE_MAPPER_H
+#define TYPE_MAPPER_H
 
-#ifdef MILI_NAMESPACE
-namespace mili
-{
-#endif
+#define declare_type_mapper(name)	\
+    template <class From>		\
+    struct name				\
+    {					\
+	typedef From type;		\
+    }
+    
+#define add_mapping(mapper, from_type, to_type)	\
+    template<>					\
+    struct mapper<from_type>			\
+    {						\
+	typedef to_type type;			\
+    }
 
-#ifndef NO_BITWISE_ENUMS
-#include "bitwise_enums.h"
-#endif
+#define add_mapping_for_pointers(mapper, to_type)	\
+    template <class From>				\
+    struct mapper<From*>				\
+    {							\
+	typedef to_type type;				\
+    }
 
-#ifndef NO_PREPOS_CALLER
-#include "prepos_caller.h"
-#endif
-
-#ifndef NO_DELETE_CONTAINER
-#include "delete_container.h"
-#endif
-
-#ifndef NO_PROMOTION_DISABLE
-#include "promotion_disable.h"
-#endif
-
-#ifndef NO_FACTORY
-#include "factory.h"
-#endif
-
-#ifndef NO_INVARIANTS
-#include "invariants.h"
-#endif
-
-#ifndef NO_TYPE_MAPPER
-#include "type_mapper.h"
-#endif
-
-#ifdef MILI_NAMESPACE
-}
-#endif
+#define map_type(mapper, from_type) typename mapper<from_type>::type
 
 #endif
