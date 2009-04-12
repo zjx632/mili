@@ -13,6 +13,7 @@ Basic usage:
 	* prepos_caller:	NO_PREPOS_CALLER
 	* delete_container:	NO_DELETE_CONTAINER
 	* factory:		NO_FACTORY
+	* invariants:		NO_INVARIANTS
 
 Send comments to daniel.gutson@gmail.com
 

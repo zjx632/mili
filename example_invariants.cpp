@@ -1,5 +1,5 @@
 /*
-MiLi: A set of minimal libraries composed only by 1 header file each.
+invariants: A minimal library for checking invariants.
     Copyright (C) 2009  Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
@@ -16,44 +16,43 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
-
-    This is the main include file.
+    
+    This is an example file.
 */
 
-#ifndef MILI_H
-#define MILI_H
+#include <iostream>
+#include "include/mili.h"
 
-#ifdef MILI_NAMESPACE
-namespace mili
+using std::cout;
+
+invariant::NeverNull<const char> get_message(invariant::InRange<int,-1,1> number)
 {
-#endif
+    return "Hello World\n";
+} 
 
-#ifndef NO_BITWISE_ENUMS
-#include "bitwise_enums.h"
-#endif
+struct AClass
+{
+    int x;
+    int y;
+    void setxy(int newx, int newy) { x = newx; y = newy; }
+};
 
-#ifndef NO_PREPOS_CALLER
-#include "prepos_caller.h"
-#endif
+bool AClassInvariant(const AClass& aclass)
+{
+    return aclass.x + aclass.y > 0;
+};
 
-#ifndef NO_DELETE_CONTAINER
-#include "delete_container.h"
-#endif
+typedef InvariantClass<AClass, AClassInvariant> AClass_inv;
 
-#ifndef NO_PROMOTION_DISABLE
-#include "promotion_disable.h"
-#endif
+int main()
+{
+    const char* msg = get_message(-1);
+    cout << msg;
 
-#ifndef NO_FACTORY
-#include "factory.h"
-#endif
+    AClass aclass;    
+    AClass_inv inv(aclass);
+    inv->setxy(3, 4);
+    cout << inv->x << std::endl;
 
-#ifndef NO_INVARIANTS
-#include "invariants.h"
-#endif
-
-#ifdef MILI_NAMESPACE
+    return 0;
 }
-#endif
-
-#endif
