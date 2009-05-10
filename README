@@ -15,6 +15,7 @@ Basic usage:
 	* factory:		NO_FACTORY
 	* invariants:		NO_INVARIANTS
 	* type_mapper:		NO_TYPE_MAPPER
+	* properties:		NO_PROPERTIES
 
 Send comments to daniel.gutson@gmail.com
 

@@ -56,6 +56,10 @@ namespace mili
 #include "type_mapper.h"
 #endif
 
+#ifndef NO_PROPERTIES
+#include "properties.h"
+#endif
+
 #ifdef MILI_NAMESPACE
 }
 #endif
