@@ -32,18 +32,18 @@ struct InvariantNotMet : std::exception
 namespace invariant
 {
 // this will be a template alias in C++0x
-#define define_invariant(Name, op)		\
-    template <class T, T operand>		\
-    class Name					\
-    {						\
-	const T value;				\
-    public:					\
-	operator T()const { return value; }	\
-	Name(T value) : value(value)		\
-	{					\
-	    if (!(value op operand))		\
-		throw InvariantNotMet();	\
-	}					\
+#define define_invariant(Name, op)              \
+    template <class T, T operand>               \
+    class Name                                  \
+    {                                           \
+            const T value;                      \
+        public:                                 \
+            operator T()const { return value; } \
+            Name(T value) : value(value)        \
+            {                                   \
+                if (!(value op operand))        \
+                    throw InvariantNotMet();    \
+            }                                   \
     }
     
     define_invariant(lt,<);
@@ -56,20 +56,20 @@ namespace invariant
     template <class T>
     class NeverNull
     {
-	T* const ptr;
-    public:
-	NeverNull(T* ptr) : ptr(ptr)
-	{
-	    if (ptr == NULL)
-		throw InvariantNotMet();
-	}
-	operator T*() const { return ptr; }
+            T* const ptr;
+        public:
+            NeverNull(T* ptr) : ptr(ptr)
+            {
+                if (ptr == NULL)
+                    throw InvariantNotMet();
+            }
+            operator T*() const { return ptr; }
     };
     
     template <class T, T Min, T Max>
     struct InRange : ge<T, Min>, le<T, Max>
     {
-	InRange(T t) : ge<T, Min>(t), le<T, Max>(t) {}
+        InRange(T t) : ge<T, Min>(t), le<T, Max>(t) {}
     };
 }
 
@@ -83,25 +83,25 @@ class InvariantClass
 public:
     struct Temp
     {
-	T& t;
-	Temp(T& t) : t(t) {}
-	T* operator -> () const
-	{
-	    return &t;
-	}
-	
-	~Temp()
-	{
-	    if (!Invariant(t))
-		throw InvariantNotMet();
-	}
+        T& t;
+        Temp(T& t) : t(t) {}
+        T* operator -> () const
+        {
+            return &t;
+        }
+        
+        ~Temp()
+        {
+            if (!Invariant(t))
+                throw InvariantNotMet();
+        }
     };
     
     InvariantClass(T& t) : t(t){};
 
     Temp operator -> () const
     {
-	return Temp(t);
+        return Temp(t);
     }
 };
 

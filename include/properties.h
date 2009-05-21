@@ -26,7 +26,7 @@ struct PropertyR
 {
     operator Type() const
     {
-	return (This()->*Getter)();
+        return (This()->*Getter)();
     }
 
 private:
@@ -38,7 +38,7 @@ struct PropertyW
 {
     void operator = (Type t)
     {
-	(This()->*Setter)(t);
+        (This()->*Setter)(t);
     }
 
 private:    
@@ -55,6 +55,9 @@ struct PropertyRW : PropertyR<T, Type, Getter>, PropertyW<T, Type, Setter>
 #define BEGIN_PROPERTIES union {
 #define END_PROPERTIES };
 
+// alternate way:
+#define PROPERTIES  union
+
 #if 0
 /* Not available */
 template <class T, class Type, Type (T::*Member), Type (*Function)(Type)>
@@ -62,7 +65,7 @@ struct PropertyFR
 {
     operator Type() const
     {
-	return *Function(This()->*Member)();
+    return *Function(This()->*Member)();
     }
 
 private:
@@ -74,7 +77,7 @@ struct PropertyFW
 {
     void operator = (Type t)
     {
-	(This()->*Member) = *Function(t);
+    (This()->*Member) = *Function(t);
     }
 
 private:    

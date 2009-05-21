@@ -31,8 +31,8 @@ class Factory
 {
     struct Creator
     {
-	virtual Base* create(ConstructorParameterType p) const = 0;
-	virtual ~Creator(){}
+        virtual Base* create(ConstructorParameterType p) const = 0;
+        virtual ~Creator(){}
     };
     
     map<Key, Creator*> _creators;
@@ -41,28 +41,28 @@ public:
     template <class DerivedClass>
     void register_factory(const Key& key)
     {
-	class ConcreteCreator : public Creator
-	{
-	    virtual Base* create(ConstructorParameterType p) const
-	    { return new DerivedClass(p); }
-	};
-	
-	_creators[key] = new ConcreteCreator;
+        class ConcreteCreator : public Creator
+        {
+            virtual Base* create(ConstructorParameterType p) const
+            { return new DerivedClass(p); }
+        };
+        
+        _creators[key] = new ConcreteCreator;
     }
     
     Base* new_class(const Key& key, ConstructorParameterType p) const
     {
-	typename map<Key, Creator*>::const_iterator it = _creators.find(key);
-	
-	if (it != _creators.end())
-	    return it->second->create(p);
-	else
-	    return NULL;
+        typename map<Key, Creator*>::const_iterator it = _creators.find(key);
+        
+        if (it != _creators.end())
+            return it->second->create(p);
+        else
+            return NULL;
     }
     
     ~Factory()
     {
-	delete_container(_creators);
+        delete_container(_creators);
     }
 };
 
@@ -71,8 +71,8 @@ class Factory<Key, Base, void>
 {
     struct Creator
     {
-	virtual Base* create() const = 0;
-	virtual ~Creator(){}
+        virtual Base* create() const = 0;
+        virtual ~Creator(){}
     };
     
     map<Key, Creator*> _creators;
@@ -81,28 +81,28 @@ public:
     template <class DerivedClass>
     void register_factory(const Key& key)
     {
-	class ConcreteCreator : public Creator
-	{
-	    virtual Base* create() const
-	    { return new DerivedClass; }
-	};
-	
-	_creators[key] = new ConcreteCreator;
+        class ConcreteCreator : public Creator
+        {
+            virtual Base* create() const
+            { return new DerivedClass; }
+        };
+        
+        _creators[key] = new ConcreteCreator;
     }
     
     Base* new_class(const Key& key) const
     {
-	typename map<Key, Creator*>::const_iterator it = _creators.find(key);
-	
-	if (it != _creators.end())
-	    return it->second->create();
-	else
-	    return NULL;
+        typename map<Key, Creator*>::const_iterator it = _creators.find(key);
+        
+        if (it != _creators.end())
+            return it->second->create();
+        else
+            return NULL;
     }
     
     ~Factory()
     {
-	delete_container(_creators);
+        delete_container(_creators);
     }
 };
 

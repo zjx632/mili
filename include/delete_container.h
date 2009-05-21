@@ -95,7 +95,7 @@ struct auto_delete_container : public Container
 {
     ~auto_delete_container()
     {
-	delete_container(static_cast<Container&>(*this));
+        delete_container(static_cast<Container&>(*this));
     }
 };
 
@@ -104,7 +104,7 @@ struct auto_vector_delete_container : public Container
 {
     ~auto_vector_delete_container()
     {
-	vector_delete_container(static_cast<Container&>(*this));
+        vector_delete_container(static_cast<Container&>(*this));
     }
 };
 

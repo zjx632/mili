@@ -1,3 +1,8 @@
+Version 5.1
+===========
+    * replaced tabs for spaces.
+    * added 'PROPERTIES' define in properties.
+
 Version 5.0
 ===========
     * Properties added.

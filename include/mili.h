@@ -29,35 +29,35 @@ namespace mili
 #endif
 
 #ifndef NO_BITWISE_ENUMS
-#include "bitwise_enums.h"
+#   include "bitwise_enums.h"
 #endif
 
 #ifndef NO_PREPOS_CALLER
-#include "prepos_caller.h"
+#   include "prepos_caller.h"
 #endif
 
 #ifndef NO_DELETE_CONTAINER
-#include "delete_container.h"
+#   include "delete_container.h"
 #endif
 
 #ifndef NO_PROMOTION_DISABLE
-#include "promotion_disable.h"
+#   include "promotion_disable.h"
 #endif
 
 #ifndef NO_FACTORY
-#include "factory.h"
+#   include "factory.h"
 #endif
 
 #ifndef NO_INVARIANTS
-#include "invariants.h"
+#   include "invariants.h"
 #endif
 
 #ifndef NO_TYPE_MAPPER
-#include "type_mapper.h"
+#   include "type_mapper.h"
 #endif
 
 #ifndef NO_PROPERTIES
-#include "properties.h"
+#   include "properties.h"
 #endif
 
 #ifdef MILI_NAMESPACE

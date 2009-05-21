@@ -24,136 +24,136 @@ bitwise_enums: A minimal library for doing type-safe bitwise operations.
 template <class Enum>
 class bitwise_enum
 {
-	unsigned long int _value;
+    unsigned long int _value;
 public:
-	typedef unsigned int Bits;
-	
-	// CONSTRUCTORS:
-	bitwise_enum(Enum init_value)
-		: _value(init_value)
-	{}
+    typedef unsigned int Bits;
+    
+    // CONSTRUCTORS:
+    bitwise_enum(Enum init_value)
+        : _value(init_value)
+    {}
 
-	bitwise_enum()
-		: _value(0)
-	{}
+    bitwise_enum()
+        : _value(0)
+    {}
 
-	bitwise_enum(const bitwise_enum<Enum>& other)
-		: _value(other._value)
-	{}
+    bitwise_enum(const bitwise_enum<Enum>& other)
+        : _value(other._value)
+    {}
 
-	// UNARY OPERATIONS:
-	bitwise_enum<Enum> operator ~() const
-	{
-		return bitwise_enum<Enum>(~_value);
-	}
+    // UNARY OPERATIONS:
+    bitwise_enum<Enum> operator ~() const
+    {
+        return bitwise_enum<Enum>(~_value);
+    }
 
 
-	unsigned long int value() const
-	{
-		return _value;
-	}
+    unsigned long int value() const
+    {
+        return _value;
+    }
 
-	bitwise_enum<Enum>& self_revert()
-	{
-		_value = ~_value;
-		return *this;
-	}
+    bitwise_enum<Enum>& self_revert()
+    {
+        _value = ~_value;
+        return *this;
+    }
 
-	bitwise_enum<Enum>& clear()
-	{
-		_value = 0;
-		return *this;
-	}
+    bitwise_enum<Enum>& clear()
+    {
+        _value = 0;
+        return *this;
+    }
 
-	// OPERATIONS with integrals:
+    // OPERATIONS with integrals:
 
-	unsigned long int operator >> (Bits bits) const
-	{
-		return _value >> bits;
-	}
+    unsigned long int operator >> (Bits bits) const
+    {
+        return _value >> bits;
+    }
 
-	unsigned long int operator << (Bits bits) const
-	{
-		return _value << bits;
-	}
+    unsigned long int operator << (Bits bits) const
+    {
+        return _value << bits;
+    }
 
-	// OPERATIONS BETWEEN bitwise_enums:
-	bitwise_enum<Enum>& operator |= (const bitwise_enum<Enum>& other)
-	{
-		_value |= other._value;
-		return *this;
-	}
+    // OPERATIONS BETWEEN bitwise_enums:
+    bitwise_enum<Enum>& operator |= (const bitwise_enum<Enum>& other)
+    {
+        _value |= other._value;
+        return *this;
+    }
 
-	bitwise_enum<Enum>& operator &= (const bitwise_enum<Enum>& other)
-	{
-		_value &= other._value;
-		return *this;
-	}
+    bitwise_enum<Enum>& operator &= (const bitwise_enum<Enum>& other)
+    {
+        _value &= other._value;
+        return *this;
+    }
 
-	bitwise_enum<Enum>& operator ^= (const bitwise_enum<Enum>& other)
-	{
-		_value ^= other._value;
-		return *this;
-	}
+    bitwise_enum<Enum>& operator ^= (const bitwise_enum<Enum>& other)
+    {
+        _value ^= other._value;
+        return *this;
+    }
 
-	bitwise_enum<Enum> operator | (const bitwise_enum<Enum>& other) const
-	{
-		bitwise_enum<Enum> ret(*this);
-		return (ret |= other);
-	}
+    bitwise_enum<Enum> operator | (const bitwise_enum<Enum>& other) const
+    {
+        bitwise_enum<Enum> ret(*this);
+        return (ret |= other);
+    }
 
-	bitwise_enum<Enum> operator & (const bitwise_enum<Enum>& other) const
-	{
-		bitwise_enum<Enum> ret(*this);
-		return (ret &= other);
-	}
+    bitwise_enum<Enum> operator & (const bitwise_enum<Enum>& other) const
+    {
+        bitwise_enum<Enum> ret(*this);
+        return (ret &= other);
+    }
 
-	bitwise_enum<Enum> operator ^ (const bitwise_enum<Enum>& other) const
-	{
-		bitwise_enum<Enum> ret(*this);
-		return (ret ^= other);
-	}
+    bitwise_enum<Enum> operator ^ (const bitwise_enum<Enum>& other) const
+    {
+        bitwise_enum<Enum> ret(*this);
+        return (ret ^= other);
+    }
 
-	bitwise_enum<Enum>& operator = (const bitwise_enum<Enum>& other)
-	{
-		_value = other._value;
-		return *this;
-	}
+    bitwise_enum<Enum>& operator = (const bitwise_enum<Enum>& other)
+    {
+        _value = other._value;
+        return *this;
+    }
 
-	bool operator == (const bitwise_enum<Enum>& other) const
-	{
-		return _value == other._value;
-	}
+    bool operator == (const bitwise_enum<Enum>& other) const
+    {
+        return _value == other._value;
+    }
 
-	bool operator != (const bitwise_enum<Enum>& other) const
-	{
-		return ! operator==(other);
-	}
+    bool operator != (const bitwise_enum<Enum>& other) const
+    {
+        return ! operator==(other);
+    }
 
-	// utilities
-	bool has_bits() const
-	{
-		return _value != 0;
-	}
-	
-	bool has_bits(const bitwise_enum<Enum>& other) const
-	{
-		return (operator&(other)).has_bits();
-	}
+    // utilities
+    bool has_bits() const
+    {
+        return _value != 0;
+    }
+    
+    bool has_bits(const bitwise_enum<Enum>& other) const
+    {
+        return (operator&(other)).has_bits();
+    }
 
-	unsigned int bits_count() const
-	{
-		unsigned long int v(_value);
-		unsigned int result(0);
+    unsigned int bits_count() const
+    {
+        unsigned long int v(_value);
+        unsigned int result(0);
 
-		while( v>0 )
-		{
-			result++;
-			v &= v - 1;
-		}
+        while( v>0 )
+        {
+            result++;
+            v &= v - 1;
+        }
 
-		return result;
-	}
+        return result;
+    }
 };
 
 
@@ -161,38 +161,38 @@ public:
 template <class Enum>
 inline bitwise_enum<Enum> operator | (Enum value, const bitwise_enum<Enum>& e)
 {
-	return e | value;
+    return e | value;
 }
 
 template <class Enum>
 inline bitwise_enum<Enum> operator & (Enum value, const bitwise_enum<Enum>& e)
 {
-	return e & value;
+    return e & value;
 }
 
 template <class Enum>
 inline bitwise_enum<Enum> operator ^ (Enum value, const bitwise_enum<Enum>& e)
 {
-	return e ^ value;
+    return e ^ value;
 }
 
 
 template <class Enum>
 inline bitwise_enum<Enum> operator | (Enum a, Enum b)
 {
-	return bitwise_enum<Enum>(a) | bitwise_enum<Enum>(b);
+    return bitwise_enum<Enum>(a) | bitwise_enum<Enum>(b);
 }
 
 template <class Enum>
 inline bitwise_enum<Enum> operator & (Enum a, Enum b)
 {
-	return bitwise_enum<Enum>(a) & bitwise_enum<Enum>(b);
+    return bitwise_enum<Enum>(a) & bitwise_enum<Enum>(b);
 }
 
 template <class Enum>
 inline bitwise_enum<Enum> operator ^ (Enum a, Enum b)
 {
-	return bitwise_enum<Enum>(a) ^ bitwise_enum<Enum>(b);
+    return bitwise_enum<Enum>(a) ^ bitwise_enum<Enum>(b);
 }
 
 #endif

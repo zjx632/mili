@@ -45,25 +45,26 @@ private:
 
     void set_farenheit(float f)
     {
-	_celcius = (f - 32.0f) * (5.0f / 9.0f);
+        _celcius = (f - 32.0f) * (5.0f / 9.0f);
     }
 
     float get_kelvin() const
     {
-	return _celcius + 273.15f;
+        return _celcius + 273.15f;
     }
 
     void set_kelvin(float k)
     {
-	_celcius = k - 273.15f;
+        _celcius = k - 273.15f;
     }
 
 public:
-    BEGIN_PROPERTIES
-	PropertyRW<TemperatureSensor, float, &TemperatureSensor::get_celcius,   &TemperatureSensor::set_celcius>   celcius;
+    PROPERTIES
+    {
+        PropertyRW<TemperatureSensor, float, &TemperatureSensor::get_celcius,   &TemperatureSensor::set_celcius>   celcius;
         PropertyRW<TemperatureSensor, float, &TemperatureSensor::get_farenheit, &TemperatureSensor::set_farenheit> farenheit;
         PropertyRW<TemperatureSensor, float, &TemperatureSensor::get_kelvin,    &TemperatureSensor::set_kelvin>    kelvin;
-    END_PROPERTIES;
+    };
 private:
     float _celcius;
 };

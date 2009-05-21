@@ -27,28 +27,28 @@ using std::cout;
 
 enum MasksSet1
 {
-	kZero	= 0,
-	kOne	= 1,
-	kTwo	= 2,
-	kThree	= 4,
-	kFour	= 8
+    kZero   = 0,
+    kOne    = 1,
+    kTwo    = 2,
+    kThree  = 4,
+    kFour   = 8
 };
 
 typedef bitwise_enum<MasksSet1> M1;
 
 void show_bits(M1 b)
 {
-	if (b.has_bits(kZero))  cout << "kZero  turned on\n";
-	if (b.has_bits(kOne))   cout << "kOne   turned on\n";
-	if (b.has_bits(kTwo))   cout << "kTwo   turned on\n";
-	if (b.has_bits(kThree)) cout << "kThree turned on\n";
-	if (b.has_bits(kFour))  cout << "kFour  turned on\n";	
+    if (b.has_bits(kZero))  cout << "kZero  turned on\n";
+    if (b.has_bits(kOne))   cout << "kOne   turned on\n";
+    if (b.has_bits(kTwo))   cout << "kTwo   turned on\n";
+    if (b.has_bits(kThree)) cout << "kThree turned on\n";
+    if (b.has_bits(kFour))  cout << "kFour  turned on\n";   
 }
 
 int main()
-{	
+{   
     show_bits(kOne | kFour);
-	
+    
     return 0;
 }
 

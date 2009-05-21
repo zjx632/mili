@@ -21,25 +21,25 @@ type_mapper: A minimal library that implements a type mapper.
 #ifndef TYPE_MAPPER_H
 #define TYPE_MAPPER_H
 
-#define declare_type_mapper(name)	\
-    template <class From>		\
-    struct name				\
-    {					\
-	typedef From type;		\
+#define declare_type_mapper(name)   \
+    template <class From>           \
+    struct name                     \
+    {                               \
+        typedef From type;          \
     }
     
-#define add_mapping(mapper, from_type, to_type)	\
-    template<>					\
-    struct mapper<from_type>			\
-    {						\
-	typedef to_type type;			\
+#define add_mapping(mapper, from_type, to_type) \
+    template<>                                  \
+    struct mapper<from_type>                    \
+    {                                           \
+        typedef to_type type;                   \
     }
 
-#define add_mapping_for_pointers(mapper, to_type)	\
-    template <class From>				\
-    struct mapper<From*>				\
-    {							\
-	typedef to_type type;				\
+#define add_mapping_for_pointers(mapper, to_type)   \
+    template <class From>                           \
+    struct mapper<From*>                            \
+    {                                               \
+        typedef to_type type;                       \
     }
 
 #define map_type(mapper, from_type) typename mapper<from_type>::type
