@@ -64,6 +64,10 @@ namespace mili
 #   include "string_utils.h"
 #endif
 
+#ifndef NO_FIND_UTILS
+#   include "find_utils.h"
+#endif
+
 #ifdef MILI_NAMESPACE
 }
 #endif

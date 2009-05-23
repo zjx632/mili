@@ -7,7 +7,7 @@ Basic usage:
     * copy the content of the include directory to where your headers files are.
     * just include "mili.h"
     * if you want to enclose the MiLi classes into the mili namespace, #define MILI_NAMESPACE
-    * every library has it's own define to disable its inclusion:
+    * each library has it's own define to disable its inclusion:
 	* bitwise_enums:	NO_BITWISE_ENUMS
 	* promotion_disable:	NO_PROMOTION_DISABLE
 	* prepos_caller:	NO_PREPOS_CALLER
@@ -17,6 +17,7 @@ Basic usage:
 	* type_mapper:		NO_TYPE_MAPPER
 	* properties:		NO_PROPERTIES
 	* string_utils:		NO_STRING_UTILS
+	* find_utils:		NO_FIND_UTILS
 
 Send comments to daniel.gutson@gmail.com
 
