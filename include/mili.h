@@ -60,6 +60,10 @@ namespace mili
 #   include "properties.h"
 #endif
 
+#ifndef NO_STRING_UTILS
+#   include "string_utils.h"
+#endif
+
 #ifdef MILI_NAMESPACE
 }
 #endif

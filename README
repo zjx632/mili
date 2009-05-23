@@ -16,6 +16,7 @@ Basic usage:
 	* invariants:		NO_INVARIANTS
 	* type_mapper:		NO_TYPE_MAPPER
 	* properties:		NO_PROPERTIES
+	* string_utils:		NO_STRING_UTILS
 
 Send comments to daniel.gutson@gmail.com
 
