@@ -68,6 +68,11 @@ namespace mili
 #   include "find_utils.h"
 #endif
 
+#ifndef NO_STREAM_UTILS
+#   include "stream_utils.h"
+#endif
+
+
 #ifdef MILI_NAMESPACE
 }
 #endif
