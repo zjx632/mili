@@ -243,20 +243,48 @@ inline std::string to_string(Number n)
     return ss.str();
 }
 
+template <class T>
+inline T from_string(const std::string& s)
+{
+    T t;
+    std::stringstream ss(s);
+    ss >> t;
+    return t;
+}
+
+template <class T>
+inline bool from_string(const std::string& s, T& t)
+{
+    std::stringstream ss(s);
+    return (ss >> t);
+}
+
+/* Special case: string -> string */
+
+template <>
+inline std::string from_string<std::string>(const std::string& s)
+{
+	return s;
+}
+
+template <>
+inline bool from_string<std::string>(const std::string& s, std::string& t)
+{
+	t = s;
+	return true;
+}
+
+/* to_number is obsolete. from_string should be used instead. */
 template <class Number>
 inline Number to_number(const std::string& s)
 {
-    Number n;
-    std::stringstream ss(s);
-    ss >> n;
-    return n;
+    return from_string<Number>(s);
 }
 
 template <class Number>
 inline bool to_number(const std::string& s, Number& n)
 {
-    std::stringstream ss(s);
-    return (ss >> n);
+    return from_string(s, n);
 }
 
 #endif

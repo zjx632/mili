@@ -20,6 +20,13 @@ Basic usage:
 	* find_utils:		NO_FIND_UTILS
 	* stream_utils:		NO_STREAM_UTILS
 
+You might want to copy the include files in an include directory, e.g.:
+    sudo mkdir /usr/local/include/mili
+    sudo cp include/*.h /usr/local/include/mili
+and then
+    #include <mili/mili.h>
+
+
 Send comments to info@fudepan.org.ar
 
 Thanks!
