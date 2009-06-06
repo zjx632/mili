@@ -1,5 +1,5 @@
 /*
-find_utils: A minimal library with generic find functions with exceptions.
+container_utils: A minimal library with generic STL container utilities..
     Copyright (C) 2009  Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
@@ -18,8 +18,8 @@ find_utils: A minimal library with generic find functions with exceptions.
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef FIND_UTILS_H
-#define FIND_UTILS_H
+#ifndef CONTAINER_UTILS_H
+#define CONTAINER_UTILS_H
 
 // Supported containers for mili::find() and mili::contains():
 #include <map>
@@ -110,6 +110,22 @@ template <class Key, class Comp, class Alloc, class Key2>
 inline bool contains(const std::set<Key, Comp, Alloc>& s, const Key2& key)
 {
     return s.count(key) > 0;
+}
+
+// ------------ Insertion Utilities
+
+/* This works for vectors and lists */
+template <class Container, class ElementType>
+inline void insert_into(Container& cont, const ElementType& element)
+{
+    cont.push_back(element);
+}
+
+/* This works for sets */
+template<class ElementType>
+inline void insert_into(std::set<ElementType>& cont, const ElementType& element)
+{
+    cont.insert(element);
 }
 
 // TODO: Add more containers.

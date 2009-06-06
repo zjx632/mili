@@ -17,12 +17,12 @@ Basic usage:
 	* type_mapper:		NO_TYPE_MAPPER
 	* properties:		NO_PROPERTIES
 	* string_utils:		NO_STRING_UTILS
-	* find_utils:		NO_FIND_UTILS
+	* container_utils:	NO_CONTAINER_UTILS
 	* stream_utils:		NO_STREAM_UTILS
 
-You might want to copy the include files in an include directory, e.g.:
-    sudo mkdir /usr/local/include/mili
-    sudo cp include/*.h /usr/local/include/mili
+You might want to copy the include files in an include directory.
+If so, just run the 'install.sh' script:
+    sudo ./install.sh
 and then
     #include <mili/mili.h>
 

@@ -64,8 +64,8 @@ namespace mili
 #   include "string_utils.h"
 #endif
 
-#ifndef NO_FIND_UTILS
-#   include "find_utils.h"
+#ifndef NO_CONTAINER_UTILS
+#   include "container_utils.h"
 #endif
 
 #ifndef NO_STREAM_UTILS

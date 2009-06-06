@@ -1,3 +1,8 @@
+Version 9.0
+===========
+    * Find utils renamed to container utils.
+    * Installation script added.
+
 Version 8.1
 ===========
     * from_string function added tu string-utils.
