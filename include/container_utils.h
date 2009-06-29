@@ -128,6 +128,30 @@ inline void insert_into(std::set<ElementType>& cont, const ElementType& element)
     cont.insert(element);
 }
 
+// Generic container
+template <class T>
+struct ContainerAdapter
+{
+    virtual T& insert(const T& element) = 0;
+    virtual ~ContainerAdapter(){}
+};
+
+template <class T, class Impl>
+class ContainerAdapterImpl : public ContainerAdapter<T>
+{
+    Impl& container;
+    virtual T& insert(const T& element)
+    {
+        insert_into(container, element);
+        return container.back();
+    }
+
+public:
+    ContainerAdapterImpl(Impl& cont)
+        : container(cont)
+    {}
+};
+
 // TODO: Add more containers.
 
 #endif
