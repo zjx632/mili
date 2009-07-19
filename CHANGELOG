@@ -1,3 +1,7 @@
+Version 9.2
+===========
+    * Added BasicType, and const/ref removals to type-mapper.
+
 Version 9.1
 ===========
     * ContainerAdapter addded to container utils.
