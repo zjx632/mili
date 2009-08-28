@@ -1,3 +1,8 @@
+Version 10.0
+============
+    * Added arith-utils.
+    * trim() function added to string-utils.
+
 Version 9.2
 ===========
     * Added BasicType, and const/ref removals to type-mapper.

@@ -287,4 +287,14 @@ inline bool to_number(const std::string& s, Number& n)
     return from_string(s, n);
 }
 
+// Remove whitespace at both sides
+inline std::string trim(const std::string& s)
+{
+    std::stringstream ss;
+    std::string ret;
+    ss << s;
+    ss >> ret;
+    return ret;
+}
+
 #endif

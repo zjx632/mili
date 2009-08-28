@@ -72,6 +72,9 @@ namespace mili
 #   include "stream_utils.h"
 #endif
 
+#ifndef NO_ARITH_UTILS
+#   include "arith_utils.h"
+#endif
 
 #ifdef MILI_NAMESPACE
 }
