@@ -25,7 +25,7 @@ stream_utils: A minimal library that provides CSV and other file/stream
 #include <vector>
 #include <iostream>
 #include <string>
-#include <sstream>
+#include "string_utils.h"
 
 template <class T>
 inline std::istream& operator >> (std::istream& is, std::vector<T>& v)
@@ -100,6 +100,42 @@ inline std::ostream& operator << (std::ostream& os, const _Separator<T>& s)
 {
     _mili_base_output(os, s.v, s.s);
     return os;
+}
+
+template <class T>
+inline std::istream& operator >> (std::istream& is, const _Separator<T>& s)
+{    
+    std::string line;
+
+    if (std::getline(is, line))
+    {
+        std::string::size_type last_pos = 0, pos;
+        bool found;
+
+        do
+        {
+            pos = line.find(s.s, last_pos);
+            found = (pos !=  std::string::npos);
+            if (found)
+            {
+                s.v.push_back(
+                    from_string<T>(
+                        line.substr(last_pos, pos - last_pos)
+                    )
+                );
+                last_pos = pos + 1;
+            }
+        }while(found);
+
+        if (last_pos != std::string::npos)
+            s.v.push_back(
+                from_string<T>(
+                    line.substr(last_pos)
+                )
+            );
+    }
+
+    return is;
 }
 
 #endif
