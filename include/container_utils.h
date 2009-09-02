@@ -26,6 +26,7 @@ container_utils: A minimal library with generic STL container utilities..
 #include <vector>
 #include <list>
 #include <set>
+#include <new>
 
 #include <algorithm>
 #include <exception>
@@ -68,6 +69,47 @@ inline const T& find(const std::map<Key, T, Comp, Alloc>& m, const Key2& key) th
     const typename std::map<Key, T, Comp, Alloc>::const_iterator it = m.find(key);
     if (it == m.end())
         throw ElementNotFound();
+    else
+        return it->second;
+}
+
+/* find, nothrow versions */
+template <class Container, class Element>
+inline Element* find(Container& c, const Element& element, const std::nothrow_t&)
+{
+    const typename Container::iterator it = find(c.begin(), c.end(), element);
+    if (it == c.end())
+        return NULL;
+    else
+        return *it;
+}
+
+template <class Container, class Element>
+inline const Element* find(const Container& c, const Element& element, const std::nothrow_t&)
+{
+    const typename Container::const_iterator it = find(c.begin(), c.end(), element);
+    if (it == c.end())
+        return NULL;
+    else
+        return *it;
+}
+
+template <class Key, class T, class Comp, class Alloc, class Key2>
+inline T* find(std::map<Key, T*, Comp, Alloc>& m, const Key2& key, const std::nothrow_t&)
+{
+    const typename std::map<Key, T*, Comp, Alloc>::iterator it = m.find(key);
+    if (it == m.end())
+        return NULL;
+    else
+        return it->second;
+}
+
+template <class Key, class T, class Comp, class Alloc, class Key2>
+inline const T* find(const std::map<Key, T*, Comp, Alloc>& m, const Key2& key, const std::nothrow_t&)
+{
+    const typename std::map<Key, T*, Comp, Alloc>::const_iterator it = m.find(key);
+    if (it == m.end())
+        return NULL;
     else
         return it->second;
 }
