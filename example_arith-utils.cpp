@@ -29,6 +29,13 @@ int main()
 
     std::cout << rnd.get() << std::endl;
 
+    if (bchain(1) < 2 < 3)
+        std::cout << "1 < 2 < 3 -> TRUE" << std::endl;
+
+    int x(10);
+    if (5 >= bchain(4) < 10 == x)
+        std::cout << "5 >= 4 < 10 == x -> TRUE" << std::endl;
+
     if (in_range(rnd.get(), 10.0f, 11.0f))
         return EXIT_SUCCESS;
     else

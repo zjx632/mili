@@ -73,9 +73,72 @@ SPECIALIZE_RND(double);
 #undef SPECIALIZE_RND
 
 template <class T>
+class _bchain
+{
+    const T _last_value;
+    bool    _last_eval;
+
+    _bchain(T value, bool last_eval)
+        : _last_value(value), _last_eval(last_eval)
+    {}
+public:
+    _bchain(T value)
+        : _last_value(value), _last_eval(true)
+    {}
+
+    _bchain(const _bchain<T>& other)
+        : _last_value(other._last_value), _last_eval(other._last_eval)
+    {}
+
+    operator bool() const
+    {
+        return _last_eval;
+    }
+
+    bool operator!() const
+    {
+        return !_last_eval;
+    }
+
+#define BCHAIN_OPERATOR(op)                                                 \
+    _bchain<T> operator op (T rvalue) const                                 \
+    {                                                                       \
+        return _bchain<T>(rvalue, _last_eval && (_last_value op rvalue));   \
+    }
+
+    BCHAIN_OPERATOR(<);
+    BCHAIN_OPERATOR(<=);
+    BCHAIN_OPERATOR(>);
+    BCHAIN_OPERATOR(>=);
+    BCHAIN_OPERATOR(==);
+    BCHAIN_OPERATOR(!=);
+
+#undef BCHAIN_OPERATOR
+};
+
+#define BCHAIN_NONMEMBER_OPERATOR(op, rop)                      \
+template <class T>                                              \
+inline _bchain<T> operator op (T value, const _bchain<T>& bch)  \
+{                                                               \
+    return bch rop value;                                       \
+}
+
+BCHAIN_NONMEMBER_OPERATOR(<,>);
+BCHAIN_NONMEMBER_OPERATOR(>,<);
+BCHAIN_NONMEMBER_OPERATOR(<=,>=);
+BCHAIN_NONMEMBER_OPERATOR(>=,<=);
+BCHAIN_NONMEMBER_OPERATOR(==,==);
+BCHAIN_NONMEMBER_OPERATOR(!=,!=);
+
+#undef BCHAIN_NONMEMBER_OPERATOR
+
+template <class T>
+inline _bchain<T> bchain(T value) { return _bchain<T>(value); }
+
+template <class T>
 static inline bool in_range(T val, T min, T max)
 {
-    return val >= min && val <= max;
+    return min <= bchain(val) <= max;
 }
 
 
