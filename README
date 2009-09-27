@@ -20,6 +20,7 @@ Basic usage:
 	* container_utils:	NO_CONTAINER_UTILS
 	* stream_utils:		NO_STREAM_UTILS
 	* arith_utils:		NO_ARITH_UTILS
+	* binary_streams:	NO_BINSTREAMS
 
 You might want to copy the include files in an include directory.
 If so, just run the 'install.sh' script:
