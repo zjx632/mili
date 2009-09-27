@@ -31,6 +31,8 @@ container_utils: A minimal library with generic STL container utilities..
 #include <algorithm>
 #include <exception>
 
+NAMESPACE_BEGIN
+
 struct ElementNotFound : std::exception{};
 
 template <class Container, class Element>
@@ -195,5 +197,7 @@ public:
 };
 
 // TODO: Add more containers.
+
+NAMESPACE_END
 
 #endif

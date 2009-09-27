@@ -27,6 +27,8 @@ stream_utils: A minimal library that provides CSV and other file/stream
 #include <string>
 #include "string_utils.h"
 
+NAMESPACE_BEGIN
+
 template <class T>
 inline std::istream& operator >> (std::istream& is, std::vector<T>& v)
 {
@@ -137,6 +139,8 @@ inline std::istream& operator >> (std::istream& is, const _Separator<T>& s)
 
     return is;
 }
+
+NAMESPACE_END
 
 #endif
 

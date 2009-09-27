@@ -1,5 +1,9 @@
-Version 10.5
+Version 11.1
 ============
+    * Fixed bug with -DMILI_NAMESPACE.
+
+Version 11
+==========
     * Added binary_streams.
 
 Version 10.4

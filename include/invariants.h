@@ -23,6 +23,8 @@ invariants: A minimal library for a checking invariants.
 
 #include <exception>
 
+NAMESPACE_BEGIN
+
 struct InvariantNotMet : std::exception
 {
 };
@@ -104,5 +106,7 @@ public:
         return Temp(t);
     }
 };
+
+NAMESPACE_END
 
 #endif

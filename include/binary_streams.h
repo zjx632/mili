@@ -24,6 +24,8 @@ binary_streams: A minimal library supporting encoding of different data
 
 #include <string>
 
+NAMESPACE_BEGIN
+
 class bostream
 {
     public:
@@ -91,5 +93,7 @@ class bistream
         std::string _s;
         std::size_t _pos;
 };
+
+NAMESPACE_END
 
 #endif

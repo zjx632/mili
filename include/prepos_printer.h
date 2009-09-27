@@ -27,6 +27,7 @@ prepos_caller: A minimal library for wrapping object methods calls.
 #include <string>
 #include <iostream>
 
+NAMESPACE_BEGIN
 
 struct PrePosPrinter
 {
@@ -38,5 +39,6 @@ struct PrePosPrinter
     void operator()() const { os << msg << std::endl; }
 };
 
+NAMESPACE_END
 
 #endif

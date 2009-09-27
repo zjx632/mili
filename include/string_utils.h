@@ -26,6 +26,8 @@ string_utils: A minimal library with string utilities.
 #include <cstring>
 #include <sstream>
 
+NAMESPACE_BEGIN
+
 template <int (*NORMALIZER)(int)>
 struct normalized_string : std::string
 {
@@ -296,5 +298,7 @@ inline std::string trim(const std::string& s)
     ss >> ret;
     return ret;
 }
+
+NAMESPACE_END
 
 #endif

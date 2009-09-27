@@ -21,6 +21,8 @@ type_mapper: A minimal library that implements a type mapper.
 #ifndef TYPE_MAPPER_H
 #define TYPE_MAPPER_H
 
+NAMESPACE_BEGIN
+
 #define declare_type_mapper(name)   \
     template <class From>           \
     struct name                     \
@@ -64,5 +66,7 @@ type_mapper: A minimal library that implements a type mapper.
 declare_type_mapper(BasicType);
 add_mapping_const_removal(BasicType);
 add_mapping_ref_removal(BasicType);
+
+NAMESPACE_END
 
 #endif

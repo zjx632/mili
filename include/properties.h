@@ -21,6 +21,8 @@ properties: A minimal library that implements object properties.
 #ifndef PROPERTIES_H
 #define PROPERTIES_H
 
+NAMESPACE_BEGIN
+
 template <class T, class Type, Type (T::*Getter)() const>
 struct PropertyR
 {
@@ -90,5 +92,7 @@ struct PropertyFRW : PropertyFR<T, Type, Member, FunctionR>, PropertyFW<T, Type,
     using PropertyFW<T, Type, Member, FunctionW>:: operator =;
 };
 #endif
+
+NAMESPACE_END
 
 #endif

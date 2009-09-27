@@ -23,6 +23,8 @@ delete_container: A minimal library for deleting the objects of a container of p
 
 #include <algorithm>
 
+NAMESPACE_BEGIN
+
 template <class T>
 struct deleter
 {
@@ -107,5 +109,7 @@ struct auto_vector_delete_container : public Container
         vector_delete_container(static_cast<Container&>(*this));
     }
 };
+
+NAMESPACE_END
 
 #endif

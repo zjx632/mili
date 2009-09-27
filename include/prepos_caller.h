@@ -23,6 +23,8 @@ prepos_caller: A minimal library for wrapping object methods calls.
 #ifndef PREPOS_H
 #define PREPOS_H
 
+NAMESPACE_BEGIN
+
 template <class T, class Pre, class Pos>
 struct PrePosCaller
 {
@@ -114,5 +116,7 @@ struct PrePosCaller<T* const, Pre, Pos>
         return Temp(t, pos);
     }
 };
+
+NAMESPACE_END
 
 #endif

@@ -22,6 +22,8 @@ promotion_disable.h: A minimalistic library to disable undesired
 #ifndef PROMOTION_DISABLE_H
 #define PROMOTION_DISABLE_H
 
+NAMESPACE_BEGIN
+
 struct AllowConversion
 {
   typedef int Type;
@@ -85,5 +87,7 @@ public:
       return value;
    }
 };
+
+NAMESPACE_END
 
 #endif

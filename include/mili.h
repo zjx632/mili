@@ -24,8 +24,11 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #define MILI_H
 
 #ifdef MILI_NAMESPACE
-namespace mili
-{
+#define NAMESPACE_BEGIN namespace mili {
+#define NAMESPACE_END }
+#else
+#define NAMESPACE_BEGIN
+#define NAMESPACE_END
 #endif
 
 #ifndef NO_BITWISE_ENUMS
@@ -78,10 +81,6 @@ namespace mili
 
 #ifndef NO_BINSTREAMS
 #   include "binary_streams.h"
-#endif
-
-#ifdef MILI_NAMESPACE
-}
 #endif
 
 #endif

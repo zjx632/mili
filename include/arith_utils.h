@@ -24,6 +24,8 @@ arith_utils.h: A minimal library with arithmetic utilities.
 #include <stdlib.h>
 #include <sys/time.h>
 
+NAMESPACE_BEGIN
+
 template <class T>
 class Randomizer
 {
@@ -141,5 +143,6 @@ static inline bool in_range(T val, T min, T max)
     return min <= bchain(val) <= max;
 }
 
+NAMESPACE_END
 
 #endif

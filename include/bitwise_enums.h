@@ -21,6 +21,8 @@ bitwise_enums: A minimal library for doing type-safe bitwise operations.
 #ifndef BITWISE_ENUMS_H
 #define BITWISE_ENUMS_H
 
+NAMESPACE_BEGIN
+
 template <class Enum>
 class bitwise_enum
 {
@@ -194,5 +196,7 @@ inline bitwise_enum<Enum> operator ^ (Enum a, Enum b)
 {
     return bitwise_enum<Enum>(a) ^ bitwise_enum<Enum>(b);
 }
+
+NAMESPACE_END
 
 #endif

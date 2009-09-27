@@ -24,7 +24,7 @@ factory: A minimal library for a generic factory.
 #include <map>
 #include "delete_container.h"
 
-using std::map;
+NAMESPACE_BEGIN
 
 template <class Key, class Base, class ConstructorParameterType = void>
 class Factory
@@ -35,7 +35,7 @@ class Factory
         virtual ~Creator(){}
     };
     
-    map<Key, Creator*> _creators;
+    std::map<Key, Creator*> _creators;
 
 public:
     template <class DerivedClass>
@@ -52,7 +52,7 @@ public:
     
     Base* new_class(const Key& key, ConstructorParameterType p) const
     {
-        typename map<Key, Creator*>::const_iterator it = _creators.find(key);
+        typename std::map<Key, Creator*>::const_iterator it = _creators.find(key);
         
         if (it != _creators.end())
             return it->second->create(p);
@@ -75,7 +75,7 @@ class Factory<Key, Base, void>
         virtual ~Creator(){}
     };
     
-    map<Key, Creator*> _creators;
+    std::map<Key, Creator*> _creators;
 
 public:    
     template <class DerivedClass>
@@ -92,7 +92,7 @@ public:
     
     Base* new_class(const Key& key) const
     {
-        typename map<Key, Creator*>::const_iterator it = _creators.find(key);
+        typename std::map<Key, Creator*>::const_iterator it = _creators.find(key);
         
         if (it != _creators.end())
             return it->second->create();
@@ -105,5 +105,7 @@ public:
         delete_container(_creators);
     }
 };
+
+NAMESPACE_END
 
 #endif
