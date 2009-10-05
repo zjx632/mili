@@ -83,6 +83,10 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "binary_streams.h"
 #endif
 
+#ifndef NO_LOOP_UNROLLING
+#   include "loop_unrolling.h"
+#endif
+
 #undef NAMESPACE_BEGIN
 #undef NAMESPACE_END
 

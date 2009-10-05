@@ -1,3 +1,7 @@
+Version 12
+==========
+    * Added loop_unrolling.
+
 Version 11.1
 ============
     * Fixed bug with -DMILI_NAMESPACE.
