@@ -143,6 +143,25 @@ static inline bool in_range(T val, T min, T max)
     return min <= bchain(val) <= max;
 }
 
+class FirstTimeFlag
+{
+    bool value;
+public:
+    FirstTimeFlag() : value(true){}
+
+    operator bool()
+    {
+        const bool ret(value);
+        value = false;
+        return ret;
+    }
+
+    bool operator!()
+    {
+        return !operator bool();
+    }
+};
+
 NAMESPACE_END
 
 #endif

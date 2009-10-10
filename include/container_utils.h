@@ -30,6 +30,7 @@ container_utils: A minimal library with generic STL container utilities..
 
 #include <algorithm>
 #include <exception>
+//#include <iterator>
 
 NAMESPACE_BEGIN
 
@@ -195,6 +196,13 @@ public:
         : container(cont)
     {}
 };
+
+// CopyContainer -----------------------------
+template <class C1, class C2>
+static inline void copy_container(const C1& c1, C2& c2)
+{
+	std::copy(c1.begin(), c1.end(), std::back_insert_iterator<C2> (c2));
+}
 
 // TODO: Add more containers.
 
