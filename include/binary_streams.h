@@ -23,6 +23,7 @@ binary_streams: A minimal library supporting encoding of different data
 #define BINARY_STREAMS_H
 
 #include <string>
+#include <assert.h>
 
 NAMESPACE_BEGIN
 
@@ -86,6 +87,7 @@ class bistream
 
         void str(const std::string& str)
         {
+            _pos = 0;
             _s = str;
         }
 
@@ -100,6 +102,7 @@ class bistream
         {
             int size;
             (*this) >> size;
+            assert(_s.size() >= size+_pos);
             str  = _s.substr(_pos,size);
             _pos += size;
             return *this;
