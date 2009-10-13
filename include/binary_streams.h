@@ -55,7 +55,7 @@ class bostream
             return operator<< (s);
         }
 
-        std::string str() const
+        std::string& str() const
         {
             return _s;
         }
@@ -72,7 +72,7 @@ class bostream
 class bistream
 {
     public:
-        bistream(std::string str) :
+        bistream(const std::string& str) :
             _s(str),
             _pos(0)
         {
