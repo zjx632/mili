@@ -26,8 +26,6 @@ prepos_caller: A minimal library for wrapping object methods calls.
 
 #include <pthread.h>
 
-NAMESPACE_BEGIN
-
 struct PreMutex
 {
     pthread_mutex_t * const mutex;
@@ -47,7 +45,5 @@ struct PosMutex
     
     void operator()() const { pthread_mutex_unlock(mutex); }
 };
-
-NAMESPACE_END
 
 #endif
