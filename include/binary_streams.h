@@ -58,6 +58,11 @@ class bostream
             return _s;
         }
 
+        void clear()
+        {
+            _s.clear();
+        }
+
     private:
         std::string _s;
 };
