@@ -24,13 +24,9 @@ prepos_caller: A minimal library for wrapping object methods calls.
 #ifndef PREPOS_NULL_H
 #define PREPOS_NULL_H
 
-NAMESPACE_BEGIN
-
 struct PrePosNull
 {    
     void operator()() const { }
 };
-
-NAMESPACE_END
 
 #endif

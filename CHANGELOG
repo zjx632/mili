@@ -2,6 +2,7 @@ Version 12.1
 ============
     * Added copy_container to container-utils.
     * Added FirstTimeFlag to arith-utils.
+    * Fixed bugs in binary_streams.
 
 Version 12
 ==========
