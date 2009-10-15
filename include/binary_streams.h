@@ -94,6 +94,7 @@ class bistream
         template <class T>
         bistream& operator >> (T& x)
         {
+            assert(_s.size() >= _pos + sizeof(x));
             _pos += _s.copy(reinterpret_cast<char*>(&x), sizeof(x),_pos);
             return *this;
         }
