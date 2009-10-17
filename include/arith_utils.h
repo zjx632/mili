@@ -138,7 +138,7 @@ template <class T>
 inline _bchain<T> bchain(T value) { return _bchain<T>(value); }
 
 template <class T>
-static inline bool in_range(T val, T min, T max)
+inline bool in_range(T val, T min, T max)
 {
     return min <= bchain(val) <= max;
 }
@@ -161,6 +161,30 @@ public:
         return !operator bool();
     }
 };
+
+template <class T>
+inline T square(T t)
+{
+    return t*t;
+} 
+
+template <class T>
+inline T maximize(T& t, T value)
+{
+    if (t < value)
+        t = value;
+
+    return t;
+}
+
+template <class T>
+inline T minimize(T& t, T value)
+{
+    if (t > value)
+        t = value;
+
+    return t;
+}
 
 NAMESPACE_END
 

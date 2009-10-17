@@ -1,3 +1,8 @@
+Version 12.2
+============
+    * Added maximize, minimize, and square to arith-utils.
+    * Added extra assertion to binary_streams.
+
 Version 12.1
 ============
     * Added copy_container to container-utils.
