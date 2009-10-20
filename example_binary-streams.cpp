@@ -23,22 +23,36 @@ binary_streams: A minimal library supporting encoding of different data
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include "include/mili.h"
 
 int main()
 {
+    std::vector<int> v(5,3); //all 3's
+    v[1] = 1;
+    v[4] = 7; //so it is [3,1,3,3,7]
+
     bostream bos;
-    bos << 1 << 2 << 3 << std::string("Hello ") << 4 << std::string("World!");
+    bos << 1 << 2 << 3 << std::string("Hello ") << v << 4 << std::string("World!");
 
     bistream bis(bos.str());
 
     int         nums[4];
     std::string str1;
     std::string str2;
-    bis >> nums[0] >> nums[1] >> nums[2] >> str1 >> nums[3] >> str2;
+
+    std::vector<int> v2;
+
+
+    bis >> nums[0] >> nums[1] >> nums[2] >> str1 >> v2 >> nums[3] >> str2;
 
     for (int i=0; i < 4 ; ++i)
         std::cout << nums[i] << std::endl;
 
     std::cout << str1 << str2 << std::endl;
+
+    std::cout << '[';
+    for (size_t i=0; i < 5; ++i)
+        std::cout<< v2[i] << ' ';
+    std::cout << ']' << std::endl;
 }

@@ -50,6 +50,17 @@ class bostream
             return *this;
         }
 
+        template <class Other>
+        bostream& operator<< (const std::vector<Other>& vec)
+        {
+            int size(vec.size());
+            (*this) << size;
+            for (int i(0); i < size; ++i)
+                (*this) << vec[i];
+
+            return *this;
+        }
+
         bostream& operator<< (const char* cs)
         {
             const std::string s(cs);
@@ -108,6 +119,20 @@ class bistream
             _pos += size;
             return *this;
         }
+
+        template <class Other>
+        bistream& operator>> (std::vector<Other>& vec)
+        {
+            int size;
+            (*this) >> size;
+            assert(_s.size() >= (size * sizeof(Other)) + _pos);
+            vec.resize(size);
+            for (int i(0); i < size; i++)
+                (*this) >> vec[i];
+
+            return *this;
+        }
+
 
     private:
         std::string _s;
