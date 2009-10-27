@@ -22,7 +22,7 @@ binary_streams: A minimal library supporting encoding of different data
 #ifndef BINARY_STREAMS_H
 #define BINARY_STREAMS_H
 
-// #define BSTREAMS_DEBUG
+// #define BSTREAMS_DEBUG to enable type checking.
 
 #include <string>
 #include <assert.h>
@@ -45,7 +45,7 @@ class bostream
         bostream& operator<< (T x)
         {
 #ifdef BSTREAMS_DEBUG
-            std::string s(typeid(T).name());
+            const std::string s(typeid(T).name());
             const size_t sz(s.size());
             _s.append(reinterpret_cast<const char*>(&sz), sizeof(size_t));
             _s += s;
@@ -65,7 +65,7 @@ class bostream
         template <class Other>
         bostream& operator<< (const std::vector<Other>& vec)
         {
-            size_t size(vec.size());
+            const size_t size(vec.size());
             (*this) << size;
             for (size_t i(0); i < size; ++i)
                 (*this) << vec[i];
@@ -169,3 +169,4 @@ class bistream
 NAMESPACE_END
 
 #endif
+
