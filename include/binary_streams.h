@@ -22,8 +22,14 @@ binary_streams: A minimal library supporting encoding of different data
 #ifndef BINARY_STREAMS_H
 #define BINARY_STREAMS_H
 
+// #define BSTREAMS_DEBUG
+
 #include <string>
 #include <assert.h>
+
+#ifdef BSTREAMS_DEBUG
+#   include <typeinfo>
+#endif
 
 NAMESPACE_BEGIN
 
@@ -38,6 +44,12 @@ class bostream
         template <class T>
         bostream& operator<< (T x)
         {
+#ifdef BSTREAMS_DEBUG
+            std::string s(typeid(T).name());
+            const size_t sz(s.size());
+            _s.append(reinterpret_cast<const char*>(&sz), sizeof(size_t));
+            _s += s;
+#endif
             _s.append(reinterpret_cast<char*>(&x), sizeof(T));
             return *this;
         }
@@ -53,9 +65,9 @@ class bostream
         template <class Other>
         bostream& operator<< (const std::vector<Other>& vec)
         {
-            int size(vec.size());
+            size_t size(vec.size());
             (*this) << size;
-            for (int i(0); i < size; ++i)
+            for (size_t i(0); i < size; ++i)
                 (*this) << vec[i];
 
             return *this;
@@ -105,6 +117,16 @@ class bistream
         template <class T>
         bistream& operator >> (T& x)
         {
+#ifdef BSTREAMS_DEBUG
+            std::string s(typeid(T).name());
+            size_t sz;
+            _pos += _s.copy(reinterpret_cast<char*>(&sz), sizeof(size_t),_pos);
+            std::string name  = _s.substr(_pos,sz);
+            _pos += sz;
+            if (s != name)
+                std::cerr << s << " | " << name << std::endl;
+            assert( s == name);
+#endif
             assert(_s.size() >= _pos + sizeof(x));
             _pos += _s.copy(reinterpret_cast<char*>(&x), sizeof(x),_pos);
             return *this;
@@ -112,7 +134,7 @@ class bistream
 
         bistream& operator >> (std::string& str)
         {
-            int size;
+            size_t size;
             (*this) >> size;
             assert(_s.size() >= size+_pos);
             str  = _s.substr(_pos,size);
@@ -123,16 +145,21 @@ class bistream
         template <class Other>
         bistream& operator>> (std::vector<Other>& vec)
         {
-            int size;
+            size_t size;
             (*this) >> size;
             assert(_s.size() >= (size * sizeof(Other)) + _pos);
             vec.resize(size);
-            for (int i(0); i < size; i++)
+            for (size_t i(0); i < size; i++)
                 (*this) >> vec[i];
 
             return *this;
         }
 
+        void clear()
+        {
+            _s.clear();
+            _pos = 0;
+        }
 
     private:
         std::string _s;
