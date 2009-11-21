@@ -51,6 +51,14 @@ inline void delete_container(Container<T*, Alloc>& cont)
     cont.clear();
 }
 
+/* Sets  */
+template <class T, class Comp, class Alloc, template <class,class,class> class Container >
+inline void delete_container(Container<T*, Comp, Alloc>& cont)
+{
+    for_each(cont.begin(), cont.end(), deleter<T>());
+    cont.clear();
+}
+
 /* Associative containers */
 template <class Key, class T, class Comp, class Alloc, template <class,class,class,class> class Container >
 inline void delete_container(Container<Key, T*, Comp, Alloc>& cont)
@@ -79,6 +87,14 @@ struct vector_pair_deleter
 
 template <class T, class Alloc, template <class,class> class Container >
 inline void vector_delete_container(Container<T*, Alloc>& cont)
+{
+    for_each(cont.begin(), cont.end(), vector_deleter<T>());
+    cont.clear();
+}
+
+/* Sets */
+template <class T, class Comp, class Alloc, template <class,class,class> class Container >
+inline void vector_delete_container(Container<T*, Comp, Alloc>& cont)
 {
     for_each(cont.begin(), cont.end(), vector_deleter<T>());
     cont.clear();

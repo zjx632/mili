@@ -167,8 +167,8 @@ inline void insert_into(Container& cont, const ElementType& element)
 }
 
 /* This works for sets */
-template<class ElementType>
-inline void insert_into(std::set<ElementType>& cont, const ElementType& element)
+template<class ElementType, class Comp, class Alloc>
+inline void insert_into(std::set<ElementType, Comp, Alloc>& cont, const ElementType& element)
 {
     cont.insert(element);
 }
