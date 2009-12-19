@@ -37,10 +37,15 @@ struct name<false>                      \
 #define compile_assert(condition, name) \
     typedef name<condition >::CompileTimeAssertion name##__
 
+#define template_compile_assert(condition, name) \
+    typedef typename name<condition >::CompileTimeAssertion name##__
 
 declare_static_assert(GenericAssertion);
 
 #define generic_assert(condition)   \
+    compile_assert(condition, GenericAssertion)
+
+#define template_generic_assert(condition)   \
     compile_assert(condition, GenericAssertion)
 
 //NAMESPACE_END

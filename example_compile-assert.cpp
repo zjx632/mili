@@ -26,9 +26,28 @@ compile_assert: A minimal library supporting compile time (static) assertions,
 generic_assert(sizeof(int)==4);
 
 declare_static_assert(this_assertion_will_always_fail);
+declare_static_assert(pointers_not_allowed);
+
+template <class T> struct is_a_pointer
+{
+    enum { value = 0 };
+};
+
+template <class T> struct is_a_pointer<T*>
+{
+    enum { value = 1 };
+};
+
+template <class T> struct MyType
+{
+    template_compile_assert(!is_a_pointer<T>::value, pointers_not_allowed);
+};
 
 int main()
 {
-    compile_assert(sizeof(char) == 2, this_assertion_will_always_fail);
+    compile_assert(sizeof(char) == 2, this_assertion_will_always_fail); // fails
+
+    MyType<char*> mt1;  // fails
+    MyType<char>  mt2;  // OK
     return 0;
 }
