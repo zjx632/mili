@@ -87,6 +87,10 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "loop_unrolling.h"
 #endif
 
+#ifndef NO_COMPILE_ASSERT
+#   include "compile_assert.h"
+#endif
+
 #undef NAMESPACE_BEGIN
 #undef NAMESPACE_END
 

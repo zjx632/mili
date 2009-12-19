@@ -1,3 +1,7 @@
+Version 13
+==========
+    * Added compile_assert.
+
 Version 12.3
 ============
     * Enhanced support for sets in container_utils (insert_into) and delete_container
