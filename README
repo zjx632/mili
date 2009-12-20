@@ -22,7 +22,8 @@ Basic usage:
 	* arith_utils:		NO_ARITH_UTILS
 	* binary_streams:	NO_BINSTREAMS
 	* loop_unrolling:	NO_LOOP_UNROLLING
-    * compile_assert:   NO_COMPILE_ASSERT
+	* compile_assert:	NO_COMPILE_ASSERT
+	* template_info:	NO_TEMPLATE_INFO
 
 You might want to copy the include files in an include directory.
 If so, just run the 'install.sh' script:

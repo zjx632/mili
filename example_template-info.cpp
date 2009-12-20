@@ -1,6 +1,6 @@
 /*
-compile_assert: A minimal library supporting compile time (static) assertions,
-    a la C++0x.
+template_info: A minimal library to obtain type information of a template
+    parameter.
     Copyright (C) 2009  Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
@@ -21,23 +21,15 @@ compile_assert: A minimal library supporting compile time (static) assertions,
     This is an example file.
 */
 
+#include <iostream>
 #include "include/mili.h"
 
-generic_assert(sizeof(int)==4);
-
-declare_static_assert(this_assertion_will_always_fail);
-declare_static_assert(pointers_not_allowed);
-
-template <class T> struct MyType
-{
-    template_compile_assert(!template_is_pointer<T>::value, pointers_not_allowed);
-};
+struct S {};
 
 int main()
 {
-    compile_assert(sizeof(char) == 2, this_assertion_will_always_fail); // fails
-
-    MyType<char*> mt1;  // fails
-    MyType<char>  mt2;  // OK
+    std::cout << bool(template_info<S>::is_native) << std::endl;
+    std::cout << bool(template_info<char>::is_native) << std::endl;
+    std::cout << bool(template_info<int>::is_same_size<long int>::value) << std::endl;
     return 0;
 }

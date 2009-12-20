@@ -1,3 +1,7 @@
+Version 14
+==========
+    * Added template_info.
+
 Version 13.1
 ============
     * compile_assert enhanced to be used inside template classes.

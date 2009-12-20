@@ -91,6 +91,10 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "compile_assert.h"
 #endif
 
+#ifndef NO_TEMPLATE_INFO
+#   include "template_info.h"
+#endif
+
 #undef NAMESPACE_BEGIN
 #undef NAMESPACE_END
 
