@@ -206,6 +206,61 @@ static inline void copy_container(const C1& c1, C2& c2)
 
 // TODO: Add more containers.
 
+// Autonomous iterators ----------------------
+template <class T>
+class AutonomousIterator
+{
+    T _current;
+    const T _end;
+public:
+    typedef typename T::value_type value_type;
+    typedef typename T::reference reference;
+
+    AutonomousIterator(const T& begin, const T& end)
+        : _current(begin), _end(end)
+    {}
+
+    AutonomousIterator(const AutonomousIterator<T>& other)
+        : _current(other._current), _end(other._end)
+    {}
+
+    // Construct from a container
+    // TBD
+
+    AutonomousIterator<T>& operator ++()
+    {
+        ++_current;
+        return *this;
+    }
+
+    AutonomousIterator<T> operator ++(int)
+    {
+        const AutonomousIterator<T> ret(*this);
+        ++(*this);
+        return ret;
+    }
+
+    reference operator*()
+    {
+        return *_current;
+    }
+
+    T& operator->()
+    {
+        return _current;
+    }
+
+    const T& operator->() const
+    {
+        return _current;
+    }
+
+    bool end() const
+    {
+        return _current == _end;
+    }
+}; 
+
 NAMESPACE_END
 
 #endif

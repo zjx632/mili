@@ -28,6 +28,8 @@ find_utils: A minimal library with generic find functions with exceptions.
 
 using namespace std;
 
+static void test_autonomous_iterators();
+
 int main()
 {
     vector<int> v;
@@ -41,6 +43,8 @@ int main()
         cout << contains(v, 2) << endl;         /* will print 0 (false) */
         cout << contains(m, "nothing") << endl; /* will print 0 (false) */
 
+        test_autonomous_iterators();
+
         cout << find(v, 1) << endl;             /* will print 1 */
         cout << find(m, "hello") << endl;       /* will print "goodbye" */
         cout << find(m, "world") << endl;       /* will throw ElementNotFound */
@@ -51,5 +55,39 @@ int main()
     }
 
     return 0;
+}
+
+template <class T>
+static void insert_elements(T& container)
+{
+    insert_into(container, 100);
+    insert_into(container, 200);
+    insert_into(container, 300);
+}
+
+template <class T>
+static void show_elements(AutonomousIterator<T> it)
+{
+    while (!it.end())
+        cout << *(it++) << endl;
+}
+
+void test_autonomous_iterators()
+{
+    vector<int> v;
+    list<int> l;
+    set<int> s;
+
+    insert_elements(v);
+    insert_elements(l);
+    insert_elements(s);
+
+    AutonomousIterator<vector<int>::const_iterator> vi(v.begin(), v.end());
+    AutonomousIterator<list<int>::const_iterator> li(l.begin(), l.end());
+    AutonomousIterator<set<int>::const_iterator> si(s.begin(), s.end());
+
+    show_elements(vi);
+    show_elements(li);
+    show_elements(si);
 }
 
