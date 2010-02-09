@@ -95,6 +95,10 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "template_info.h"
 #endif
 
+#ifndef NO_COROUTINES
+#   include "coroutines.h"
+#endif
+
 #undef NAMESPACE_BEGIN
 #undef NAMESPACE_END
 
