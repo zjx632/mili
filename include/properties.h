@@ -38,9 +38,10 @@ private:
 template <class T, class Type, void (T::*Setter)(Type)>
 struct PropertyW
 {
-    void operator = (Type t)
+    PropertyW<T, Type, Setter> operator = (Type t)
     {
         (This()->*Setter)(t);
+        return *this;
     }
 
 private:    
