@@ -41,18 +41,22 @@ public:
     {                           \
         yield_point = __LINE__; \
         return (value);         \
+        case __LINE__:;         \
     }                           \
-    while(0);                   \
-    case __LINE__:
+    while(0)
 
-#define END_COROUTINE(ret)  \
-    }                       \
+// exit_coroutine breaks the structure and is discouraged.
+#define exit_coroutine(ret) \
     do                      \
     {                       \
         yield_point = 0;    \
         return (ret);       \
     }                       \
     while(0)
+
+#define END_COROUTINE(ret)  \
+    }                       \
+    exit_coroutine(ret)
 
 NAMESPACE_END
 
