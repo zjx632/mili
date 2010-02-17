@@ -240,6 +240,24 @@ public:
         return ret;
     }
 
+    AutonomousIterator<T>& operator --()
+    {
+        --_current;
+        return *this;
+    }
+
+    AutonomousIterator<T> operator --(int)
+    {
+        const AutonomousIterator<T> ret(*this);
+        --(*this);
+        return ret;
+    }
+
+    bool operator == (const AutonomousIterator<T>& other) const
+    {
+        return _current == other._current;
+    }
+
     reference operator*()
     {
         return *_current;
