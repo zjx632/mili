@@ -99,6 +99,10 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "coroutines.h"
 #endif
 
+#ifndef NO_FAST_LIST
+#   include "fast_list.h"
+#endif
+
 #undef NAMESPACE_BEGIN
 #undef NAMESPACE_END
 

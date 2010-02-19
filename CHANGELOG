@@ -2,6 +2,7 @@ Version 15
 ============
     * Added AutonomousIterator to container_utils.
     * Added Coroutines library.
+    * Added FastList library.
 
 Version 14
 ==========
