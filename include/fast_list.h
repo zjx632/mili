@@ -37,8 +37,8 @@ class FastList
 
     struct PhysicalList
     {
-        Node* first;
-        Node* last;
+        Node*   first;
+        Node*   last;
 
         PhysicalList() : first(NULL), last(NULL) {}
 
@@ -46,6 +46,12 @@ class FastList
         {
             return first == NULL;
         }
+    };
+
+    struct SizedPhysicalList : PhysicalList
+    {
+        size_t  count;
+        SizedPhysicalList() : PhysicalList(), count(0) {}
     };
 
     typedef char Placeholder[sizeof(T)];
@@ -159,7 +165,7 @@ class FastList
     };
 
     PhysicalList        empty_nodes;
-    PhysicalList        used_nodes;
+    SizedPhysicalList   used_nodes;
     std::list<Chunk>    chunks;
 
     Node* allocate_node()
@@ -186,6 +192,8 @@ class FastList
 
         ret->make_last();
         ret->attach_to_list(used_nodes);
+
+        ++used_nodes.count;
 
         return ret;
     }
@@ -302,14 +310,14 @@ public:
 
     class RemovableElementHandler : public ElementHandler
     {
-        PhysicalList* empty_nodes_list;
-        PhysicalList* used_nodes_list;
+        PhysicalList*       empty_nodes_list;
+        SizedPhysicalList*  used_nodes_list;
     public:
         RemovableElementHandler()
             : ElementHandler(), empty_nodes_list(NULL), used_nodes_list(NULL)
         {}
 
-        RemovableElementHandler(Node* node, PhysicalList* empty_nodes_list, PhysicalList* used_nodes_list)
+        RemovableElementHandler(Node* node, PhysicalList* empty_nodes_list, SizedPhysicalList* used_nodes_list)
             : ElementHandler(node), empty_nodes_list(empty_nodes_list), used_nodes_list(used_nodes_list)
         {}
 
@@ -334,6 +342,7 @@ public:
             this->node->attach_to_list(*empty_nodes_list);
             this->node->destroy();
             this->node = new_node;
+            --used_nodes_list->count;
             // should update Chunk
             return this->is_valid();
         }
@@ -396,6 +405,11 @@ public:
             while(h.destroy())
                 ;
         }
+    }
+
+    size_t size() const
+    {
+        return used_nodes.count;
     }
 
     ~FastList()

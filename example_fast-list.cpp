@@ -29,6 +29,7 @@ static void print_list(const FastList<int>& list)
 {
     FastList<int>::ConstElementHandler h(list.first());
 
+    cout << list.size() << ":" << endl;
     while(h.is_valid())
     {
         cout << *h << endl;
