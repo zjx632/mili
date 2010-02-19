@@ -26,7 +26,11 @@ fast_list: A minimal library that implements very high performant fast lists.
 
 NAMESPACE_BEGIN
 
-template <class T, size_t CHUNK_SIZE = 10 /*, bool auto_delete_chunks = false NOT YET IMPLEMENTED*/ >
+struct NeverShrinkPolicy{};
+struct ShrinkOnRequestPolicy{};
+struct ShrinkOnDestroyPolicy{};
+
+template <class T, size_t CHUNK_SIZE = 10, class ShrinkPolicy = NeverShrinkPolicy >
 class FastList
 {
     struct Node;
@@ -281,7 +285,6 @@ public:
 
         ElementHandler& operator = (const ElementHandler& other)
         {
-            //node = other.node;
             BasicHandler<Node*>::operator=(other);
             return *this;
         }
