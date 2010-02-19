@@ -25,9 +25,9 @@ example_fast-list: An example that uses MiLi's fast lists.
 
 using namespace std;
 
-static void print_list(FastList<int>& list)
+static void print_list(const FastList<int>& list)
 {
-    FastList<int>::ElementHandler h(list.first());
+    FastList<int>::ConstElementHandler h(list.first());
 
     while(h.is_valid())
     {
@@ -53,6 +53,9 @@ int main()
 
     print_list(list);
 
+    two = list.new_node(2);
+    print_list(list);
+
     for(int i=10; i<20; ++i)
         list.new_node(i);
 
@@ -60,7 +63,7 @@ int main()
 
     list.clear();
 
-    for(int i=10; i<20; ++i)
+    for(int i=10; i<30; ++i)
         list.new_node(i);
 
     print_list(list);

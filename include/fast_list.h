@@ -59,7 +59,7 @@ class FastList
 
         const T& get_data() const
         {
-            return *reinterpret_cast<T*>(&placeholder[0]);
+            return *reinterpret_cast<const T*>(&placeholder[0]);
         }
 
         void destroy()
@@ -186,42 +186,33 @@ class FastList
         return ret;
     }
 public:
-    class ElementHandler
+    template <class NodePtr>
+    class BasicHandler
     {
     protected:
-        Node* node;
+        NodePtr node;
     public:
-        ElementHandler()
+        BasicHandler()
             : node(NULL)
         {}
 
-        ElementHandler(Node* node)
+        BasicHandler(NodePtr node)
             : node(node)
         {}
 
-        ElementHandler(const ElementHandler& other)
+        BasicHandler(const BasicHandler<NodePtr>& other)
             : node(other.node)
         {}
 
-        ElementHandler& operator = (const ElementHandler& other)
+        BasicHandler<NodePtr>& operator = (const BasicHandler& other)
         {
             node = other.node;
             return *this;
         }
 
-        T& operator*()
-        {
-            return node->get_data();
-        }
-
         const T& operator*() const
         {
             return node->get_data();
-        }
-
-        T& operator ->()
-        {
-            return operator*();
         }
 
         const T& operator ->() const
@@ -239,28 +230,28 @@ public:
             return node->is_first();
         }
 
-        ElementHandler& operator++()
+        BasicHandler<NodePtr>& operator++()
         {
             node = node->next;
             return *this;
         }
 
-        ElementHandler& operator--()
+        BasicHandler<NodePtr>& operator--()
         {
             node = node->previous;
             return *this;
         }
 
-        ElementHandler operator++(int)
+        BasicHandler<NodePtr> operator++(int)
         {
-            ElementHandler ret(*this);
+            BasicHandler<NodePtr> ret(*this);
             operator++();
             return ret;
         }
 
-        ElementHandler operator--(int)
+        BasicHandler<NodePtr> operator--(int)
         {
-            ElementHandler ret(*this);
+            BasicHandler<NodePtr> ret(*this);
             operator--();
             return ret;
         }
@@ -268,6 +259,41 @@ public:
         bool is_valid() const
         {
             return node != NULL;
+        }
+    };
+
+    typedef BasicHandler<const Node*> ConstElementHandler;
+
+    class ElementHandler : public BasicHandler<Node*>
+    {
+    public:
+        ElementHandler()
+            : BasicHandler<Node*>(NULL)
+        {}
+
+        ElementHandler(Node* node)
+            : BasicHandler<Node*>(node)
+        {}
+
+        ElementHandler(const ElementHandler& other)
+            : BasicHandler<Node*>(other)
+        {}
+
+        ElementHandler& operator = (const ElementHandler& other)
+        {
+            //node = other.node;
+            BasicHandler<Node*>::operator=(other);
+            return *this;
+        }
+
+        T& operator*()
+        {
+            return this->node->get_data();
+        }
+
+        T& operator ->()
+        {
+            return operator*();
         }
     };
 
@@ -344,9 +370,19 @@ public:
         return RemovableElementHandler(used_nodes.first, &empty_nodes, &used_nodes);
     }
 
+    ConstElementHandler first() const
+    {
+        return ConstElementHandler(used_nodes.first);
+    }
+
     RemovableElementHandler last()
     {
         return RemovableElementHandler(used_nodes.last, &empty_nodes, &used_nodes);
+    }
+
+    ConstElementHandler last() const
+    {
+        return ConstElementHandler(used_nodes.last);
     }
 
     void clear()
