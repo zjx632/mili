@@ -173,6 +173,23 @@ inline void insert_into(std::set<ElementType, Comp, Alloc>& cont, const ElementT
     cont.insert(element);
 }
 
+//------------ Remove Utilities
+
+/*This work for lists*/
+template <class ElementType, class Alloc, class IteratorType>
+inline void remove_from(std::list<ElementType, Alloc>& cont, IteratorType pos) throw(ElementNotFound)
+{
+    cont.remove(*pos);
+}
+
+/* This works for vectors and sets */
+template <class Container, class IteratorType>
+inline void remove_from(Container& cont, IteratorType pos) throw(ElementNotFound)
+{
+    cont.erase(pos);
+}
+
+
 // Generic container
 template <class T>
 struct ContainerAdapter

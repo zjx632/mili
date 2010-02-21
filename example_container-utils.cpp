@@ -63,6 +63,14 @@ static void insert_elements(T& container)
     insert_into(container, 100);
     insert_into(container, 200);
     insert_into(container, 300);
+    insert_into(container, 400);
+}
+
+template <class T>
+static void delete_elements(T& container)
+{
+    remove_from(container, container.begin());   /* amending iterators */
+    remove_from(container, container.begin());
 }
 
 template <class T>
@@ -81,6 +89,10 @@ void test_autonomous_iterators()
     insert_elements(v);
     insert_elements(l);
     insert_elements(s);
+
+    delete_elements(v);
+    delete_elements(l);
+    delete_elements(s);
 
     AutonomousIterator<vector<int>::const_iterator> vi(v.begin(), v.end());
     AutonomousIterator<list<int>::const_iterator> li(l.begin(), l.end());
