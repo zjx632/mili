@@ -26,11 +26,45 @@ fast_list: A minimal library that implements very high performant fast lists.
 
 NAMESPACE_BEGIN
 
+// Shrink Policies
 struct NeverShrinkPolicy{};
 struct ShrinkOnRequestPolicy{};
 struct ShrinkOnDestroyPolicy{};
 
-template <class T, size_t CHUNK_SIZE = 10, class ShrinkPolicy = NeverShrinkPolicy >
+// Type Hints
+struct RegularTypeHints
+{
+    enum { CallDestructor = false };
+};
+
+struct CustomTypeHints
+{
+    enum { CallDestructor = true };
+};
+
+template <bool IsBasicType> // case TRUE
+struct _HintsMapper
+{
+    typedef RegularTypeHints Hints;
+};
+
+template <>
+struct _HintsMapper<false>
+{
+    typedef CustomTypeHints Hints;
+};
+
+template <class T>
+struct DefaultHints
+{
+    typedef typename _HintsMapper<
+                        template_info<T>::is_native  ||
+                        template_info<T>::is_pointer ||
+                        template_info<T>::is_reference
+                    >::Hints Hints;
+};
+
+template <class T, class TypeHints = typename DefaultHints<T>::Hints, size_t CHUNK_SIZE = 10, class ShrinkPolicy = NeverShrinkPolicy >
 class FastList
 {
     struct Node;
@@ -74,7 +108,8 @@ class FastList
 
         void destroy()
         {
-            get_data().~T();
+            if (TypeHints::CallDestructor)
+                get_data().~T();
         }
 
         void make_last()
@@ -138,6 +173,23 @@ class FastList
             }
 
             make_last();
+        }
+
+        void migrate_sublist(PhysicalList& old_list, PhysicalList& new_list)
+        {
+            Node* const last = old_list.last;
+
+            //go out from old_list:
+            old_list.last = previous;
+            if (is_first())
+                old_list.first = NULL;
+
+            // attach to new_list:
+            if (new_list.empty())
+                new_list.first = this;
+
+            link_previous(new_list.last);
+            new_list.last = last;
         }
     };
 
@@ -401,9 +453,19 @@ public:
     {
         if (!empty())
         {
-            RemovableElementHandler h(first());
-            while(h.destroy())
-                ;
+            Node* n = used_nodes.first;
+
+            n->migrate_sublist(used_nodes, empty_nodes);
+
+            if (TypeHints::CallDestructor)
+                do
+                {
+                    n->destroy();
+                    n = n->next;
+                }
+                while (n != NULL);
+
+            used_nodes.count = 0;
         }
     }
 
