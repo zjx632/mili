@@ -27,19 +27,95 @@ fast_list: A minimal library that implements very high performant fast lists.
 NAMESPACE_BEGIN
 
 // Shrink Policies
-struct NeverShrinkPolicy{};
-struct ShrinkOnRequestPolicy{};
-struct ShrinkOnDestroyPolicy{};
+struct NeverShrinkPolicy
+{
+    struct Node;
+
+    struct Chunk
+    {
+        Chunk(){}
+        Chunk(const Chunk& other){}
+
+        bool empty() const
+        {
+            return false;
+        }
+
+        enum { NEED_INIT_NODES = false };
+
+        void init_node(Node& n){}
+    };
+
+    struct Node
+    {
+        void create(){}
+        void destroy(){}
+    };
+
+    enum { SHRINK_ENABLED = false };
+
+    enum { SHRINK_ON_CLEAR = false };
+};
+
+struct ShrinkOnRequestPolicy
+{
+    struct Node;
+
+    struct Chunk
+    {
+        size_t used_count;
+
+        Chunk(){}
+        Chunk(const Chunk& other) : used_count(0){}
+
+        bool empty() const
+        {
+            return used_count == 0;
+        }
+
+        enum { NEED_INIT_NODES = true };
+
+        inline void init_node(Node& n);
+    };
+
+    struct Node
+    {
+        Chunk* chunk;
+        void create()
+        {
+            ++chunk->used_count;
+        }
+
+        void destroy()
+        {
+            --chunk->used_count;
+        }
+    };
+
+    enum { SHRINK_ENABLED = true };
+
+    enum { SHRINK_ON_CLEAR = false };
+};
+
+inline void ShrinkOnRequestPolicy::Chunk::init_node(ShrinkOnRequestPolicy::Node& node)
+{
+    node.chunk = this;
+}
+
+struct ShrinkOnClearPolicy : ShrinkOnRequestPolicy
+{
+    enum { SHRINK_ON_CLEAR = true };
+};
 
 // Type Hints
 struct RegularTypeHints
 {
-    enum { CallDestructor = false };
+    enum { CALL_DESTRUCTOR = false };
 };
 
 struct CustomTypeHints
 {
-    enum { CallDestructor = true };
+    enum { CALL_DESTRUCTOR = true };
 };
 
 template <bool IsBasicType> // case TRUE
@@ -64,7 +140,7 @@ struct DefaultHints
                     >::Hints Hints;
 };
 
-template <class T, class TypeHints = typename DefaultHints<T>::Hints, size_t CHUNK_SIZE = 10, class ShrinkPolicy = NeverShrinkPolicy >
+template <class T, class ShrinkPolicy = NeverShrinkPolicy, class TypeHints = typename DefaultHints<T>::Hints, size_t CHUNK_SIZE = 10>
 class FastList
 {
     struct Node;
@@ -90,7 +166,7 @@ class FastList
 
     typedef char Placeholder[sizeof(T)];
 
-    struct Node
+    struct Node : ShrinkPolicy::Node
     {
         Node*       previous;
         Node*       next;
@@ -108,8 +184,10 @@ class FastList
 
         void destroy()
         {
-            if (TypeHints::CallDestructor)
+            if (TypeHints::CALL_DESTRUCTOR)
                 get_data().~T();
+
+            ShrinkPolicy::Node::destroy();
         }
 
         void make_last()
@@ -193,9 +271,8 @@ class FastList
         }
     };
 
-    struct Chunk
+    struct Chunk : ShrinkPolicy::Chunk
     {
-        size_t  used_nodes;
         Node    nodes[CHUNK_SIZE];
 
         // do nothing here
@@ -203,8 +280,14 @@ class FastList
         {}
 
         // node 0 is for immediate use. Nodes 1..CHUNK_SIZE-1 are free.
-        Chunk(const Chunk& other) : used_nodes(1)
+        Chunk(const Chunk& other) : ShrinkPolicy::Chunk(other)
         {
+            if (ShrinkPolicy::Chunk::NEED_INIT_NODES)
+            {
+                for (size_t i=0; i < CHUNK_SIZE; ++i)
+                    init_node(nodes[i]);
+            }
+
             if (CHUNK_SIZE > 1)
             {
                 for(size_t i=1; i < (CHUNK_SIZE - 1); ++i)
@@ -239,9 +322,9 @@ class FastList
         {
             ret = empty_nodes.last;
             ret->detach_from_list(empty_nodes);
-            // should update Chunk
         }
 
+        ret->create();
         ret->make_last();
         ret->attach_to_list(used_nodes);
 
@@ -395,7 +478,6 @@ public:
             this->node->destroy();
             this->node = new_node;
             --used_nodes_list->count;
-            // should update Chunk
             return this->is_valid();
         }
     };
@@ -422,7 +504,25 @@ public:
         return RemovableElementHandler(node, &empty_nodes, &used_nodes);
     }
 
-    void shrink(){} // not yet implemented
+    void shrink()
+    {
+        if (ShrinkPolicy::SHRINK_ENABLED)
+        {
+            for(typename std::list<Chunk>::iterator it = chunks.begin();
+                it != chunks.end();
+                ++it)
+            {
+                if (it->empty())
+                {
+                    // assume all the nodes belong to the empty list:
+                    for (size_t i = 0; i < CHUNK_SIZE; ++i)
+                        it->nodes[i].detach_from_list(empty_nodes);
+
+                    it = chunks.erase(it);
+                }
+            }
+        }
+    }
 
     bool empty() const
     {
@@ -455,9 +555,10 @@ public:
         {
             Node* n = used_nodes.first;
 
-            n->migrate_sublist(used_nodes, empty_nodes);
+            if (!ShrinkPolicy::SHRINK_ON_CLEAR)
+                n->migrate_sublist(used_nodes, empty_nodes);
 
-            if (TypeHints::CallDestructor)
+            if (TypeHints::CALL_DESTRUCTOR)
                 do
                 {
                     n->destroy();
@@ -466,6 +567,12 @@ public:
                 while (n != NULL);
 
             used_nodes.count = 0;
+        }
+
+        if (ShrinkPolicy::SHRINK_ON_CLEAR)
+        {
+            chunks.clear();
+            empty_nodes.first = empty_nodes.last = NULL;
         }
     }
 

@@ -25,9 +25,11 @@ example_fast-list: An example that uses MiLi's fast lists.
 
 using namespace std;
 
-static void print_list(const FastList<int>& list)
+typedef FastList<int, ShrinkOnClearPolicy> IntList;
+
+static void print_list(const IntList& list)
 {
-    FastList<int>::ConstElementHandler h(list.first());
+    IntList::ConstElementHandler h(list.first());
 
     cout << list.size() << ":" << endl;
     while(h.is_valid())
@@ -41,8 +43,8 @@ static void print_list(const FastList<int>& list)
 
 int main()
 {
-    FastList<int> list;
-    FastList<int>::RemovableElementHandler
+    IntList list;
+    IntList::RemovableElementHandler
         one   = list.new_node(1),
         two   = list.new_node(2),
         three = list.new_node(3);
@@ -50,7 +52,7 @@ int main()
     print_list(list);
 
     // remove 'two'
-    two.destroy();
+    two.destroy(); list.shrink();
 
     print_list(list);
 
