@@ -194,7 +194,7 @@ inline void remove_from(Container& cont, IteratorType pos) throw(ElementNotFound
 template <class T>
 struct ContainerAdapter
 {
-    virtual T& insert(const T& element) = 0;
+    virtual void insert(const T& element) = 0;
     virtual ~ContainerAdapter(){}
 };
 
@@ -202,10 +202,9 @@ template <class T, class Impl>
 class ContainerAdapterImpl : public ContainerAdapter<T>
 {
     Impl& container;
-    virtual T& insert(const T& element)
+    virtual void insert(const T& element)
     {
         insert_into(container, element);
-        return container.back();
     }
 
 public:
