@@ -44,6 +44,7 @@ struct NeverShrinkPolicy
         enum { NEED_INIT_NODES = false };
 
         void init_node(Node& n){}
+        void mark_unused(){}
     };
 
     struct Node
@@ -52,9 +53,14 @@ struct NeverShrinkPolicy
         void destroy(){}
     };
 
+    void init_chunk(Chunk& chunk) {}
+    enum { NEED_INIT_CHUNKS = false };
     enum { SHRINK_ENABLED = false };
-
+    enum { NEED_NOTIFY_EMPTY_CHUNKS = false };
     enum { SHRINK_ON_CLEAR = false };
+
+    void shrink()           {}
+    bool shrinkable() const { return false; }
 };
 
 struct ShrinkOnRequestPolicy
@@ -76,6 +82,11 @@ struct ShrinkOnRequestPolicy
         enum { NEED_INIT_NODES = true };
 
         inline void init_node(Node& n);
+
+        void mark_unused()
+        {
+            used_count = 0;
+        }
     };
 
     struct Node
@@ -92,9 +103,15 @@ struct ShrinkOnRequestPolicy
         }
     };
 
-    enum { SHRINK_ENABLED = true };
+    void init_chunk(Chunk& chunk)    {}
 
+    enum { NEED_INIT_CHUNKS = false };
+    enum { SHRINK_ENABLED = true };
+    enum { NEED_NOTIFY_EMPTY_CHUNKS = true };
     enum { SHRINK_ON_CLEAR = false };
+
+    void shrink()           {}
+    bool shrinkable() const { return true; }
 };
 
 inline void ShrinkOnRequestPolicy::Chunk::init_node(ShrinkOnRequestPolicy::Node& node)
@@ -104,8 +121,88 @@ inline void ShrinkOnRequestPolicy::Chunk::init_node(ShrinkOnRequestPolicy::Node&
 
 struct ShrinkOnClearPolicy : ShrinkOnRequestPolicy
 {
+    enum { NEED_NOTIFY_EMPTY_CHUNKS = false };
     enum { SHRINK_ON_CLEAR = true };
 };
+
+// This policy minimizes uneeded shrinks by having a flag that is turned on
+// when there are empty chunks.
+struct OptimizedShrinkOnRequestPolicy : ShrinkOnRequestPolicy
+{
+    bool empty_chunks;
+    OptimizedShrinkOnRequestPolicy() : empty_chunks(false) {}
+
+    struct Node;
+
+    struct Chunk
+    {
+        size_t used_count;
+        OptimizedShrinkOnRequestPolicy* policy;
+
+        Chunk(){}
+        Chunk(const Chunk& other) : used_count(0){}
+
+        bool empty() const
+        {
+            return used_count == 0;
+        }
+
+        enum { NEED_INIT_NODES = true };
+
+        inline void init_node(Node& n);
+
+        void inc_nodes()
+        {
+            ++used_count;
+        }
+
+        void dec_nodes()
+        {
+            --used_count;
+            if (used_count == 0)
+                policy->empty_chunks = true;
+        }
+
+        void mark_unused()
+        {
+            used_count = 0;
+            policy->empty_chunks = true;
+        }
+    };
+
+    struct Node
+    {
+        Chunk* chunk;
+        void create()
+        {
+            chunk->inc_nodes();
+        }
+
+        void destroy()
+        {
+            chunk->dec_nodes();
+        }
+    };
+
+    void init_chunk(Chunk& chunk)
+    {
+        chunk.policy = this;
+    }
+
+    enum { NEED_INIT_CHUNKS = true };
+    enum { NEED_NOTIFY_EMPTY_CHUNKS = true };
+
+    void shrink()
+    {
+        empty_chunks = false;
+    }
+
+    bool shrinkable() const { return empty_chunks; }
+};
+inline void OptimizedShrinkOnRequestPolicy::Chunk::init_node(OptimizedShrinkOnRequestPolicy::Node& node)
+{
+    node.chunk = this;
+}
 
 // Type Hints
 struct RegularTypeHints
@@ -140,7 +237,56 @@ struct DefaultHints
                     >::Hints Hints;
 };
 
-template <class T, class ShrinkPolicy = NeverShrinkPolicy, class TypeHints = typename DefaultHints<T>::Hints, size_t CHUNK_SIZE = 10>
+// MoveOnDestroy policies
+struct InvalidateAfterDestroy
+{
+    template <class T>
+    static T move(T prev, T next)
+    {
+        return NULL;
+    }
+};
+
+struct MoveNextAfterDestroy
+{
+    template <class T>
+    static T move(T prev, T next)
+    {
+        return next;
+    }
+};
+
+struct MovePrevAfterDestroy
+{
+    template <class T>
+    static T move(T prev, T next)
+    {
+        return prev;
+    }
+};
+
+struct MoveNextOrPrevAfterDestroy
+{
+    template <class T>
+    static T move(T prev, T next)
+    {
+        return next != NULL ? next : prev;
+    }
+};
+
+struct MovePrevOrNextAfterDestroy
+{
+    template <class T>
+    static T move(T prev, T next)
+    {
+        return prev != NULL ? prev : next;
+    }
+};
+
+template <class T,
+          class ShrinkPolicy = NeverShrinkPolicy,
+          class TypeHints = typename DefaultHints<T>::Hints,
+          size_t CHUNK_SIZE = 10>
 class FastList
 {
     struct Node;
@@ -302,6 +448,7 @@ class FastList
     PhysicalList        empty_nodes;
     SizedPhysicalList   used_nodes;
     std::list<Chunk>    chunks;
+    ShrinkPolicy        shrink_policy;
 
     Node* allocate_node()
     {
@@ -310,7 +457,10 @@ class FastList
         {
             // allocate new chunk:
             chunks.push_back(Chunk());
-            Chunk& new_chunk = chunks.back(); 
+            Chunk& new_chunk = chunks.back();
+            if (ShrinkPolicy::NEED_INIT_CHUNKS)
+                shrink_policy.init_chunk(new_chunk);
+
             ret = &new_chunk.nodes[0];
             if (CHUNK_SIZE > 1)
             {
@@ -443,70 +593,93 @@ public:
         }
     };
 
-    class RemovableElementHandler : public ElementHandler
+    class _RemovableElementHandler : public ElementHandler
     {
+    protected:
         PhysicalList*       empty_nodes_list;
         SizedPhysicalList*  used_nodes_list;
     public:
-        RemovableElementHandler()
+        _RemovableElementHandler()
             : ElementHandler(), empty_nodes_list(NULL), used_nodes_list(NULL)
         {}
 
-        RemovableElementHandler(Node* node, PhysicalList* empty_nodes_list, SizedPhysicalList* used_nodes_list)
+        _RemovableElementHandler(Node* node, PhysicalList* empty_nodes_list, SizedPhysicalList* used_nodes_list)
             : ElementHandler(node), empty_nodes_list(empty_nodes_list), used_nodes_list(used_nodes_list)
         {}
 
-        RemovableElementHandler(const RemovableElementHandler& other)
+        _RemovableElementHandler(const _RemovableElementHandler& other)
             : ElementHandler(other),
               empty_nodes_list(other.empty_nodes_list),
               used_nodes_list(other.used_nodes_list)
         {}
 
-        RemovableElementHandler& operator = (const RemovableElementHandler& other)
+        _RemovableElementHandler& operator = (const _RemovableElementHandler& other)
         {
             ElementHandler::operator=(other);
             empty_nodes_list = other.empty_nodes_list;
             used_nodes_list = other.used_nodes_list;
             return *this;
         }
-
-        bool destroy()
-        {
-            Node* const new_node = this->node->next;
-            this->node->detach_from_list(*used_nodes_list);
-            this->node->attach_to_list(*empty_nodes_list);
-            this->node->destroy();
-            this->node = new_node;
-            --used_nodes_list->count;
-            return this->is_valid();
-        }
     };
 
+    template <class MoveOnDestroyPolicy>
+    class PRemovableElementHandler : public _RemovableElementHandler
+    {
+    public:
+        bool destroy()
+        {
+            Node* const new_node = MoveOnDestroyPolicy::move(this->node->previous, this->node->next);
+            this->node->detach_from_list(*this->used_nodes_list);
+            this->node->attach_to_list(*this->empty_nodes_list);
+            this->node->destroy();
+            this->node = new_node;
+            --this->used_nodes_list->count;
+            return this->is_valid();
+        }
+
+        PRemovableElementHandler(){}
+
+        PRemovableElementHandler(const _RemovableElementHandler& other)
+            : _RemovableElementHandler(other)
+        {}
+
+        //PRemovableElementHandler(const PRemovableElementHandler<Mo& other)
+        //    : _RemovableElementHandler(other)
+        //{}
+
+        PRemovableElementHandler<MoveOnDestroyPolicy>& operator = (const _RemovableElementHandler& other)
+        {
+            _RemovableElementHandler::operator=(other);
+            return *this;
+        }
+    };
+    typedef PRemovableElementHandler<InvalidateAfterDestroy> RemovableElementHandler;
+
     template <class Constructor>
-    RemovableElementHandler new_node_generic(Constructor& c)
+    _RemovableElementHandler new_node_generic(Constructor& c)
     {
         Node* node = allocate_node();
         c(node->get_data());
-        return RemovableElementHandler(node, &empty_nodes, &used_nodes);
+        return _RemovableElementHandler(node, &empty_nodes, &used_nodes);
     }
 
-    RemovableElementHandler new_node() // default constructor
+    _RemovableElementHandler new_node() // default constructor
     {
         Node* node = allocate_node();
         new(&node->get_data()) T();
-        return RemovableElementHandler(node, &empty_nodes, &used_nodes);
+        return _RemovableElementHandler(node, &empty_nodes, &used_nodes);
     }
 
-    RemovableElementHandler new_node(const T& other) // copy constructor
+    _RemovableElementHandler new_node(const T& other) // copy constructor
     {
         Node* node = allocate_node();
         new(&node->get_data()) T(other);
-        return RemovableElementHandler(node, &empty_nodes, &used_nodes);
+        return _RemovableElementHandler(node, &empty_nodes, &used_nodes);
     }
 
     void shrink()
     {
-        if (ShrinkPolicy::SHRINK_ENABLED)
+        if (ShrinkPolicy::SHRINK_ENABLED && shrink_policy.shrinkable())
         {
             for(typename std::list<Chunk>::iterator it = chunks.begin();
                 it != chunks.end();
@@ -521,6 +694,7 @@ public:
                     it = chunks.erase(it);
                 }
             }
+            shrink_policy.shrink();
         }
     }
 
@@ -529,9 +703,9 @@ public:
         return used_nodes.empty();
     }
 
-    RemovableElementHandler first()
+    _RemovableElementHandler first()
     {
-        return RemovableElementHandler(used_nodes.first, &empty_nodes, &used_nodes);
+        return _RemovableElementHandler(used_nodes.first, &empty_nodes, &used_nodes);
     }
 
     ConstElementHandler first() const
@@ -539,9 +713,9 @@ public:
         return ConstElementHandler(used_nodes.first);
     }
 
-    RemovableElementHandler last()
+    _RemovableElementHandler last()
     {
-        return RemovableElementHandler(used_nodes.last, &empty_nodes, &used_nodes);
+        return _RemovableElementHandler(used_nodes.last, &empty_nodes, &used_nodes);
     }
 
     ConstElementHandler last() const
@@ -556,7 +730,17 @@ public:
             Node* n = used_nodes.first;
 
             if (!ShrinkPolicy::SHRINK_ON_CLEAR)
+            {
                 n->migrate_sublist(used_nodes, empty_nodes);
+                if (ShrinkPolicy::NEED_NOTIFY_EMPTY_CHUNKS &&
+                    !TypeHints::CALL_DESTRUCTOR)
+                {
+                    for (typename std::list<Chunk>::iterator it = chunks.begin();
+                         it != chunks.end();
+                         ++it)
+                        it->mark_unused();
+                }
+            }
 
             if (TypeHints::CALL_DESTRUCTOR)
                 do
@@ -573,6 +757,7 @@ public:
         {
             chunks.clear();
             empty_nodes.first = empty_nodes.last = NULL;
+            shrink_policy.shrink();
         }
     }
 

@@ -25,7 +25,7 @@ example_fast-list: An example that uses MiLi's fast lists.
 
 using namespace std;
 
-typedef FastList<int, ShrinkOnClearPolicy> IntList;
+typedef FastList<int, OptimizedShrinkOnRequestPolicy> IntList;
 
 static void print_list(const IntList& list)
 {
@@ -65,6 +65,7 @@ int main()
     print_list(list);
 
     list.clear();
+    list.shrink();
 
     for(int i=10; i<30; ++i)
         list.new_node(i);
