@@ -177,58 +177,44 @@ inline void insert_into(std::set<ElementType, Comp, Alloc>& cont, const ElementT
 //------------ Remove Utilities
 
 /*--removing by iterator--*/
-/*This works for lists*/
-template <class ElementType, class Alloc, class IteratorType>
-inline void remove_from(std::list<ElementType, Alloc>& cont, IteratorType pos) throw(ElementNotFound)
-{
-    cont.remove(*pos);
-}
-
-/* This works for vectors */
+/* This works for vectors, lists and sets */
 template <class Container>
-inline void remove_from(Container& cont, typename Container::iterator pos) throw(ElementNotFound)
+inline bool remove_first_from(Container& cont, typename Container::iterator pos) throw(ElementNotFound)
 {
     cont.erase(pos);
-}
-
-template <class Container>
-inline void remove_from(Container& cont, typename Container::const_iterator pos) throw(ElementNotFound)
-{
-    cont.erase(pos);
-}
-
-
-/* This work for sets */
-template<class ElementType, class Comp, class Alloc, class IteratorType>
-inline void remove_from(std::set<ElementType, Comp, Alloc>& cont, IteratorType pos) throw(ElementNotFound)
-{
-    cont.erase(pos);
+    return true;
 }
 
 /*--removing by element--*/
-/*This works for lists*/
-template <class ElementType, class Alloc>
-inline void remove_from(std::list<ElementType, Alloc>& cont, const ElementType& element) throw(ElementNotFound)
-{
-    cont.remove(element);
-}
-
-/* This works for vectors and sets */
+/* This works for vectors, lists and sets */
 template <class Container>
-inline void remove_from(Container& cont, const typename Container::value_type& element) throw(ElementNotFound)
+inline bool remove_first_from(Container& cont, const typename Container::value_type& element)
 {
     const typename Container::iterator it = find(cont.begin(), cont.end(), element);
     if (it == cont.end())
-        throw ElementNotFound();
+    {
+        return false;
+    }
     else
-    cont.erase(it);
+    {
+        cont.erase(it);
+        return true;
+    }
 }
 
 /* This works for maps */
 template <class Key, class T, class Comp, class Alloc, class Key2>
-inline void remove_from(std::map<Key, T, Comp, Alloc>& m, const Key2& key) throw(ElementNotFound)
+inline bool remove_first_from(std::map<Key, T, Comp, Alloc>& m, const Key2& key) throw(ElementNotFound)
 {
-    m.erase(key);
+    if (m.count(key) > 0)
+    {
+        m.erase(key);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 // Generic container

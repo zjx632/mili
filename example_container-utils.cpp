@@ -45,9 +45,7 @@ int main()
         cout << contains(v, 2) << endl;         /* will print 0 (false) */
         cout << contains(m, "nothing") << endl; /* will print 0 (false) */
 
-        cout << contains(m, "sun") << endl;     /* will print 1 (true)  */
-        remove_from(m,"sun");
-        cout << contains(m, "sun") << endl;     /* will print 0 (false) */
+        cout << remove_first_from(m,"sun") << endl; /* will print 1 (true) */
 
         test_autonomous_iterators();
 
@@ -75,8 +73,8 @@ static void insert_elements(T& container)
 template <class T>
 static void delete_elements(T& container)
 {
-    remove_from(container, container.begin());   /* amending iterators */
-    remove_from(container, 400);
+    remove_first_from(container, container.begin());   /* amending iterators */
+    remove_first_from(container, 400); /* will print 1 (true) */
 }
 
 template <class T>
