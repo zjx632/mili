@@ -6,6 +6,7 @@ Version 15
     * container_utils: ContainerAdapter changed to support set
       in a more generic way (returning the element just inserted
       goes beyond the responsibility of the adapter).
+    * Added remove_from to container_utils.
 
 Version 14
 ==========

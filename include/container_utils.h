@@ -1,6 +1,7 @@
 /*
 container_utils: A minimal library with generic STL container utilities..
     Copyright (C) 2009  Daniel Gutson, FuDePAN
+                        Ezequiel S. Velez
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -175,20 +176,60 @@ inline void insert_into(std::set<ElementType, Comp, Alloc>& cont, const ElementT
 
 //------------ Remove Utilities
 
-/*This work for lists*/
+/*--removing by iterator--*/
+/*This works for lists*/
 template <class ElementType, class Alloc, class IteratorType>
 inline void remove_from(std::list<ElementType, Alloc>& cont, IteratorType pos) throw(ElementNotFound)
 {
     cont.remove(*pos);
 }
 
-/* This works for vectors and sets */
-template <class Container, class IteratorType>
-inline void remove_from(Container& cont, IteratorType pos) throw(ElementNotFound)
+/* This works for vectors */
+template <class Container>
+inline void remove_from(Container& cont, typename Container::iterator pos) throw(ElementNotFound)
 {
     cont.erase(pos);
 }
 
+template <class Container>
+inline void remove_from(Container& cont, typename Container::const_iterator pos) throw(ElementNotFound)
+{
+    cont.erase(pos);
+}
+
+
+/* This work for sets */
+template<class ElementType, class Comp, class Alloc, class IteratorType>
+inline void remove_from(std::set<ElementType, Comp, Alloc>& cont, IteratorType pos) throw(ElementNotFound)
+{
+    cont.erase(pos);
+}
+
+/*--removing by element--*/
+/*This works for lists*/
+template <class ElementType, class Alloc>
+inline void remove_from(std::list<ElementType, Alloc>& cont, const ElementType& element) throw(ElementNotFound)
+{
+    cont.remove(element);
+}
+
+/* This works for vectors and sets */
+template <class Container>
+inline void remove_from(Container& cont, const typename Container::value_type& element) throw(ElementNotFound)
+{
+    const typename Container::iterator it = find(cont.begin(), cont.end(), element);
+    if (it == cont.end())
+        throw ElementNotFound();
+    else
+    cont.erase(it);
+}
+
+/* This works for maps */
+template <class Key, class T, class Comp, class Alloc, class Key2>
+inline void remove_from(std::map<Key, T, Comp, Alloc>& m, const Key2& key) throw(ElementNotFound)
+{
+    m.erase(key);
+}
 
 // Generic container
 template <class T>

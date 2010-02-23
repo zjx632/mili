@@ -1,6 +1,7 @@
 /*
 find_utils: A minimal library with generic find functions with exceptions.
     Copyright (C) 2009  Daniel Gutson, FuDePAN
+                        Ezequiel S. Velez
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -37,11 +38,16 @@ int main()
 
     map<string, string> m;
     m["hello"] = "goodbye";
+    m["sun"] = "moon";
 
     try
     {
         cout << contains(v, 2) << endl;         /* will print 0 (false) */
         cout << contains(m, "nothing") << endl; /* will print 0 (false) */
+
+        cout << contains(m, "sun") << endl;     /* will print 1 (true)  */
+        remove_from(m,"sun");
+        cout << contains(m, "sun") << endl;     /* will print 0 (false) */
 
         test_autonomous_iterators();
 
@@ -70,7 +76,7 @@ template <class T>
 static void delete_elements(T& container)
 {
     remove_from(container, container.begin());   /* amending iterators */
-    remove_from(container, container.begin());
+    remove_from(container, 400);
 }
 
 template <class T>
