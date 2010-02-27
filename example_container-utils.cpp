@@ -24,6 +24,7 @@ find_utils: A minimal library with generic find functions with exceptions.
 #include <string>
 #include <iostream>
 #include <vector>
+#include <string>
 
 #include "include/mili.h"
 
@@ -38,14 +39,11 @@ int main()
 
     map<string, string> m;
     m["hello"] = "goodbye";
-    m["sun"] = "moon";
-
+  
     try
     {
         cout << contains(v, 2) << endl;         /* will print 0 (false) */
         cout << contains(m, "nothing") << endl; /* will print 0 (false) */
-
-        cout << remove_first_from(m,"sun") << endl; /* will print 1 (true) */
 
         test_autonomous_iterators();
 
@@ -65,16 +63,20 @@ template <class T>
 static void insert_elements(T& container)
 {
     insert_into(container, 100);
+    insert_into(container, 100);
+    insert_into(container, 100);
     insert_into(container, 200);
     insert_into(container, 300);
+    insert_into(container, 400);
     insert_into(container, 400);
 }
 
 template <class T>
 static void delete_elements(T& container)
 {
-    remove_first_from(container, container.begin());   /* amending iterators */
-    remove_first_from(container, 400); /* will print 1 (true) */
+    remove_first_from(container, 400);                 
+    remove_all_from(container, container.begin());   /* amending iterators */
+
 }
 
 template <class T>
@@ -102,8 +104,11 @@ void test_autonomous_iterators()
     AutonomousIterator<list<int>::const_iterator> li(l.begin(), l.end());
     AutonomousIterator<set<int>::const_iterator> si(s.begin(), s.end());
 
+    cout << "vector: " << endl;
     show_elements(vi);
+    cout << "list: " << endl;
     show_elements(li);
+    cout << "set: " << endl;
     show_elements(si);
 }
 
