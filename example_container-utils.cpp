@@ -74,8 +74,8 @@ static void insert_elements(T& container)
 template <class T>
 static void delete_elements(T& container)
 {
-    remove_first_from(container, 400);                 
-    remove_all_from(container, container.begin());   /* amending iterators */
+    remove_first_from(container, 400);    /* amending iterators */             
+    remove_all_from(container, 100);      /* amending iterators */
 
 }
 

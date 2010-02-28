@@ -176,66 +176,19 @@ inline void insert_into(std::set<ElementType, Comp, Alloc>& cont, const ElementT
 
 //------------ Remove first Utilities
 
-/*--removing by iterator--*/
-/* This works for vectors, lists, maps and sets */
-template <class Container>
-inline bool remove_first_from(Container& cont, typename Container::iterator pos)
-{
-    cont.erase(pos);
-    return true;
-}
-
-/*--removing by element--*/
 /* This works for vectors, lists and sets */
 template <class Container>
 inline bool remove_first_from(Container& cont, const typename Container::value_type& element)
 {
     const typename Container::iterator it = find(cont.begin(), cont.end(), element);
-    bool result = false;
-    if (it != cont.end())
-    {
-        cont.erase(it);
-        result = true;
-    }
+    const bool result = (it != cont.end());
+    if (result) cont.erase(it);
     return result;
 }
 
 
 //------------ Remove all Utilities
 
-/*--removing by iterator--*/
-/* This works for Non-associative containers */
-template <class T, class Alloc, template <class,class> class Container >
-inline bool remove_all_from(Container<T, Alloc>& cont, typename Container<T, Alloc>::iterator pos) 
-{
-    typename Container<T, Alloc>::value_type aux = *pos;
-    typename Container<T, Alloc>::iterator it = cont.begin();
-    bool result = false;
-
-    while (it != cont.end())
-    {
-        if(*it == aux)
-        {
-            it = cont.erase(it);
-            result = true;
-        }
-        else
-        {
-            it++;
-        }    
-    }
-    return result;
-}
-
-/* This works for Sets */
-template <class T, class Comp, class Alloc, template <class,class,class> class Container >
-inline bool remove_all_from(Container<T, Comp, Alloc>& cont, typename Container<T, Comp, Alloc>::iterator pos) 
-{
-    cont.erase(pos);
-    return true;
-}
-
-/*--removing by element--*/
 /* This works for Non-associative containers */
 template <class T, class Alloc, template <class,class> class Container >
 inline bool remove_all_from(Container<T, Alloc>& cont, const typename Container<T, Alloc>::value_type& element) 
@@ -252,7 +205,7 @@ inline bool remove_all_from(Container<T, Alloc>& cont, const typename Container<
         }
         else
         {
-            it++;
+            ++it;
         }    
     }
     return result;
@@ -264,12 +217,9 @@ template<class ElementType, class Comp, class Alloc>
 inline bool remove_all_from(std::set<ElementType, Comp, Alloc>& cont, const ElementType& element)
 {
     const typename std::set<ElementType, Comp, Alloc>::iterator it = find(cont.begin(), cont.end(), element);
-    bool result = false;
-    if (it != cont.end())
-    {
-        cont.erase(it);
-        result = true;
-    }
+    const bool result = (it != cont.end());
+
+    if (result) cont.erase(element);
     return result;
 }
 
