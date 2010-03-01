@@ -186,6 +186,18 @@ inline T minimize(T& t, T value)
     return t;
 }
 
+template <class T>
+inline bool is_lossless_sum(T x, T y)
+{
+    return (x + y != x) && (x + y != y);
+}
+
+template <class T>
+inline bool is_lossless_addition(T x, T y)
+{
+    return x + y > std::max(x,y);
+}
+
 NAMESPACE_END
 
 #endif
