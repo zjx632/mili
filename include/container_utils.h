@@ -186,6 +186,22 @@ inline bool remove_first_from(Container& cont, const typename Container::value_t
     return result;
 }
 
+/* This works for Maps */
+template <class Key, class T, class Comp, class Alloc, class ElementType>
+inline bool remove_first_from(std::map<Key, T, Comp, Alloc>& m, const ElementType& element)
+{
+    typename std::map<Key, T, Comp, Alloc>::iterator it = m.begin();
+    while(it != m.end())
+	{
+	  if(it->second == element)
+	  {
+	      m.erase(it);
+		  return true;
+	  }
+	  ++it;
+	}
+	return false;
+}
 
 //------------ Remove all Utilities
 
@@ -211,7 +227,6 @@ inline bool remove_all_from(Container<T, Alloc>& cont, const typename Container<
     return result;
 }
 
-
 /* This works for Sets */
 template<class ElementType, class Comp, class Alloc>
 inline bool remove_all_from(std::set<ElementType, Comp, Alloc>& cont, const ElementType& element)
@@ -223,7 +238,23 @@ inline bool remove_all_from(std::set<ElementType, Comp, Alloc>& cont, const Elem
     return result;
 }
 
-
+/* This works for Maps */
+template <class Key, class T, class Comp, class Alloc, class ElementType>
+inline bool remove_all_from(std::map<Key, T, Comp, Alloc>& m, const ElementType& element)
+{
+    typename std::map<Key, T, Comp, Alloc>::iterator it = m.begin();
+	bool result = false;
+    while(it != m.end())
+	{
+	  if(it->second == element)
+	  {
+	      m.erase(it);
+		  result = true;
+	  }
+	  ++it;
+	}
+	return result;
+}
 
 // Generic container
 template <class T>

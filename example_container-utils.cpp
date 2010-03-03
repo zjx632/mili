@@ -31,6 +31,8 @@ find_utils: A minimal library with generic find functions with exceptions.
 using namespace std;
 
 static void test_autonomous_iterators();
+template<class T>
+static void show_map_elements(AutonomousIterator<T> it);
 
 int main()
 {
@@ -38,18 +40,30 @@ int main()
     v.push_back(1);
 
     map<string, string> m;
-    m["hello"] = "goodbye";
+    m["hello"] = "good bye";
+	m["Bonjour"] = "au revoir";
+	m["ハロー"] = "さようなら";
+	m["hola"] = "adios";
+	m["buenas"] = "adios";
   
+	 AutonomousIterator<map<string, string>::const_iterator> mi(m.begin(), m.end());
     try
     {
-        cout << contains(v, 2) << endl;         /* will print 0 (false) */
-        cout << contains(m, "nothing") << endl; /* will print 0 (false) */
+        cout << contains(v, 2) << endl;               /* will print 0 (false) */
+        cout << contains(m, "nothing") << endl;       /* will print 0 (false) */
+
+        cout << "map: " << endl;
+        cout << remove_first_from(m,"au revoir") << endl; /* will print 1 (true) */
+        cout << remove_all_from(m, "adios") << endl;      /* will print 1 (true) */
+
+        AutonomousIterator<map<string, string>::const_iterator> mi(m.begin(), m.end());
+        show_map_elements(mi);
 
         test_autonomous_iterators();
 
-        cout << find(v, 1) << endl;             /* will print 1 */
-        cout << find(m, "hello") << endl;       /* will print "goodbye" */
-        cout << find(m, "world") << endl;       /* will throw ElementNotFound */
+        cout << find(v, 1) << endl;                   /* will print 1 */
+        cout << find(m, "hello") << endl;             /* will print "goodbye" */
+        cout << find(m, "world") << endl;             /* will throw ElementNotFound */
     }
     catch(ElementNotFound)
     {
@@ -84,6 +98,16 @@ static void show_elements(AutonomousIterator<T> it)
 {
     while (!it.end())
         cout << *(it++) << endl;
+}
+
+template <class T>
+static void show_map_elements(AutonomousIterator<T> it)
+{
+    while (!it.end())
+	{
+        cout << it->first << " " << it->second << endl;
+		++it;
+	}
 }
 
 void test_autonomous_iterators()
