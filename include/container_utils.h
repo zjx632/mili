@@ -238,7 +238,7 @@ inline bool remove_all_from(Container<T, Alloc>& cont, const typename Container<
 template<class ElementType, class Comp, class Alloc>
 inline bool remove_all_from(std::set<ElementType, Comp, Alloc>& cont, const ElementType& element)
 {
-    return remove_first_from<ElementType, Comp, Alloc> (cont, element);
+    return remove_first_from (cont, element);
 }
 
 /* This works for Maps */
