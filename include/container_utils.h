@@ -176,14 +176,21 @@ inline void insert_into(std::set<ElementType, Comp, Alloc>& cont, const ElementT
 
 //------------ Remove first Utilities
 
-/* This works for vectors, lists and sets */
+/* This works for vectors and lists */
 template <class Container>
 inline bool remove_first_from(Container& cont, const typename Container::value_type& element)
 {
     const typename Container::iterator it = find(cont.begin(), cont.end(), element);
-    const bool result = (it != cont.end());
+    const bool result(it != cont.end());
     if (result) cont.erase(it);
     return result;
+}
+
+/* This works for sets */
+template<class ElementType, class Comp, class Alloc>
+inline bool remove_first_from(std::set<ElementType, Comp, Alloc>& cont, const ElementType& element)
+{
+    return (cont.erase(element) > 0);
 }
 
 /* This works for Maps */
@@ -192,15 +199,15 @@ inline bool remove_first_from(std::map<Key, T, Comp, Alloc>& m, const ElementTyp
 {
     typename std::map<Key, T, Comp, Alloc>::iterator it = m.begin();
     while(it != m.end())
-	{
-	  if(it->second == element)
-	  {
-	      m.erase(it);
-		  return true;
-	  }
-	  ++it;
-	}
-	return false;
+    {
+        if(it->second == element)
+        {
+            m.erase(it);
+            return true;
+        }
+        ++it;
+    }
+    return false;
 }
 
 //------------ Remove all Utilities
@@ -210,7 +217,7 @@ template <class T, class Alloc, template <class,class> class Container >
 inline bool remove_all_from(Container<T, Alloc>& cont, const typename Container<T, Alloc>::value_type& element) 
 {
     typename Container<T, Alloc>::iterator it = cont.begin();
-    bool result = false;
+    bool result(false);
 
     while (it != cont.end())
     {
@@ -231,11 +238,7 @@ inline bool remove_all_from(Container<T, Alloc>& cont, const typename Container<
 template<class ElementType, class Comp, class Alloc>
 inline bool remove_all_from(std::set<ElementType, Comp, Alloc>& cont, const ElementType& element)
 {
-    const typename std::set<ElementType, Comp, Alloc>::iterator it = find(cont.begin(), cont.end(), element);
-    const bool result = (it != cont.end());
-
-    if (result) cont.erase(element);
-    return result;
+    return remove_first_from<ElementType, Comp, Alloc> (cont, element);
 }
 
 /* This works for Maps */
@@ -243,17 +246,17 @@ template <class Key, class T, class Comp, class Alloc, class ElementType>
 inline bool remove_all_from(std::map<Key, T, Comp, Alloc>& m, const ElementType& element)
 {
     typename std::map<Key, T, Comp, Alloc>::iterator it = m.begin();
-	bool result = false;
+    bool result(false);
     while(it != m.end())
-	{
-	  if(it->second == element)
-	  {
-	      m.erase(it);
-		  result = true;
-	  }
-	  ++it;
-	}
-	return result;
+    {
+        if(it->second == element)
+        {
+            m.erase(it);
+            result = true;
+        }
+        ++it;
+    }
+    return result;
 }
 
 // Generic container
