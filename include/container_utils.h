@@ -299,7 +299,7 @@ protected:
     Iterator _current;
     Container& _cont;
 
-    AutonomousIteratorBase(const Iterator& current, Container& cont)
+    AutonomousIteratorBase(Container& cont, const Iterator& current)
         : _current(current), _cont(cont)
     {}
 
@@ -389,8 +389,8 @@ public:
         : Base(cont)
     {}
 
-    AutonomousIterator(typename Container::iterator it, Container& cont)
-        : Base(it, cont)
+    AutonomousIterator(Container& cont, typename Container::iterator it)
+        : Base(cont, it)
     {}
 
     typename Container::reference operator*()
@@ -417,8 +417,8 @@ public:
         : Base(cont)
     {}
 
-    CAutonomousIterator(typename Container::const_iterator it, const Container& cont)
-        : Base(it, cont)
+    CAutonomousIterator(const Container& cont, typename Container::const_iterator it)
+        : Base(cont, it)
     {}
 };
 
