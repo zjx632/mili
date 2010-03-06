@@ -32,7 +32,7 @@ using namespace std;
 
 static void test_autonomous_iterators();
 template<class T>
-static void show_map_elements(AutonomousIterator<T> it);
+static void show_map_elements(CAutonomousIterator<T> it);
 
 int main()
 {
@@ -46,7 +46,7 @@ int main()
 	m["hola"] = "adios";
 	m["buenas"] = "adios";
   
-	 AutonomousIterator<map<string, string>::const_iterator> mi(m.begin(), m.end());
+	CAutonomousIterator<map<string, string> > mi(m);
     try
     {
         cout << contains(v, 2) << endl;               /* will print 0 (false) */
@@ -56,7 +56,7 @@ int main()
         cout << remove_first_from(m,"au revoir") << endl; /* will print 1 (true) */
         cout << remove_all_from(m, "adios") << endl;      /* will print 1 (true) */
 
-        AutonomousIterator<map<string, string>::const_iterator> mi(m.begin(), m.end());
+        CAutonomousIterator<map<string, string> > mi(m);
         show_map_elements(mi);
 
         test_autonomous_iterators();
@@ -94,14 +94,15 @@ static void delete_elements(T& container)
 }
 
 template <class T>
-static void show_elements(AutonomousIterator<T> it)
+static void show_elements(const T& container)
 {
+    CAutonomousIterator<T> it(container);
     while (!it.end())
         cout << *(it++) << endl;
 }
 
 template <class T>
-static void show_map_elements(AutonomousIterator<T> it)
+static void show_map_elements(CAutonomousIterator<T> it)
 {
     while (!it.end())
 	{
@@ -110,8 +111,26 @@ static void show_map_elements(AutonomousIterator<T> it)
 	}
 }
 
+template <class T>
+static void inc_one(T& container)
+{
+    AutonomousIterator<T> it(container);
+    while (!it.end())
+    {
+        ++(*it);
+        ++it;
+    }
+}
+
+struct S
+{
+    int x;
+};
+
+
 void test_autonomous_iterators()
 {
+    // Examples using containers of integers:
     vector<int> v;
     list<int> l;
     set<int> s;
@@ -124,15 +143,30 @@ void test_autonomous_iterators()
     delete_elements(l);
     delete_elements(s);
 
-    AutonomousIterator<vector<int>::const_iterator> vi(v.begin(), v.end());
-    AutonomousIterator<list<int>::const_iterator> li(l.begin(), l.end());
-    AutonomousIterator<set<int>::const_iterator> si(s.begin(), s.end());
+    inc_one(v);
+    inc_one(l);
+
+
+    CAutonomousIterator<vector<int> > vi(v);
+    CAutonomousIterator<list<int> >   li(l);
+    CAutonomousIterator<set<int> >    si(s);
 
     cout << "vector: " << endl;
-    show_elements(vi);
+    show_elements(v);
     cout << "list: " << endl;
-    show_elements(li);
+    show_elements(l);
     cout << "set: " << endl;
-    show_elements(si);
+    show_elements(s);
+
+    // Example using a container of a structure:
+    vector<S> vs;
+    S ss;
+    insert_into(vs, ss);
+    AutonomousIterator<vector<S> > vsi(vs);
+    vsi->x = 2;
+    (*vsi).x++;
+    CAutonomousIterator<vector<S> > cvsi(vs);
+    cout << vsi->x << endl;
+    cout << (*vsi).x << endl;
 }
 

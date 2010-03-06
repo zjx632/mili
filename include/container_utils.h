@@ -1,7 +1,7 @@
 /*
 container_utils: A minimal library with generic STL container utilities..
-    Copyright (C) 2009  Daniel Gutson, FuDePAN
-                        Ezequiel S. Velez
+    Copyright (C) 2009, 2010  Daniel Gutson, FuDePAN
+                              Ezequiel S. Velez
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -292,77 +292,135 @@ static inline void copy_container(const C1& c1, C2& c2)
 // TODO: Add more containers.
 
 // Autonomous iterators ----------------------
-template <class T>
-class AutonomousIterator
+template <class Container, class Iterator, class Parent>
+class AutonomousIteratorBase
 {
-    T _current;
-    const T _end;
-public:
-    typedef typename T::value_type value_type;
-    typedef typename T::reference reference;
+protected:
+    Iterator _current;
+    Container& _cont;
 
-    AutonomousIterator(const T& begin, const T& end)
-        : _current(begin), _end(end)
+    AutonomousIteratorBase(const Iterator& current, Container& cont)
+        : _current(current), _cont(cont)
     {}
 
-    AutonomousIterator(const AutonomousIterator<T>& other)
-        : _current(other._current), _end(other._end)
+    AutonomousIteratorBase(Container& cont)
+        : _current(cont.begin()), _cont(cont)
     {}
 
-    // Construct from a container
-    // TBD
+    AutonomousIteratorBase(const AutonomousIteratorBase<Container, Iterator, Parent>& other)
+        : _current(other._current), _cont(other._cont)
+    {}
 
-    AutonomousIterator<T>& operator ++()
+    Parent& ThisRef()
     {
-        ++_current;
-        return *this;
+        return static_cast<Parent&>(*this);
     }
 
-    AutonomousIterator<T> operator ++(int)
+    const Parent& ThisRef() const
     {
-        const AutonomousIterator<T> ret(*this);
+        return static_cast<const Parent&>(*this);
+    }
+public:
+    typedef typename Container::value_type value_type;
+    typedef typename Container::reference reference;
+
+    Parent& operator ++()
+    {
+        ++_current;
+        return ThisRef();
+    }
+
+    Parent operator ++(int)
+    {
+        const Parent ret(ThisRef());
         ++(*this);
         return ret;
     }
 
-    AutonomousIterator<T>& operator --()
+    Parent& operator --()
     {
         --_current;
-        return *this;
+        return ThisRef();
     }
 
-    AutonomousIterator<T> operator --(int)
+    Parent operator --(int)
     {
-        const AutonomousIterator<T> ret(*this);
+        const Parent ret(ThisRef());
         --(*this);
         return ret;
     }
 
-    bool operator == (const AutonomousIterator<T>& other) const
+    bool operator == (const AutonomousIteratorBase<Container, Iterator, Parent>& other) const
     {
         return _current == other._current;
     }
 
-    reference operator*()
+    typename Container::const_reference operator*() const
     {
         return *_current;
     }
 
-    T& operator->()
+    typename Container::const_iterator& operator->()
     {
         return _current;
     }
 
-    const T& operator->() const
+    const typename Container::const_iterator& operator->() const
     {
         return _current;
     }
 
     bool end() const
     {
-        return _current == _end;
+        return _current == _cont.end();
     }
 }; 
+
+template <class Container>
+class AutonomousIterator : public AutonomousIteratorBase<Container, typename Container::iterator, AutonomousIterator<Container> >
+{
+    typedef AutonomousIteratorBase<Container, typename Container::iterator, AutonomousIterator<Container> > Base;
+public:
+    AutonomousIterator(const AutonomousIterator<Container>& other)
+        : Base(other)
+    {}
+
+    AutonomousIterator(Container& cont)
+        : Base(cont)
+    {}
+
+    AutonomousIterator(typename Container::iterator it, Container& cont)
+        : Base(it, cont)
+    {}
+
+    typename Container::reference operator*()
+    {
+        return *this->_current;
+    }
+
+    typename Container::iterator& operator->()
+    {
+        return this->_current;
+    }
+};
+
+template <class Container>
+class CAutonomousIterator : public AutonomousIteratorBase<const Container, typename Container::const_iterator, CAutonomousIterator<Container> >
+{
+    typedef AutonomousIteratorBase<const Container, typename Container::const_iterator, CAutonomousIterator<Container> > Base;
+public:
+    CAutonomousIterator(const CAutonomousIterator<Container>& other)
+        : Base(other)
+    {}
+
+    CAutonomousIterator(const Container& cont)
+        : Base(cont)
+    {}
+
+    CAutonomousIterator(typename Container::const_iterator it, const Container& cont)
+        : Base(it, cont)
+    {}
+};
 
 NAMESPACE_END
 
