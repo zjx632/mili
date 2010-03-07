@@ -29,15 +29,11 @@ template<class T, const bool use_max>
 class Test
 {
     public:
-        Test(unsigned long target)
-//         :
-//             _low(std::numeric_limits<T>::min(),
-//             _high(std::numeric_limits<T>::max(),
-//             _target(target)
+        Test(unsigned long target) :
+            _low(std::numeric_limits<T>::min()),
+            _high(std::numeric_limits<T>::max()),
+            _target(target)
         {
-            _low    = std::numeric_limits<T>::min();
-            _high   = std::numeric_limits<T>::max();
-            _target = target;
         }
 
         double run()
@@ -49,10 +45,10 @@ class Test
             {
                 if (use_max)
                 {
-                    if (! is_lossless_addition(_low,_high) )
+                    if (! is_lossless_sum(_low,_high) )
                         ++total;
                 }
-                else if (! is_lossless_sum(_low,_high) )
+                else if (! is_lossless_sum_bigsmall(_high,_low) )
                     ++total;
 
                 const double temp = nextafter(_low,_high);
