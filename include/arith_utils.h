@@ -1,6 +1,6 @@
 /*
 arith_utils.h: A minimal library with arithmetic utilities.
-    Copyright (C) 2009,2010 Daniel Gutson, FuDePAN
+    Copyright (C) 2009,2010 Daniel Gutson & Guillermo Biset, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -197,7 +197,7 @@ inline bool is_lossless_sum_bigsmall(T x, T y)
 template <class T>
 inline bool is_lossless_sum(T x, T y)
 {
-    return x == 0 || y == 0 || (x + y > std::max(x,y));
+    return x == T(0) || y == T(0) || (x + y > std::max(x,y));
 }
 
 NAMESPACE_END
