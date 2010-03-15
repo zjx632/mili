@@ -79,10 +79,6 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "arith_utils.h"
 #endif
 
-#ifndef NO_BINSTREAMS
-#   include "binary_streams.h"
-#endif
-
 #ifndef NO_LOOP_UNROLLING
 #   include "loop_unrolling.h"
 #endif
@@ -93,6 +89,10 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 
 #ifndef NO_TEMPLATE_INFO
 #   include "template_info.h"
+#endif
+
+#ifndef NO_BINSTREAMS
+#   include "binary_streams.h"
 #endif
 
 #ifndef NO_COROUTINES

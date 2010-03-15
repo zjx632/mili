@@ -35,6 +35,8 @@ binary_streams: A minimal library supporting encoding of different data
 
 NAMESPACE_BEGIN
 
+declare_static_assert(pointers_not_allowed);
+
 class bostream
 {
     public:
@@ -46,6 +48,8 @@ class bostream
         template <class T>
         bostream& operator<< (T x)
         {
+            // Disallow pointers in binary streams.
+            template_compile_assert(!template_is_pointer<T>::value, pointers_not_allowed);
 
 #ifdef BSTREAMS_DEBUG
             const std::string s(typeid(T).name());
@@ -120,6 +124,8 @@ class bistream
         template <class T>
         bistream& operator >> (T& x)
         {
+            // Disallow pointers in binary streams.
+            template_compile_assert(!template_is_pointer<T>::value, pointers_not_allowed);
 
 #ifdef BSTREAMS_DEBUG
             std::string s(typeid(T).name());
@@ -173,4 +179,3 @@ class bistream
 NAMESPACE_END
 
 #endif
-
