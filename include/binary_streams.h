@@ -22,7 +22,9 @@ binary_streams: A minimal library supporting encoding of different data
 #ifndef BINARY_STREAMS_H
 #define BINARY_STREAMS_H
 
-// #define BSTREAMS_DEBUG to enable type checking.
+// #define BSTREAMS_DEBUG //to enable type checking.
+
+#include "mili.h"
 
 #include <string>
 #include <assert.h>
@@ -44,6 +46,7 @@ class bostream
         template <class T>
         bostream& operator<< (T x)
         {
+
 #ifdef BSTREAMS_DEBUG
             const std::string s(typeid(T).name());
             const size_t sz(s.size());
@@ -117,6 +120,7 @@ class bistream
         template <class T>
         bistream& operator >> (T& x)
         {
+
 #ifdef BSTREAMS_DEBUG
             std::string s(typeid(T).name());
             size_t sz;

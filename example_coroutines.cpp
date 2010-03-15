@@ -40,9 +40,9 @@ public:
                 for(y=0; y<10; ++y)
                 {
                     for(z=0; z<10; ++z)
-                        yield(x+y+z);
+                        mili_yield(x+y+z);
                 }
-                yield(-x);
+                mili_yield(-x);
             }
         }
         END_COROUTINE(-1000);

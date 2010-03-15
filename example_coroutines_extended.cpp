@@ -43,9 +43,9 @@ public:
                 for(y=0; y<10; ++y)
                 {
                     for(z=0; z<10; ++z)
-                        yield(x+y+z);
+                        mili_yield(x+y+z);
                 }
-                yield(-x);
+                mili_yield(-x);
             }
         }
         END_COROUTINE(-1000);
@@ -85,21 +85,23 @@ public:
             if (current != NULL)
             {
                 if (current->is_white)
-                    yield(current);
+                    mili_yield(current);
 
                 child_iterator = new WhiteNodesIterator;
 
                 do
                 {
                     child = (*child_iterator)(current->left);
-                    if (child != NULL) yield(child);
+                    if (child != NULL)
+                        mili_yield(child);
                 }
                 while(child != NULL);
 
                 do
                 {
                     child = (*child_iterator)(current->right);
-                    if (child != NULL) yield(child);
+                    if (child != NULL)
+                        mili_yield(child);
                 }
                 while(child != NULL);
 
@@ -135,7 +137,7 @@ public:
                             if (t3 != t1 && t3 != t2)
                             {
                                 elem1 = *t1; elem2 = *t2; elem3 = *t3;
-                                yield(true);
+                                mili_yield(true);
                             }
                         }
                     }

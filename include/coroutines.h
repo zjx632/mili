@@ -36,7 +36,7 @@ public:
     {                       \
         case 0:
 
-#define yield(value)            \
+#define mili_yield(value)       \
     do                          \
     {                           \
         yield_point = __LINE__; \
