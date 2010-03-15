@@ -24,8 +24,6 @@ binary_streams: A minimal library supporting encoding of different data
 
 // #define BSTREAMS_DEBUG //to enable type checking.
 
-#include "mili.h"
-
 #include <string>
 #include <assert.h>
 
