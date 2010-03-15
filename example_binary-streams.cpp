@@ -55,4 +55,10 @@ int main()
     for (size_t i=0; i < 5; ++i)
         std::cout<< v2[i] << ' ';
     std::cout << ']' << std::endl;
+
+// To check for no-pointer compile error uncomment these lines:
+/*
+    int *p = new int(1);
+    bos << p;
+*/
 }
