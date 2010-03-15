@@ -1,7 +1,7 @@
 /*
 binary_streams: A minimal library supporting encoding of different data
                 types in a single binary stream.
-    Copyright (C) 2009  Guillermo Biset, FuDePAN
+    Copyright (C) 2009, 2010  Guillermo Biset, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
