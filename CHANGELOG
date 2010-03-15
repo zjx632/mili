@@ -1,5 +1,7 @@
 Version 15
 ============
+    * BinaryStreams now checks types to avoid using pointers.
+    * Added is_lossless_sum and is_lossless_sum_bigsmall to check adsorption.
     * Added AutonomousIterator to container_utils.
     * Added Coroutines library.
     * Added FastList library.
