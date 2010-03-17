@@ -292,11 +292,14 @@ inline bool to_number(const std::string& s, Number& n)
 // Remove whitespace at both sides
 inline std::string trim(const std::string& s)
 {
-    std::stringstream ss;
-    std::string ret;
-    ss << s;
-    ss >> ret;
-    return ret;
+ std::string text(s)
+ 
+ std::string::size_type positionStart = text.find_first_not_of(' ');
+ text.erase(0,positionStart);
+ std::string::size_type positionEnd = text.find_last_not_of(' ');
+ text.erase(positionEnd+1);
+ 
+return text;
 }
 
 NAMESPACE_END
