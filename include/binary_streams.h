@@ -26,6 +26,7 @@ binary_streams: A minimal library supporting encoding of different data
 
 #include <string>
 #include <assert.h>
+#include <stdint.h>
 
 #include "compile_assert.h"
 
@@ -66,7 +67,7 @@ class bostream
         /* Inserting a string inserts its size first. */
         bostream& operator<< (const std::string& s)
         {
-            (*this) << s.size();
+            (*this) << uint32_t( s.size() );
             _s += s;
             return *this;
         }
@@ -74,7 +75,7 @@ class bostream
         template <class Other>
         bostream& operator<< (const std::vector<Other>& vec)
         {
-            const size_t size(vec.size());
+            const uint32_t size(vec.size());
             (*this) << size;
             for (size_t i(0); i < size; ++i)
                 (*this) << vec[i];
@@ -146,7 +147,7 @@ class bistream
 
         bistream& operator >> (std::string& str)
         {
-            size_t size;
+            uint32_t size;
             (*this) >> size;
             assert(_s.size() >= size+_pos);
             str  = _s.substr(_pos,size);
@@ -157,7 +158,7 @@ class bistream
         template <class Other>
         bistream& operator>> (std::vector<Other>& vec)
         {
-            size_t size;
+            uint32_t size;
             (*this) >> size;
             assert(_s.size() >= (size * sizeof(Other)) + _pos);
             vec.resize(size);
