@@ -103,6 +103,10 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "fast_list.h"
 #endif
 
+#ifndef NO_RANKER
+#   include "ranker.h"
+#endif
+
 #undef NAMESPACE_BEGIN
 #undef NAMESPACE_END
 
