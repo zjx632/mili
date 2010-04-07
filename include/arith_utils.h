@@ -160,6 +160,11 @@ public:
     {
         return !operator bool();
     }
+    
+    void reset()
+    {
+        value = true;
+    }
 };
 
 template <class T>
