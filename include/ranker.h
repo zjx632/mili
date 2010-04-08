@@ -24,98 +24,136 @@ ranker: A minimal library that implements a ranking of elements.
 #include <list>
 #include <algorithm>
 #include <functional>
+#include <utility>
 
 NAMESPACE_BEGIN
 
-template<class T, class Comp = std::less<T> >
+enum SameValueBehavior
+    {
+        AddBeforeEqual,
+        AddAfterEqual
+    };
+
+template<class T,SameValueBehavior Behavior = AddAfterEqual, class Comp = std::less<T> >
 class Ranker
 {
 private:
     typedef std::list<T> Ranking;
+    typedef typename Ranking::iterator iterator;
 
-    Ranking ranking;                           //! Contenedor de elementos rankeados 
-    const size_t TOP;                          //! cantidad max de elementos
+    Ranking ranking;                           // Container. 
+    const size_t TOP;                          // Maximum number of elements.
 
 public:
-    //! Definiciones que me permiten usar mili
+    // typedef to simulate STL 
     typedef typename Ranking::const_iterator const_iterator;
     typedef typename Ranking::value_type value_type;
     typedef typename Ranking::reference reference;
     typedef typename Ranking::const_reference const_reference;
-    //! Constructor
+
+    // Constructor
     Ranker(size_t top): ranking(), TOP(top)
     {}
 
-    //! Operadores
-    inline bool insert(const T& element);       //! inserta el elemento
-    inline void remove(const T& element);       //! remueve el elemento
-    inline bool empty() const;                  //! indica si esta vacio
-    inline size_t size() const;                 //! indica el tamaño
-    inline void clear() const;                  //! elimina todos los elementos
-    inline const_iterator begin() const;        //! retorna iterador const al peor rankeado elemento
-    inline const_iterator end() const;          //! retorna iterador const al mejor rankeado elemento
-    inline const T& upper() const;              //! retorna el elemento mejor rankeado
-    inline const T& lower() const;              //! retorna el elemento peor rankeado
+    // Member:
+    /* Inserts the element. */
+    inline const_iterator insert(const T& element); 
+    /* Removes the first occurrence of element. */  
+    inline void remove_first(const T& element);
+    /* Removes all occurrences of element. */ 
+    inline void remove_all(const T& element);
+    /* Erases all of the elements. */
+    inline void clear();
+    /* True if the ranker is empty. */
+    inline bool empty() const;
+    /* Returns the size of the ranker. */
+    inline size_t size() const;
+    /* Returns a const_iterator pointing to the beginning of the ranker. */
+    inline const_iterator begin() const;
+    /* Returns a const_iterator pointing to the end of the ranker. */ 
+    inline const_iterator end() const;
+    /* Returns the top element. */
+    inline const T& top() const;
+    /* Returns the bottom element. */
+    inline const T& bottom() const;
 };
 
-template<class T, class Comp>
-inline bool Ranker<T, Comp>::insert(const T& element)
+template<class T, SameValueBehavior Behavior, class Comp>
+inline typename std::list<T>::const_iterator Ranker<T, Behavior, Comp>::insert(const T& element)
 {
-    const bool success (ranking.size() < TOP);
-    if(success)
+    std::pair<iterator, iterator> position = equal_range(ranking.begin(), ranking.end(), element, Comp());
+    const bool top_not_reached (ranking.size() < TOP);
+
+    if (top_not_reached)
     {
-        ranking.push_back(element);
-        ranking.sort(Comp());
+        if(Behavior == AddBeforeEqual)
+            ranking.insert(position.first, element);
+        else
+            ranking.insert(position.second, element);
+    }else
+    {
+        if(Behavior == AddBeforeEqual)
+            ranking.insert(position.first, element);
+        else
+            ranking.insert(position.second, element);
+        ranking.erase(--ranking.end());
     }
-    return success;   
+    return position.first;   
 }
 
-template<class T, class Comp>
-inline void Ranker<T, Comp>::remove(const T& element)
+template<class T, SameValueBehavior Behavior, class Comp>
+inline void Ranker<T, Behavior, Comp>::remove_first(const T& element)
+{
+    iterator pos = find(ranking.begin(), ranking.end(), element);
+    ranking.erase(pos);
+}
+
+template<class T, SameValueBehavior Behavior, class Comp>
+inline void Ranker<T, Behavior, Comp>::remove_all(const T& element)
 {
     ranking.remove(element);
 }
 
-template<class T, class Comp>
-inline bool Ranker<T, Comp>::empty() const
+template<class T, SameValueBehavior Behavior, class Comp>
+inline bool Ranker<T, Behavior, Comp>::empty() const
 {
     return ranking.empty();
 }
 
-template<class T, class Comp>
-inline size_t Ranker<T, Comp>::size() const
+template<class T, SameValueBehavior Behavior, class Comp>
+inline size_t Ranker<T, Behavior, Comp>::size() const
 {
     return ranking.size();
 }
 
-template<class T, class Comp>
-inline void Ranker<T, Comp>::clear() const
+template<class T, SameValueBehavior Behavior, class Comp>
+inline void Ranker<T, Behavior, Comp>::clear()
 {
     ranking.clear();
 }
 
-template<class T, class Comp>
-inline typename std::list<T>::const_iterator Ranker<T, Comp>::begin() const
+template<class T, SameValueBehavior Behavior, class Comp>
+inline typename std::list<T>::const_iterator Ranker<T, Behavior, Comp>::begin() const
 {
     return ranking.begin();
 }
 
-template<class T, class Comp>
-inline typename std::list<T>::const_iterator Ranker<T, Comp>::end() const
+template<class T, SameValueBehavior Behavior, class Comp>
+inline typename std::list<T>::const_iterator Ranker<T, Behavior, Comp>::end() const
 {
     return ranking.end();
 }
 
-template<class T, class Comp>
-inline const T& Ranker<T, Comp>::upper() const
+template<class T, SameValueBehavior Behavior, class Comp>
+inline const T& Ranker<T, Behavior, Comp>::top() const
 {
     return *(ranking.begin());
 }
 
-template<class T, class Comp>
-inline const T& Ranker<T, Comp>::lower() const
+template<class T, SameValueBehavior Behavior, class Comp>
+inline const T& Ranker<T, Behavior, Comp>::bottom() const
 {
-    return *(ranking.end());
+    return *(--ranking.end());
 }
 
 NAMESPACE_END
