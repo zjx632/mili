@@ -25,7 +25,7 @@ example_fast-list: An example that uses MiLi's ranker.
 
 using namespace std;
 
-typedef Ranker<int> Ranking;
+typedef Ranker<int, AddBeforeEqual> Ranking;
 
 int main ()
 {
@@ -38,25 +38,38 @@ int main ()
     R.insert(I);
     R.insert(26);
     R.insert(I);
-    cout << R.insert(23) << endl;                  /* will print 0 (false) */
 
-    Ranking::const_iterator it = R.begin();
-    while(it != R.end())
+    CAutonomousIterator<Ranking> it(R);
+    while(!it.end())
     {
         cout << *it << endl;
         ++it;
     }
-    
-    R.remove(I);
-    cout << "-- Remove "<< I << " --" << endl;
 
-    Ranker<int>::const_iterator it2 = R.begin();
+    cout << "-- Insert 1 and 100 --" << endl;
+    R.insert(1);
+    R.insert(100);
+
+    CAutonomousIterator<Ranking> it1(R);
+    while(!it1.end())
+    {
+        cout << *it1 << endl;
+        ++it1;
+    }
+    
+    R.remove_all(I);
+    cout << "-- Remove All "<< I << " --" << endl;
+
+    Ranking::const_iterator it2 = R.begin();
     while(it2 != R.end())
     {
         cout << *it2 << endl;
         ++it2;
     }
-    cout << "size: " << R.size() << endl;
+    cout << "----- size: " << R.size() << endl;
+    cout << "top: " << R.top() << " - buttom: "<< R.bottom() << endl;    
+
+    if(!R.empty()) R.clear();
 
     return 0;
 }
