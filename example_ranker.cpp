@@ -67,10 +67,11 @@ int main ()
         ++it2;
     }
     cout << "----- size: " << R.size() << endl;
-    cout << "top: " << R.top() << " - buttom: "<< R.bottom() << endl;    
+    cout << "top: " << R.top() << " - bottom: "<< R.bottom() << endl;    
 
     if(!R.empty()) R.clear();
 
+    cout << "size after clear: " << R.size() << endl;
     return 0;
 }
 
