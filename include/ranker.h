@@ -1,6 +1,7 @@
 /*
 ranker: A minimal library that implements a ranking of elements.
     Copyright (C) 2010  Ezequiel S. Velez
+                        Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -28,11 +29,12 @@ ranker: A minimal library that implements a ranking of elements.
 
 NAMESPACE_BEGIN
 
+/* to do when you insert an existing value */
 enum SameValueBehavior
-    {
-        AddBeforeEqual,
-        AddAfterEqual
-    };
+{
+    AddBeforeEqual,
+    AddAfterEqual
+};
 
 template<class T,SameValueBehavior Behavior = AddAfterEqual, class Comp = std::less<T> >
 class Ranker
@@ -41,21 +43,22 @@ private:
     typedef std::list<T> Ranking;
     typedef typename Ranking::iterator iterator;
 
-    Ranking ranking;                           // Container. 
-    const size_t TOP;                          // Maximum number of elements.
+    Ranking ranking;                           /* Container. */ 
+    const size_t TOP;                          /* Maximum number of elements.*/
 
 public:
-    // typedef to simulate STL 
+    /* typedef to simulate STL */ 
     typedef typename Ranking::const_iterator const_iterator;
     typedef typename Ranking::value_type value_type;
     typedef typename Ranking::reference reference;
     typedef typename Ranking::const_reference const_reference;
 
-    // Constructor
+    /* Constructor */
     Ranker(size_t top): ranking(), TOP(top)
     {}
 
-    // Member:
+    /* Member: */
+
     /* Inserts the element. */
     inline const_iterator insert(const T& element); 
     /* Removes the first occurrence of element. */  
@@ -84,20 +87,13 @@ inline typename std::list<T>::const_iterator Ranker<T, Behavior, Comp>::insert(c
     std::pair<iterator, iterator> position = equal_range(ranking.begin(), ranking.end(), element, Comp());
     const bool top_not_reached (ranking.size() < TOP);
 
-    if (top_not_reached)
-    {
-        if(Behavior == AddBeforeEqual)
-            ranking.insert(position.first, element);
-        else
-            ranking.insert(position.second, element);
-    }else
-    {
-        if(Behavior == AddBeforeEqual)
-            ranking.insert(position.first, element);
-        else
-            ranking.insert(position.second, element);
+    if(Behavior == AddBeforeEqual)
+        ranking.insert(position.first, element);
+    else
+        ranking.insert(position.second, element);
+    if (!top_not_reached)
         ranking.erase(--ranking.end());
-    }
+
     return position.first;   
 }
 
