@@ -30,13 +30,13 @@ typedef Ranker<int, AddBeforeEqual> Ranking;
 int main ()
 {
     const size_t TOP = 5;
-    const int I = -99;
+    const int I = -10;
     Ranking R(TOP);
 
-    R.insert(3);
-    R.insert(62);
+    R.insert(10);
+    R.insert(30);
     R.insert(I);
-    R.insert(26);
+    R.insert(20);
     R.insert(I);
 
     CAutonomousIterator<Ranking> it(R);
@@ -46,9 +46,11 @@ int main ()
         ++it;
     }
 
-    cout << "-- Insert 1 and 100 --" << endl;
-    R.insert(1);
-    R.insert(100);
+    cout << "enter 60 in the range: "<< R.enter_into_rank(60) << endl;
+
+    cout << "-- Insert 0 and 50 --" << endl;
+    R.insert(0);
+    R.insert(50);
 
     CAutonomousIterator<Ranking> it1(R);
     while(!it1.end())
