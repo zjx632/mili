@@ -79,6 +79,8 @@ public:
     inline const T& top() const;
     /* Returns the bottom element. */
     inline const T& bottom() const;
+    /* Returns true if the element comes into range */
+    inline bool enter_into_rank(const T& element) const;
 };
 
 template<class T, SameValueBehavior Behavior, class Comp>
@@ -150,6 +152,12 @@ template<class T, SameValueBehavior Behavior, class Comp>
 inline const T& Ranker<T, Behavior, Comp>::bottom() const
 {
     return *(--ranking.end());
+}
+
+template<class T, SameValueBehavior Behavior, class Comp>
+inline bool Ranker<T, Behavior, Comp>::enter_into_rank(const T& element) const 
+{
+    return Comp()(element, *(--ranking.end()));
 }
 
 NAMESPACE_END
