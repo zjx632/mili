@@ -67,6 +67,10 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "string_utils.h"
 #endif
 
+#ifndef NO_RANKER
+#   include "ranker.h"
+#endif
+
 #ifndef NO_CONTAINER_UTILS
 #   include "container_utils.h"
 #endif
@@ -101,10 +105,6 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 
 #ifndef NO_FAST_LIST
 #   include "fast_list.h"
-#endif
-
-#ifndef NO_RANKER
-#   include "ranker.h"
 #endif
 
 #undef NAMESPACE_BEGIN

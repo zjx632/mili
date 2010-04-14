@@ -25,7 +25,7 @@ example_fast-list: An example that uses MiLi's ranker.
 
 using namespace std;
 
-typedef Ranker<int, AddBeforeEqual> Ranking;
+typedef ranker<int, AddBeforeEqual> Ranking;
 
 int main ()
 {
@@ -46,11 +46,9 @@ int main ()
         ++it;
     }
 
-    cout << "enter 60 in the range: "<< R.enter_into_rank(60) << endl;
-
     cout << "-- Insert 0 and 50 --" << endl;
     R.insert(0);
-    R.insert(50);
+    cout << R.insert(50) << endl;              /* will print 0 (false) */
 
     CAutonomousIterator<Ranking> it1(R);
     while(!it1.end())
