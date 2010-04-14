@@ -23,6 +23,7 @@ ranker: A minimal library that implements a ranking of elements.
 #define RANKER_H
 
 #include <list>
+#include <iterator>
 #include <algorithm>
 #include <functional>
 #include <utility>
@@ -37,7 +38,7 @@ enum SameValueBehavior
 };
 
 template<class T,SameValueBehavior Behavior = AddAfterEqual, class Comp = std::less<T> >
-class Ranker
+class ranker
 {
 private:
     typedef std::list<T> Ranking;
@@ -54,13 +55,13 @@ public:
     typedef typename Ranking::const_reference const_reference;
 
     /* Constructor */
-    Ranker(size_t top): ranking(), TOP(top)
+    ranker(size_t top): ranking(), TOP(top)
     {}
 
     /* Member: */
 
     /* Inserts the element. */
-    inline const_iterator insert(const T& element); 
+    inline bool insert(const T& element); 
     /* Removes the first occurrence of element. */  
     inline void remove_first(const T& element);
     /* Removes all occurrences of element. */ 
@@ -79,85 +80,93 @@ public:
     inline const T& top() const;
     /* Returns the bottom element. */
     inline const T& bottom() const;
-    /* Returns true if the element comes into range */
-    inline bool enter_into_rank(const T& element) const;
+    /* Finds an element into the ranker */
+    inline const_iterator find_element(const_iterator first, const_iterator last, const T& element) const;
 };
 
 template<class T, SameValueBehavior Behavior, class Comp>
-inline typename std::list<T>::const_iterator Ranker<T, Behavior, Comp>::insert(const T& element)
+inline bool ranker<T, Behavior, Comp>::insert(const T& element)
 {
-    std::pair<iterator, iterator> position = equal_range(ranking.begin(), ranking.end(), element, Comp());
+    const std::pair<iterator, iterator> position = equal_range(ranking.begin(), ranking.end(), element, Comp());
     const bool top_not_reached (ranking.size() < TOP);
+    bool success (true);
+    iterator pos;
 
     if(Behavior == AddBeforeEqual)
-        ranking.insert(position.first, element);
+        pos = position.first;
     else
-        ranking.insert(position.second, element);
-    if (!top_not_reached)
-        ranking.erase(--ranking.end());
+        pos = position.second;
 
-    return position.first;   
+    ranking.insert(pos, element);
+
+    if(!top_not_reached)
+    {
+        if(distance(pos, ranking.end())==0)
+            success = false;
+        ranking.erase(--ranking.end());
+    }
+    return success;   
 }
 
 template<class T, SameValueBehavior Behavior, class Comp>
-inline void Ranker<T, Behavior, Comp>::remove_first(const T& element)
+inline void ranker<T, Behavior, Comp>::remove_first(const T& element)
 {
     iterator pos = find(ranking.begin(), ranking.end(), element);
     ranking.erase(pos);
 }
 
 template<class T, SameValueBehavior Behavior, class Comp>
-inline void Ranker<T, Behavior, Comp>::remove_all(const T& element)
+inline void ranker<T, Behavior, Comp>::remove_all(const T& element)
 {
     ranking.remove(element);
 }
 
 template<class T, SameValueBehavior Behavior, class Comp>
-inline bool Ranker<T, Behavior, Comp>::empty() const
+inline bool ranker<T, Behavior, Comp>::empty() const
 {
     return ranking.empty();
 }
 
 template<class T, SameValueBehavior Behavior, class Comp>
-inline size_t Ranker<T, Behavior, Comp>::size() const
+inline size_t ranker<T, Behavior, Comp>::size() const
 {
     return ranking.size();
 }
 
 template<class T, SameValueBehavior Behavior, class Comp>
-inline void Ranker<T, Behavior, Comp>::clear()
+inline void ranker<T, Behavior, Comp>::clear()
 {
     ranking.clear();
 }
 
 template<class T, SameValueBehavior Behavior, class Comp>
-inline typename std::list<T>::const_iterator Ranker<T, Behavior, Comp>::begin() const
+inline typename std::list<T>::const_iterator ranker<T, Behavior, Comp>::begin() const
 {
     return ranking.begin();
 }
 
 template<class T, SameValueBehavior Behavior, class Comp>
-inline typename std::list<T>::const_iterator Ranker<T, Behavior, Comp>::end() const
+inline typename std::list<T>::const_iterator ranker<T, Behavior, Comp>::end() const
 {
     return ranking.end();
 }
 
 template<class T, SameValueBehavior Behavior, class Comp>
-inline const T& Ranker<T, Behavior, Comp>::top() const
+inline const T& ranker<T, Behavior, Comp>::top() const
 {
     return *(ranking.begin());
 }
 
 template<class T, SameValueBehavior Behavior, class Comp>
-inline const T& Ranker<T, Behavior, Comp>::bottom() const
+inline const T& ranker<T, Behavior, Comp>::bottom() const
 {
     return *(--ranking.end());
 }
 
 template<class T, SameValueBehavior Behavior, class Comp>
-inline bool Ranker<T, Behavior, Comp>::enter_into_rank(const T& element) const 
+inline typename std::list<T>::const_iterator ranker<T, Behavior, Comp>::find_element(const_iterator first, const_iterator last, const T& element) const
 {
-    return Comp()(element, *(--ranking.end()));
+    return find(first, last, element);
 }
 
 NAMESPACE_END

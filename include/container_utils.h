@@ -27,6 +27,7 @@ container_utils: A minimal library with generic STL container utilities..
 #include <vector>
 #include <list>
 #include <set>
+#include "ranker.h"
 #include <new>
 
 #include <algorithm>
@@ -174,7 +175,24 @@ inline void insert_into(std::set<ElementType, Comp, Alloc>& cont, const ElementT
     cont.insert(element);
 }
 
+/* This works for ranker */
+template <class T, SameValueBehavior Behavior, class Comp>
+inline void insert_into(ranker<T, Behavior, Comp>& cont, const T& element)
+{
+    cont.insert(element);
+}
+
 //------------ Remove first Utilities
+
+/* This works for ranker */
+template <class T, SameValueBehavior Behavior, class Comp>
+inline bool remove_first_from(ranker<T, Behavior, Comp>& cont, const T& element)
+{
+    const typename ranker<T, Behavior, Comp>::const_iterator it = cont.find_element(cont.begin(), cont.end(), element);
+    const bool result(it != cont.end());
+    if (result) cont.remove_first(element);
+    return result;
+}
 
 /* This works for vectors and lists */
 template <class Container>
@@ -256,6 +274,16 @@ inline bool remove_all_from(std::map<Key, T, Comp, Alloc>& m, const ElementType&
         }
         ++it;
     }
+    return result;
+}
+
+/* This works for ranker */
+template <class T, SameValueBehavior Behavior, class Comp>
+inline bool remove_all_from(ranker<T, Behavior, Comp>& cont, const T& element)
+{
+    const typename ranker<T, Behavior, Comp>::const_iterator it = cont.find_element(cont.begin(), cont.end(), element);
+    const bool result(it != cont.end());
+    if (result) cont.remove_all(element);
     return result;
 }
 
