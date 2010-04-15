@@ -175,20 +175,20 @@ inline void insert_into(std::set<ElementType, Comp, Alloc>& cont, const ElementT
     cont.insert(element);
 }
 
-/* This works for ranker */
+/* This works for Ranker */
 template <class T, SameValueBehavior Behavior, class Comp>
-inline void insert_into(ranker<T, Behavior, Comp>& cont, const T& element)
+inline void insert_into(Ranker<T, Behavior, Comp>& cont, const T& element)
 {
     cont.insert(element);
 }
 
 //------------ Remove first Utilities
 
-/* This works for ranker */
+/* This works for Ranker */
 template <class T, SameValueBehavior Behavior, class Comp>
-inline bool remove_first_from(ranker<T, Behavior, Comp>& cont, const T& element)
+inline bool remove_first_from(Ranker<T, Behavior, Comp>& cont, const T& element)
 {
-    const typename ranker<T, Behavior, Comp>::const_iterator it = cont.find_element(cont.begin(), cont.end(), element);
+    const typename Ranker<T, Behavior, Comp>::const_iterator it = find(cont.begin(), cont.end(), element);
     const bool result(it != cont.end());
     if (result) cont.remove_first(element);
     return result;
@@ -277,11 +277,11 @@ inline bool remove_all_from(std::map<Key, T, Comp, Alloc>& m, const ElementType&
     return result;
 }
 
-/* This works for ranker */
+/* This works for Ranker */
 template <class T, SameValueBehavior Behavior, class Comp>
-inline bool remove_all_from(ranker<T, Behavior, Comp>& cont, const T& element)
+inline bool remove_all_from(Ranker<T, Behavior, Comp>& cont, const T& element)
 {
-    const typename ranker<T, Behavior, Comp>::const_iterator it = cont.find_element(cont.begin(), cont.end(), element);
+    const typename Ranker<T, Behavior, Comp>::const_iterator it = find(cont.begin(), cont.end(), element);
     const bool result(it != cont.end());
     if (result) cont.remove_all(element);
     return result;

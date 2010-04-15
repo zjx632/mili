@@ -41,12 +41,12 @@ int main()
 
     map<string, string> m;
     m["hello"] = "good bye";
-	m["Bonjour"] = "au revoir";
-	m["ハロー"] = "さようなら";
-	m["hola"] = "adios";
-	m["buenas"] = "adios";
+    m["Bonjour"] = "au revoir";
+    m["ハロー"] = "さようなら";
+    m["hola"] = "adios";
+    m["buenas"] = "adios";
   
-	CAutonomousIterator<map<string, string> > mi(m);
+    CAutonomousIterator<map<string, string> > mi(m);
     try
     {
         cout << contains(v, 2) << endl;               /* will print 0 (false) */
@@ -134,7 +134,7 @@ void test_autonomous_iterators()
     vector<int> v;
     list<int> l;
     set<int> s;
-    ranker<int> r(5);
+    Ranker<int> r(5);
 
     insert_elements(v);
     insert_elements(l);
@@ -153,7 +153,7 @@ void test_autonomous_iterators()
     CAutonomousIterator<vector<int> > vi(v);
     CAutonomousIterator<list<int> >   li(l);
     CAutonomousIterator<set<int> >    si(s);
-    CAutonomousIterator<ranker<int> > ri(r);
+    CAutonomousIterator<Ranker<int> > ri(r);
 
     cout << "vector: " << endl;
     show_elements(v);
@@ -161,7 +161,7 @@ void test_autonomous_iterators()
     show_elements(l);
     cout << "set: " << endl;
     show_elements(s);
-    cout << "ranker: " << endl;
+    cout << "Ranker: " << endl;
     show_elements(r);
 
     // Example using a container of a structure:
