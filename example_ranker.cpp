@@ -1,5 +1,5 @@
 /*
-example_fast-list: An example that uses MiLi's ranker.
+example_fast-list: An example that uses MiLi's Ranker.
     Copyright (C) 2010  Ezequiel S. Velez
 
     This file is part of the MiLi Minimalistic Library.
@@ -25,7 +25,7 @@ example_fast-list: An example that uses MiLi's ranker.
 
 using namespace std;
 
-typedef ranker<int, AddBeforeEqual> Ranking;
+typedef Ranker<int, AddBeforeEqual> Ranking;
 
 int main ()
 {
