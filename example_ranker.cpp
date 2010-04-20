@@ -1,5 +1,5 @@
 /*
-example_fast-list: An example that uses MiLi's Ranker.
+example_ranker: An example that uses MiLi's Ranker.
     Copyright (C) 2010  Ezequiel S. Velez
 
     This file is part of the MiLi Minimalistic Library.

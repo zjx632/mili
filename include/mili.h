@@ -71,6 +71,10 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "ranker.h"
 #endif
 
+#ifndef NO_VARIANTS_SET
+#   include "variants_set.h"
+#endif
+
 #ifndef NO_CONTAINER_UTILS
 #   include "container_utils.h"
 #endif
