@@ -1,3 +1,7 @@
+Version 16
+============
+    * Added VariantsSet library.
+
 Version 15
 ============
     * BinaryStreams now checks types to avoid using pointers.
