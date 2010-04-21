@@ -36,10 +36,10 @@ typedef std::string ElementName;
 
 class VariantsSet
 {
-    std::map<ElementName, std::string> elements;  //! Atributos de la politica
+    std::map<ElementName, std::string> elements;
 
 public:
-    //! Retorna el atributo con el nombre attr
+    /* returns the element called name */
     template <class T>
     void get_element(const ElementName& name, T& element) const throw (BadElementType, BadElementName)
     {
@@ -49,30 +49,65 @@ public:
         else
             throw BadElementName();
     }
+    
+    template <class T>
+    const T& get_element(const ElementName& name) const throw (BadElementType, BadElementName)
+    {
+        const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
+        if (it != elements.end())
+            return from_string<T>(it->second);
+        else
+            throw BadElementName();
+    }
+    
+    /* get_element, nothrow versions */
+    template <class T>
+    bool get_element(const ElementName& name, T& element, const std::nothrow_t&) const
+    {
+        const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
+        const bool success(it != elements.end());
 
-    //! incorpora un atributo a la politica
+        if (success)
+            element = from_string<T>(it->second);
+        return success;
+    }
+    
+    template <class T>
+    const T& get_element(const ElementName& name, const std::nothrow_t&) const
+    {
+        const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
+
+        if (it != elements.end())
+            return from_string<T>(it->second);
+    }
+
+    /* inserts the element in the varianteSet. */
     template <class T>
     void insert(const ElementName& name, const T& element)
     {
         elements[name] = to_string(element);
     }
 
-    bool empty()
+    bool empty() const
     {
         return elements.empty();
     }
     
     void erase(const ElementName& name)
     {
-        elements.erase(name);
+        const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
+        if(it != elements.end())
+            elements.erase(name);
+        else
+            throw BadElementName();
     }
 
     void clear()
     {
-        return elements.clear();
+        elements.clear();
     }
 
-    size_t size()
+    size_t size() const
     {
         return elements.size();
     }

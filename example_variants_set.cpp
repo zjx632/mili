@@ -27,19 +27,26 @@ using namespace std;
 
 int main ()
 {
-    VariantsSet VS;
+    VariantsSet variantSet;
     int ie = 0;
     string is;
-    VS.insert<int>("int", 3);
-    VS.insert<string>("string", "hello");
-    VS.insert<float>("float", 0.1f);
+    float f;
+    variantSet.insert("number", 3);
+    variantSet.insert("greeting", "hello");
+    variantSet.insert("temperature", 0.1f);
 
-    VS.get_element<int>("int", ie);
-    cout << "int: " << ie << endl;
-    VS.get_element<string>("string", is);
-    cout << "string: " << is << endl;
-
-    VS.erase("float");
-    cout << "size: " << VS.size() << endl;
+    try{
+        variantSet.get_element("number", ie);
+        cout << "number: " << ie << endl;
+        variantSet.get_element("greeting", is);
+        cout << "greeting: " << is << endl;
+        variantSet.get_element("float", f);
+    }catch(BadElementName)
+    {
+        cerr << "Bad Element Name!" << endl;
+    }
+    
+    variantSet.erase("temperature");
+    cout << "size: " << variantSet.size() << endl;
     return 0;
 }
