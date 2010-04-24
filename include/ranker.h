@@ -37,7 +37,23 @@ enum SameValueBehavior
     AddAfterEqual
 };
 
-template<class T,SameValueBehavior Behavior = AddAfterEqual, class Comp = std::less<T> >
+template<class T>
+struct NullPolicy
+{
+    void operator()(const T& element)
+    {}
+};
+
+template<class T>
+struct DeletePolicy
+{
+    void operator()(const T& element)
+    {
+        delete element;
+    }
+};
+
+template<class T,SameValueBehavior Behavior = AddAfterEqual, class Comp = std::less<T>, class DisposalPolicy = NullPolicy<T> >
 class Ranker
 {
 private:
@@ -66,6 +82,10 @@ public:
     inline void remove_first(const T& element);
     /* Removes all occurrences of element. */ 
     inline void remove_all(const T& element);
+    /* Removes the first occurrence of element. */  
+    inline void remove_first(T* element);
+    /* Removes all occurrences of element. */ 
+    inline void remove_all(T* element);
     /* Erases all of the elements. */
     inline void clear();
     /* True if the Ranker is empty. */
@@ -80,10 +100,15 @@ public:
     inline const T& top() const;
     /* Returns the bottom element. */
     inline const T& bottom() const;
+
+    ~Ranker()
+    {
+        this->clear();
+    }
 };
 
-template<class T, SameValueBehavior Behavior, class Comp>
-inline bool Ranker<T, Behavior, Comp>::insert(const T& element)
+template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
+inline bool Ranker<T, Behavior, Comp, DisposalPolicy>::insert(const T& element)
 {
     const std::pair<iterator, iterator> position = equal_range(ranking.begin(), ranking.end(), element, Comp());
     const bool top_not_reached (ranking.size() < TOP);
@@ -101,62 +126,92 @@ inline bool Ranker<T, Behavior, Comp>::insert(const T& element)
     {
         if(distance(pos, ranking.end())==0)
             success = false;
+        DisposalPolicy()(*(--ranking.end()));
         ranking.erase(--ranking.end());
     }
     return success;   
 }
 
-template<class T, SameValueBehavior Behavior, class Comp>
-inline void Ranker<T, Behavior, Comp>::remove_first(const T& element)
+template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
+inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(const T& element)
 {
     iterator pos = find(ranking.begin(), ranking.end(), element);
+    DisposalPolicy()(element);
     ranking.erase(pos);
 }
 
-template<class T, SameValueBehavior Behavior, class Comp>
-inline void Ranker<T, Behavior, Comp>::remove_all(const T& element)
+template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
+inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_all(const T& element)
 {
+    iterator it = ranking.begin();
+    while(it != ranking.end())
+    {
+       if(element == *it)
+           DisposalPolicy()(*it);
+       ++it;
+    }
     ranking.remove(element);
 }
 
-template<class T, SameValueBehavior Behavior, class Comp>
-inline bool Ranker<T, Behavior, Comp>::empty() const
+template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
+inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(T* element)
+{
+    iterator pos = find(ranking.begin(), ranking.end(), element);
+    DisposalPolicy()(element);
+    ranking.erase(pos);
+}
+
+template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
+inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_all(T* element)
+{
+    DisposalPolicy()(element);
+    ranking.remove(element);
+}
+
+template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
+inline bool Ranker<T, Behavior, Comp, DisposalPolicy>::empty() const
 {
     return ranking.empty();
 }
 
-template<class T, SameValueBehavior Behavior, class Comp>
-inline size_t Ranker<T, Behavior, Comp>::size() const
+template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
+inline size_t Ranker<T, Behavior, Comp, DisposalPolicy>::size() const
 {
     return ranking.size();
 }
 
-template<class T, SameValueBehavior Behavior, class Comp>
-inline void Ranker<T, Behavior, Comp>::clear()
+template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
+inline void Ranker<T, Behavior, Comp, DisposalPolicy>::clear()
 {
+    iterator it = ranking.begin();
+    while(it != ranking.end())
+    {
+       DisposalPolicy()(*it);
+       ++it;
+    } 
     ranking.clear();
 }
 
-template<class T, SameValueBehavior Behavior, class Comp>
-inline typename std::list<T>::const_iterator Ranker<T, Behavior, Comp>::begin() const
+template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
+inline typename std::list<T>::const_iterator Ranker<T, Behavior, Comp, DisposalPolicy>::begin() const
 {
     return ranking.begin();
 }
 
-template<class T, SameValueBehavior Behavior, class Comp>
-inline typename std::list<T>::const_iterator Ranker<T, Behavior, Comp>::end() const
+template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
+inline typename std::list<T>::const_iterator Ranker<T, Behavior, Comp, DisposalPolicy>::end() const
 {
     return ranking.end();
 }
 
-template<class T, SameValueBehavior Behavior, class Comp>
-inline const T& Ranker<T, Behavior, Comp>::top() const
+template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
+inline const T& Ranker<T, Behavior, Comp, DisposalPolicy>::top() const
 {
     return *(ranking.begin());
 }
 
-template<class T, SameValueBehavior Behavior, class Comp>
-inline const T& Ranker<T, Behavior, Comp>::bottom() const
+template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
+inline const T& Ranker<T, Behavior, Comp, DisposalPolicy>::bottom() const
 {
     return *(--ranking.end());
 }

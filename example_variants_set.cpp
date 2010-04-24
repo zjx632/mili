@@ -31,21 +31,29 @@ int main ()
     int ie = 0;
     string is;
     float f;
+    ElementName str = "greeting";
     variantSet.insert("number", 3);
-    variantSet.insert("greeting", "hello");
+    variantSet.insert(str, "hello");
     variantSet.insert("temperature", 0.1f);
 
     try{
         variantSet.get_element("number", ie);
         cout << "number: " << ie << endl;
-        variantSet.get_element("greeting", is);
+
+        variantSet.get_element(str,is);
         cout << "greeting: " << is << endl;
+        cout << "greeting: " << variantSet.get_element<string>(str) << endl;
         variantSet.get_element("float", f);
-    }catch(BadElementName)
+    }
+    catch(BadElementName)
     {
         cerr << "Bad Element Name!" << endl;
     }
-    
+    catch(BadElementType)
+    {
+        cerr << "BadElementType!" << endl;
+    }
+
     variantSet.erase("temperature");
     cout << "size: " << variantSet.size() << endl;
     return 0;

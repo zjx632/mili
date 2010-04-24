@@ -1,5 +1,8 @@
 Version 16
 ============
+    * Added DisposalPolicy to Ranker.
+    * Added remove_first_from to container_utils for Ranker.
+    * Added remove_all_from to container_utils for Ranker.
     * Added VariantsSet library.
 
 Version 15
