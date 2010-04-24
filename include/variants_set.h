@@ -1,9 +1,8 @@
 /*
-Ranker: A minimal library that implements a set of variables.
-    Copyright (C) 2010  Daniel Gutson, FuDePAN
-                        Ezequiel S. Velez
-                        
-
+VariantsSet: A minimal library that implements a set of variables of heterogenic types.
+    Copyright (C) 2010 Ezequiel S. Velez  
+                       Daniel Gutson, FuDePAN
+                                        
     This file is part of the MiLi Minimalistic Library.
 
     MiLi is free software: you can redistribute it and/or modify
@@ -40,45 +39,44 @@ class VariantsSet
 
 public:
     /* returns the element called name */
+    
+    template <class T>
+    T get_element(const ElementName& name) const throw (BadElementType, BadElementName)
+    {
+        const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
+        T element;
+        if (it != elements.end())
+        {
+             if(!from_string<T>(it->second, element))
+                 throw BadElementType();
+        }else
+            throw BadElementName();
+        return element;
+    }
+
     template <class T>
     void get_element(const ElementName& name, T& element) const throw (BadElementType, BadElementName)
     {
         const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
         if (it != elements.end())
-            element = from_string<T>(it->second);
-        else
+        {
+             if(!from_string<T>(it->second, element))
+                 throw BadElementType();
+        }else
             throw BadElementName();
     }
-    
-    template <class T>
-    const T& get_element(const ElementName& name) const throw (BadElementType, BadElementName)
-    {
-        const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
-        if (it != elements.end())
-            return from_string<T>(it->second);
-        else
-            throw BadElementName();
-    }
+
     
     /* get_element, nothrow versions */
     template <class T>
-    bool get_element(const ElementName& name, T& element, const std::nothrow_t&) const
+    bool get_element(const ElementName& name, T& element, const std::nothrow_t&) const throw ()
     {
         const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
-        const bool success(it != elements.end());
-
-        if (success)
-            element = from_string<T>(it->second);
-        return success;
-    }
-    
-    template <class T>
-    const T& get_element(const ElementName& name, const std::nothrow_t&) const
-    {
-        const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
-
-        if (it != elements.end())
-            return from_string<T>(it->second);
+        const bool success_name(it != elements.end());
+        bool success_type(false);
+        if (success_name)
+            success_type = from_string<T>(it->second, element);
+        return (success_name && success_type);
     }
 
     /* inserts the element in the varianteSet. */
@@ -93,7 +91,7 @@ public:
         return elements.empty();
     }
     
-    void erase(const ElementName& name)
+    void erase(const ElementName& name) throw (BadElementName)
     {
         const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
         if(it != elements.end())
