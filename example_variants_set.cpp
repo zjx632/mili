@@ -45,11 +45,11 @@ int main ()
         cout << "greeting: " << variantSet.get_element<string>(str) << endl;
         variantSet.get_element("float", f);
     }
-    catch(BadElementName)
+    catch(const BadElementName&)
     {
         cerr << "Bad Element Name!" << endl;
     }
-    catch(BadElementType)
+    catch(const BadElementType&)
     {
         cerr << "BadElementType!" << endl;
     }

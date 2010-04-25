@@ -38,14 +38,14 @@ enum SameValueBehavior
 };
 
 template<class T>
-struct NullPolicy
+struct DisposalNullPolicy
 {
     void operator()(const T& element)
     {}
 };
 
 template<class T>
-struct DeletePolicy
+struct DisposalDeletePolicy
 {
     void operator()(const T& element)
     {
@@ -53,7 +53,7 @@ struct DeletePolicy
     }
 };
 
-template<class T,SameValueBehavior Behavior = AddAfterEqual, class Comp = std::less<T>, class DisposalPolicy = NullPolicy<T> >
+template<class T,SameValueBehavior Behavior = AddAfterEqual, class Comp = std::less<T>, class DisposalPolicy = DisposalNullPolicy<T> >
 class Ranker
 {
 private:
@@ -136,7 +136,7 @@ template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
 inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(const T& element)
 {
     iterator pos = find(ranking.begin(), ranking.end(), element);
-    DisposalPolicy()(element);
+    DisposalPolicy()(*pos);
     ranking.erase(pos);
 }
 
@@ -156,7 +156,7 @@ inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_all(const T& eleme
 template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
 inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(T* element)
 {
-    iterator pos = find(ranking.begin(), ranking.end(), element);
+    const iterator pos = find(ranking.begin(), ranking.end(), element);
     DisposalPolicy()(element);
     ranking.erase(pos);
 }
