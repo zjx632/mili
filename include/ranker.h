@@ -135,7 +135,7 @@ inline bool Ranker<T, Behavior, Comp, DisposalPolicy>::insert(const T& element)
 template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
 inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(const T& element)
 {
-    iterator pos = find(ranking.begin(), ranking.end(), element);
+    const iterator pos = find(ranking.begin(), ranking.end(), element);
     DisposalPolicy()(*pos);
     ranking.erase(pos);
 }
