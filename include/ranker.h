@@ -56,7 +56,7 @@ struct DisposalDeletePolicy
 template<class T,SameValueBehavior Behavior = AddAfterEqual, class Comp = std::less<T>, class DisposalPolicy = DisposalNullPolicy<T> >
 class Ranker
 {
-private:
+protected:
     typedef std::list<T> Ranking;
     typedef typename Ranking::iterator iterator;
 
