@@ -40,6 +40,11 @@ public:
         gettimeofday(&tv, NULL);
         seed = tv.tv_usec;
     }
+    
+    Randomizer(T min, T max, unsigned int seed)
+        : min(min), width(int(max-min)), seed(seed)
+    {
+    }
 
     T get()
     {
@@ -61,6 +66,12 @@ public:                                             \
         struct timeval tv;                          \
         gettimeofday(&tv, NULL);                    \
         seed = tv.tv_usec;                          \
+    }                                               \
+                                                    \
+    Randomizer(T min, T max, unsigned int seed)     \
+        : min(min), factor((max-min)/T(RAND_MAX))   \
+        , seed(seed)                                \
+    {                                               \
     }                                               \
                                                     \
     T get()                                         \
