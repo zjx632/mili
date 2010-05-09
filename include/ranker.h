@@ -37,6 +37,12 @@ enum SameValueBehavior
     AddAfterEqual
 };
 
+/* This value disables the DisposalPolicy */
+enum NoDisposalPolicy
+{
+    NoDisposalP
+};
+
 template<class T>
 struct DisposalNullPolicy
 {
@@ -86,6 +92,14 @@ public:
     inline void remove_first(T* element);
     /* Removes all occurrences of element. */ 
     inline void remove_all(T* element);
+    /* Removes the first occurrence of element without applying the DisposalPolicy. */  
+    inline void remove_first(const T& element, NoDisposalPolicy np);
+    /* Removes all occurrences of element without applying the DisposalPolicy. */ 
+    inline void remove_all(const T& element, NoDisposalPolicy np);
+    /* Removes the first occurrence of element without applying the DisposalPolicy. */  
+    inline void remove_first(T* element, NoDisposalPolicy np);
+    /* Removes all occurrences of element without applying the DisposalPolicy. */ 
+    inline void remove_all(T* element, NoDisposalPolicy np);
     /* Erases all of the elements. */
     inline void clear();
     /* True if the Ranker is empty. */
@@ -156,18 +170,52 @@ inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_all(const T& eleme
 template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
 inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(T* element)
 {
-    const iterator pos = find(ranking.begin(), ranking.end(), element);
-    DisposalPolicy()(element);
+    const iterator pos = find(ranking.begin(), ranking.end(), *element);
+    DisposalPolicy()(*element);
     ranking.erase(pos);
 }
 
 template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
 inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_all(T* element)
 {
-    DisposalPolicy()(element);
+    iterator it = ranking.begin();
+    while(it != ranking.end())
+    {
+       if(*element == *it)
+           DisposalPolicy()(*it);
+       ++it;
+    }
+    ranking.remove(*element);
+}
+
+/* version which does not apply DisposalPolicy */
+template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
+inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(const T& element, NoDisposalPolicy np)
+{
+    const iterator pos = find(ranking.begin(), ranking.end(), element);
+    ranking.erase(pos);
+}
+
+template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
+inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_all(const T& element, NoDisposalPolicy np)
+{
     ranking.remove(element);
 }
 
+template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
+inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(T* element, NoDisposalPolicy np)
+{
+    const iterator pos = find(ranking.begin(), ranking.end(), *element);
+    ranking.erase(pos);
+}
+
+template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
+inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_all(T* element, NoDisposalPolicy np)
+{
+    ranking.remove(*element);
+}
+
+/*---------------------------------------------------------------*/
 template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
 inline bool Ranker<T, Behavior, Comp, DisposalPolicy>::empty() const
 {
