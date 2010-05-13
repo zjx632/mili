@@ -117,6 +117,11 @@ public:
     _bchain<T> operator op (T rvalue) const                                 \
     {                                                                       \
         return _bchain<T>(rvalue, _last_eval && (_last_value op rvalue));   \
+    }                                                                       \
+    _bchain<T> operator op (const _bchain<T>& other) const                  \
+    {                                                                       \
+        return _bchain<T>(other._last_value,                                \
+               _last_eval && (_last_value op other._last_value));           \
     }
 
     BCHAIN_OPERATOR(<);
@@ -129,19 +134,19 @@ public:
 #undef BCHAIN_OPERATOR
 };
 
-#define BCHAIN_NONMEMBER_OPERATOR(op, rop)                      \
+#define BCHAIN_NONMEMBER_OPERATOR(op)                           \
 template <class T>                                              \
 inline _bchain<T> operator op (T value, const _bchain<T>& bch)  \
 {                                                               \
-    return bch rop value;                                       \
+    return _bchain<T>(value) op bch;                            \
 }
 
-BCHAIN_NONMEMBER_OPERATOR(<,>)
-BCHAIN_NONMEMBER_OPERATOR(>,<)
-BCHAIN_NONMEMBER_OPERATOR(<=,>=)
-BCHAIN_NONMEMBER_OPERATOR(>=,<=)
-BCHAIN_NONMEMBER_OPERATOR(==,==)
-BCHAIN_NONMEMBER_OPERATOR(!=,!=)
+BCHAIN_NONMEMBER_OPERATOR(<)
+BCHAIN_NONMEMBER_OPERATOR(>)
+BCHAIN_NONMEMBER_OPERATOR(<=)
+BCHAIN_NONMEMBER_OPERATOR(>=)
+BCHAIN_NONMEMBER_OPERATOR(==)
+BCHAIN_NONMEMBER_OPERATOR(!=)
 
 #undef BCHAIN_NONMEMBER_OPERATOR
 

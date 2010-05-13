@@ -6,6 +6,7 @@ Version 16
     * Added remove_first_from to container_utils for Ranker.
     * Added remove_all_from to container_utils for Ranker.
     * Added VariantsSet library.
+    * Fixed serious bug in mili::bchain.
 
 Version 15
 ============
