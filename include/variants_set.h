@@ -35,11 +35,40 @@ typedef std::string ElementName;
 
 class VariantsSet
 {
-    std::map<ElementName, std::string> elements;
+    typedef std::map<ElementName, std::string> VariantsSets;
+
+    VariantsSets elements;
 
 public:
+    /* typedef to simulate STL */ 
+    typedef VariantsSets::iterator iterator;
+    typedef VariantsSets::const_iterator const_iterator;
+    typedef VariantsSets::value_type value_type;
+    typedef VariantsSets::reference reference;
+    typedef VariantsSets::const_reference const_reference;
+
+    /* Returns a const_iterator pointing to the beginning of the VariantsSet. */
+    inline const_iterator begin() const
+    {
+        return elements.begin();
+    }
+    /* Returns a const_iterator pointing to the end of the VariantsSet. */ 
+    inline const_iterator end() const
+    {
+        return elements.end();
+    }
+    /* Returns a iterator pointing to the beginning of the VariantsSet. */
+    inline iterator begin()
+    {
+        return elements.begin();
+    }
+    /* Returns a iterator pointing to the end of the VariantsSet. */ 
+    inline iterator end()
+    {
+        return elements.end();
+    }
+
     /* returns the element called name */
-    
     template <class T>
     T get_element(const ElementName& name) const throw (BadElementType, BadElementName)
     {
