@@ -292,6 +292,7 @@ template <class T>
 struct ContainerAdapter
 {
     virtual void insert(const T& element) = 0;
+    virtual void clear() = 0;
     virtual ~ContainerAdapter(){}
 };
 
@@ -304,11 +305,21 @@ class ContainerAdapterImpl : public ContainerAdapter<T>
         insert_into(container, element);
     }
 
+    virtual void clear()
+    {
+        container.clear();
+    }
 public:
     ContainerAdapterImpl(Impl& cont)
         : container(cont)
     {}
 };
+
+template <class Impl>
+inline ContainerAdapterImpl<typename Impl::value_type, Impl> containerAdapter(Impl& container)
+{
+	return ContainerAdapterImpl<typename Impl::value_type, Impl>(container);
+}
 
 // CopyContainer -----------------------------
 template <class C1, class C2>

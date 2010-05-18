@@ -1,5 +1,7 @@
 Version 16
 ============
+    * Added method clear() and a global function containerAdapter()
+      to container_utils.h.
     * Added the ability to be iterated by AutonomousIterator to VariantsSet.
     * Added remove_all without applying the DisposalPolicy to Ranker.
     * Added remove_first without applying the DisposalPolicy to Ranker.
