@@ -23,6 +23,8 @@ template_info: A minimal library to obtain type information of a template
 
 #include <iostream>
 #include "include/mili.h"
+#include <vector>
+#include <set>
 
 struct S {};
 
@@ -31,5 +33,7 @@ int main()
     std::cout << bool(template_info<S>::is_native) << std::endl;
     std::cout << bool(template_info<char>::is_native) << std::endl;
     std::cout << bool(template_info<int>::is_same_size<long int>::value) << std::endl;
+    std::cout << bool(template_info<std::vector<int> >::is_container) << std::endl;
+    std::cout << bool(template_info<std::set<int> >::is_container) << std::endl;
     return 0;
 }
