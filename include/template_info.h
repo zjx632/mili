@@ -80,6 +80,34 @@ struct template_is_native
     };
 };
 
+template <class T>
+struct template_is_container
+{
+    enum {  value = 0   };
+};
+#define _declare_template_container(cont)       \
+template <class T>                              \
+struct template_is_container<std::cont<T> >     \
+{                                               \
+    enum {  value = 1   };                      \
+}
+#define _declare_template_container_assoc(cont) \
+template <class K, class D>                     \
+struct template_is_container<std::cont<K, D> >  \
+{                                               \
+    enum {  value = 1   };                      \
+}
+
+_declare_template_container(vector);
+_declare_template_container(list);
+_declare_template_container(set);
+_declare_template_container(multiset);
+_declare_template_container_assoc(map);
+_declare_template_container_assoc(multimap);
+
+#undef _declare_template_container
+#undef _declare_template_container_assoc
+
 // this encapsulates all
 template <class T>
 struct template_info
@@ -90,6 +118,7 @@ struct template_info
     enum { is_volatile  = template_is_volatile<T>::value };
     enum { is_integral  = template_is_integral<T>::value };
     enum { is_native    = template_is_native<T>::value };
+    enum { is_container = template_is_container<T>::value };
     enum { size = sizeof(T) };
 
     template <class T2>
