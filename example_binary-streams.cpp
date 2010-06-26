@@ -56,6 +56,19 @@ int main()
         std::cout<< v2[i] << ' ';
     std::cout << ']' << std::endl;
 
+    bos.clear();
+    
+    container_writer<int> cw( 5, bos );
+    
+    cw << 1 << 2 << 3 << 4 << 5;
+    
+    bis.clear();
+    bis.str( bos.str() );
+
+    std::vector<int> v3;
+    bis >> v3;
+    
+    std::cout << '[' << v3[0] << ',' <<v3[1] << ',' <<v3[2] << ',' <<v3[3] << ',' <<v3[4] << "]\n";
 // To check for no-pointer compile error uncomment these lines:
 /*
     int *p = new int(1);
