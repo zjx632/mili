@@ -179,6 +179,36 @@ class bistream
         std::size_t _pos;
 };
 
+template<class T>
+class container_writer
+{
+    public:
+        container_writer( size_t size, bostream& bos) :
+            _elements_left( size ),
+            _bos( bos )
+        {
+            _bos << uint32_t( size );
+        }
+        
+        container_writer& operator<<(T element)
+        {
+            --_elements_left;
+            
+            _bos << element;
+            
+            return *this;
+        }
+        
+        ~container_writer()
+        {
+            assert( _elements_left == 0 ); //You should have inserted every element you said you would
+        }
+    private:
+        size_t    _elements_left;
+        bostream& _bos;
+};
+
+
 NAMESPACE_END
 
 #endif
