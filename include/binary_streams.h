@@ -27,6 +27,7 @@ binary_streams: A minimal library supporting encoding of different data
 #include <string>
 #include <assert.h>
 #include <stdint.h>
+#include <stdexcept>
 
 #include "compile_assert.h"
 
@@ -39,9 +40,46 @@ binary_streams: A minimal library supporting encoding of different data
 NAMESPACE_BEGIN
 
 declare_static_assert(pointers_not_allowed);
+declare_static_assert(must_use_container);
+
+struct container_not_finished : public std::runtime_error
+{
+    container_not_finished( const char* msg ) :
+        std::runtime_error( msg )
+    {
+    }
+};
+
+struct stream_too_small : public std::runtime_error
+{
+    stream_too_small( const char* msg ) :
+        std::runtime_error( msg )
+    {
+    }
+};
+
+struct skip_excess : public std::runtime_error
+{
+    skip_excess( const char* msg ) :
+    std::runtime_error( msg )
+    {
+    }
+};
+
+struct type_too_large : public std::runtime_error
+{
+    type_too_large( const char* msg ) :
+    std::runtime_error( msg )
+    {
+    }
+};
 
 class bostream
 {
+    template<class T, bool IsContainer> struct _inserter_helper;
+
+    template<class T, bool IsContainer> friend struct _inserter_helper;
+
     public:
         bostream() :
             _s()
@@ -49,7 +87,7 @@ class bostream
         }
 
         template <class T>
-        bostream& operator<< (T x)
+        bostream& operator<< (const T& x)
         {
             // Disallow pointers in binary streams.
             template_compile_assert(!template_is_pointer<T>::value, pointers_not_allowed);
@@ -60,26 +98,17 @@ class bostream
             _s.append(reinterpret_cast<const char*>(&sz), sizeof(size_t));
             _s += s;
 #endif
-            _s.append(reinterpret_cast<char*>(&x), sizeof(T));
+
+            _inserter_helper<T, template_is_container<T>::value >::call(this, x);
             return *this;
         }
 
         /* Inserting a string inserts its size first. */
+
         bostream& operator<< (const std::string& s)
         {
-            (*this) << uint32_t( s.size() );
+            (*this) << uint32_t(s.size());
             _s += s;
-            return *this;
-        }
-
-        template <class Other>
-        bostream& operator<< (const std::vector<Other>& vec)
-        {
-            const uint32_t size(vec.size());
-            (*this) << size;
-            for (size_t i(0); i < size; ++i)
-                (*this) << vec[i];
-
             return *this;
         }
 
@@ -88,6 +117,7 @@ class bostream
             const std::string s(cs);
             return operator<< (s);
         }
+
 
         const std::string& str() const
         {
@@ -105,6 +135,12 @@ class bostream
 
 class bistream
 {
+    template<class T> friend class container_reader;
+
+    template<class T, bool IsContainer> struct _extract_helper;
+    
+    template<class T, bool IsContainer> friend struct _extract_helper;
+    
     public:
         bistream(const std::string& str) :
             _s(str),
@@ -140,8 +176,9 @@ class bistream
                 std::cerr << s << " | " << name << std::endl;
             assert( s == name);
 #endif
-            assert(_s.size() >= _pos + sizeof(x));
-            _pos += _s.copy(reinterpret_cast<char*>(&x), sizeof(x),_pos);
+
+            _extract_helper<T, template_is_container<T>::value >::call(this, x);
+
             return *this;
         }
 
@@ -149,22 +186,13 @@ class bistream
         {
             uint32_t size;
             (*this) >> size;
-            assert(_s.size() >= size+_pos);
-            str  = _s.substr(_pos,size);
+            
+            if( _s.size() < size + _pos )
+                throw type_too_large("The string can't be read from the stream.");
+            
+            str   = _s.substr(_pos,size);
+
             _pos += size;
-            return *this;
-        }
-
-        template <class Other>
-        bistream& operator>> (std::vector<Other>& vec)
-        {
-            uint32_t size;
-            (*this) >> size;
-            assert(_s.size() >= (size * sizeof(Other)) + _pos);
-            vec.resize(size);
-            for (size_t i(0); i < size; i++)
-                (*this) >> vec[i];
-
             return *this;
         }
 
@@ -189,23 +217,132 @@ class container_writer
         {
             _bos << uint32_t( size );
         }
-        
+
         container_writer& operator<<(T element)
         {
+            assert( _elements_left > 0 );
             --_elements_left;
-            
+
             _bos << element;
-            
+
             return *this;
         }
-        
+
         ~container_writer()
         {
-            assert( _elements_left == 0 ); //You should have inserted every element you said you would
+            if ( _elements_left != 0 )
+                throw container_not_finished("More elements were expected to be written.");
         }
     private:
         size_t    _elements_left;
         bostream& _bos;
+};
+
+template<class T>
+class container_reader
+{
+    public:
+        container_reader( bistream& bis) :
+            _elements_left( 0 ),
+            _bis( bis )
+        {
+            _bis >> _elements_left;
+            
+            if ( (_bis._pos + sizeof(T)*_elements_left) > _bis._s.size() )
+                throw stream_too_small("Stream is too small for read size (Maybe not a container.)");
+        }
+
+        container_reader& operator>>(T& element)
+        {
+            assert( _elements_left > 0 );
+            --_elements_left;
+
+            _bis >> element;
+
+            return *this;
+        }
+
+        void skip(size_t elements = 1)
+        {
+            if ( elements > _elements_left )
+                throw skip_excess("Trying to skip too much.");
+
+            _elements_left -= elements;
+
+            _bis._pos += sizeof(T) * elements;
+        }
+
+        void finished()
+        {
+            skip( _elements_left );
+            _elements_left = 0;
+        }
+
+        ~container_reader()
+        {
+            if ( _elements_left != 0 )
+                finished();
+        }
+
+    private:
+        size_t    _elements_left;
+        bistream& _bis;
+};
+
+template<class T>
+struct bostream::_inserter_helper<T, false>
+{
+    static void call(bostream* bos, const T& x)
+    {
+        bos->_s.append(reinterpret_cast<const char*>(&x), sizeof(T));
+    }
+};
+
+template<class T>
+struct bostream::_inserter_helper<T, true>
+{
+    static void call(bostream* bos, const T& cont)
+    {
+        const uint32_t size(cont.size());
+        (*bos) << size;
+        
+        typename T::const_iterator it( cont.begin() );
+        
+        for (; it != cont.end(); ++it)
+            (*bos) << *it;
+    }
+};
+
+template<class T>
+struct bistream::_extract_helper<T, false>
+{
+    static void call(bistream* bis, T& x)
+    {
+        if( bis->_s.size() < bis->_pos + sizeof(x) )
+            throw type_too_large("The type is too large to fit the stream.");
+        
+        bis->_pos += bis->_s.copy(reinterpret_cast<char*>(&x), sizeof(x), bis->_pos);   
+    }
+};
+
+template<class T>
+struct bistream::_extract_helper<T, true>
+{
+    static void call(bistream* bis, T& cont)
+    {
+        uint32_t size;
+        (*bis) >> size;
+
+        if ( bis->_s.size() < ( (size * sizeof(typename T::value_type)) + bis->_pos) )
+            throw stream_too_small("Stream is too small for read size (Maybe not a container.)");
+            
+        for (size_t i(0); i < size; i++)
+        {
+            typename T::value_type elem;
+            (*bis) >> elem;
+            cont.push_back( elem );
+        }
+    }
 };
 
 
