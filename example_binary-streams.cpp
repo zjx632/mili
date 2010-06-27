@@ -43,7 +43,6 @@ int main()
 
     std::vector<int> v2;
 
-
     bis >> nums[0] >> nums[1] >> nums[2] >> str1 >> v2 >> nums[3] >> str2;
 
     for (int i=0; i < 4 ; ++i)
@@ -57,18 +56,48 @@ int main()
     std::cout << ']' << std::endl;
 
     bos.clear();
-    
+
     container_writer<int> cw( 5, bos );
-    
+
     cw << 1 << 2 << 3 << 4 << 5;
-    
+
     bis.clear();
     bis.str( bos.str() );
 
     std::vector<int> v3;
     bis >> v3;
-    
+
     std::cout << '[' << v3[0] << ',' <<v3[1] << ',' <<v3[2] << ',' <<v3[3] << ',' <<v3[4] << "]\n";
+
+    std::list<int> list;
+    list.push_back(1);
+    list.push_back(2);
+    list.push_back(3);
+
+    bos.clear();
+    bos << list;
+
+    bis.clear();
+    bis.str( bos.str() );
+
+    std::vector<int> v4;
+    bis >> v4;
+    std::cout << '[' << v3[0] << ',' <<v3[1] << ',' <<v3[2] << "]\n";
+
+    bos.clear();
+    bos << list;
+
+    bis.clear();
+    bis.str( bos.str() );
+
+    container_reader<int> reader( bis );
+
+    int a;
+    reader.skip();
+    reader >> a;
+    reader.finished();
+
+    std::cout << "2nd element: " << a << "\n";
 // To check for no-pointer compile error uncomment these lines:
 /*
     int *p = new int(1);
