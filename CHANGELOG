@@ -2,7 +2,7 @@ Version 16.1
 =============
     * Added template_is_container to template_info
     * Randomizer moved from arith_utils.h to a new file random_gen.h
-    * [TODO] Fixed compiler error in Windows due to Randomizer's use of Unix functions.
+    * Fixed compiler error in Windows due to Randomizer's use of Unix functions.
     * Improved binary_streams:
         - Added manual container writers.
         - Added manual container readers.

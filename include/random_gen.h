@@ -36,18 +36,18 @@ NAMESPACE_BEGIN
 class TimeBasedSeedPolicy
 {
 protected:
-	unsigned int seed;
+    unsigned int seed;
 
-	TimeBasedSeedPolicy(unsigned int seed)
-		: seed(seed)
-	{}
+    TimeBasedSeedPolicy(unsigned int seed)
+        : seed(seed)
+    {}
 
-	TimeBasedSeedPolicy()
-	{
+    TimeBasedSeedPolicy()
+    {
 #ifdef _WIN32
         FILETIME ft;
         GetSystemTimeAsFileTime(&ft);
-		seed = ft.dwLowDateTime;
+        seed = ft.dwLowDateTime;
 #else
         struct timeval tv;
         gettimeofday(&tv, NULL);
@@ -59,39 +59,39 @@ protected:
 #ifndef _WIN32
 struct AutonomousSeedPolicy : TimeBasedSeedPolicy
 {
-	AutonomousSeedPolicy(unsigned int seed)
-		: TimeBasedSeedPolicy(seed)
-	{}
+    AutonomousSeedPolicy(unsigned int seed)
+        : TimeBasedSeedPolicy(seed)
+    {}
 
-	AutonomousSeedPolicy()
-		: TimeBasedSeedPolicy()
-	{}
+    AutonomousSeedPolicy()
+        : TimeBasedSeedPolicy()
+    {}
 
-	int get()
-	{
-		return rand_r(&seed);
-	}
+    int get()
+    {
+        return rand_r(&seed);
+    }
 };
 #endif
 
 struct GlobalSeedPolicy : TimeBasedSeedPolicy
 {
-	GlobalSeedPolicy()
-		: TimeBasedSeedPolicy()
-	{
-		srand(seed);
-	}
+    GlobalSeedPolicy()
+        : TimeBasedSeedPolicy()
+    {
+        srand(seed);
+    }
 
-	GlobalSeedPolicy(unsigned int seed)
-		: TimeBasedSeedPolicy(seed)
-	{
-		srand(seed);
-	}
+    GlobalSeedPolicy(unsigned int seed)
+        : TimeBasedSeedPolicy(seed)
+    {
+        srand(seed);
+    }
 
-	int get()
-	{
-		return rand();
-	}
+    int get()
+    {
+        return rand();
+    }
 };
 
 #ifdef _WIN32
@@ -112,7 +112,7 @@ public:
     {}
     
     Randomizer(T min, T max, unsigned int seed)
-        : policy(seed), min(min), width(int(max-min)), seed(seed)
+        : policy(seed), min(min), width(int(max-min))
     {}
 
     T get()
@@ -122,7 +122,7 @@ public:
 };
 
 #define SPECIALIZE_RND(T)                           \
-template <class SeedPolicy>     \
+template <class SeedPolicy>                         \
 class Randomizer<T, SeedPolicy>                     \
 {                                                   \
     SeedPolicy policy;                              \
