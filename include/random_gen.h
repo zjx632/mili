@@ -22,61 +22,128 @@ random_gen.h: A minimal library for generating random numbers.
 #define RANDOM_GEN_H
 
 #include <stdlib.h>
-#include <sys/time.h>
+#ifdef _WIN32
+#    include <Windows.h>
+#    include <time.h>
+#    undef min
+#    undef max
+#else
+#    include <sys/time.h>
+#endif
 
 NAMESPACE_BEGIN
 
-template <class T>
+class TimeBasedSeedPolicy
+{
+protected:
+	unsigned int seed;
+
+	TimeBasedSeedPolicy(unsigned int seed)
+		: seed(seed)
+	{}
+
+	TimeBasedSeedPolicy()
+	{
+#ifdef _WIN32
+        FILETIME ft;
+        GetSystemTimeAsFileTime(&ft);
+		seed = ft.dwLowDateTime;
+#else
+        struct timeval tv;
+        gettimeofday(&tv, NULL);
+        seed = tv.tv_usec;
+#endif
+	}
+};
+
+#ifndef _WIN32
+struct AutonomousSeedPolicy : TimeBasedSeedPolicy
+{
+	AutonomousSeedPolicy(unsigned int seed)
+		: TimeBasedSeedPolicy(seed)
+	{}
+
+	AutonomousSeedPolicy()
+		: TimeBasedSeedPolicy()
+	{}
+
+	int get()
+	{
+		return rand_r(&seed);
+	}
+};
+#endif
+
+struct GlobalSeedPolicy : TimeBasedSeedPolicy
+{
+	GlobalSeedPolicy()
+		: TimeBasedSeedPolicy()
+	{
+		srand(seed);
+	}
+
+	GlobalSeedPolicy(unsigned int seed)
+		: TimeBasedSeedPolicy(seed)
+	{
+		srand(seed);
+	}
+
+	int get()
+	{
+		return rand();
+	}
+};
+
+#ifdef _WIN32
+typedef GlobalSeedPolicy DefaultSeedPolicy;
+#else
+typedef AutonomousSeedPolicy DefaultSeedPolicy;
+#endif
+
+template <class T, class SeedPolicy = DefaultSeedPolicy>
 class Randomizer
 {
-    unsigned int seed;
+    SeedPolicy policy;
     const T min;
     const int width;
 public:
     Randomizer(T min, T max)
-        : min(min), width(int(max-min))
-    {
-        struct timeval tv;
-        gettimeofday(&tv, NULL);
-        seed = tv.tv_usec;
-    }
+        : policy(), min(min), width(int(max-min))
+    {}
     
     Randomizer(T min, T max, unsigned int seed)
-        : min(min), width(int(max-min)), seed(seed)
-    {
-    }
+        : policy(seed), min(min), width(int(max-min)), seed(seed)
+    {}
 
     T get()
     {
-        return T(rand_r(&seed) % width) + min;
+        return T(policy.get() % width) + min;
     }
 };
 
 #define SPECIALIZE_RND(T)                           \
-template <>                                         \
-class Randomizer<T>                                 \
+template <class SeedPolicy>     \
+class Randomizer<T, SeedPolicy>                     \
 {                                                   \
-    unsigned int seed;                              \
+    SeedPolicy policy;                              \
     const T min;                                    \
     const T factor;                                 \
 public:                                             \
     Randomizer(T min, T max)                        \
-        : min(min), factor((max-min)/T(RAND_MAX))   \
+        : policy(),                                 \
+          min(min), factor((max-min)/T(RAND_MAX))   \
     {                                               \
-        struct timeval tv;                          \
-        gettimeofday(&tv, NULL);                    \
-        seed = tv.tv_usec;                          \
     }                                               \
                                                     \
     Randomizer(T min, T max, unsigned int seed)     \
-        : min(min), factor((max-min)/T(RAND_MAX))   \
-        , seed(seed)                                \
+        : policy(seed),                             \
+          min(min), factor((max-min)/T(RAND_MAX))   \
     {                                               \
     }                                               \
                                                     \
     T get()                                         \
     {                                               \
-        return T(rand_r(&seed)) * factor + min;     \
+        return T(policy.get()) * factor + min;      \
     }                                               \
 }
 
