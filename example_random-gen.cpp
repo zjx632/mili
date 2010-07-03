@@ -1,5 +1,5 @@
 /*
-arith_utils: A minimal library with arithmetic utilities.
+example_random: A minimal library for generating random numbers.
     Copyright (C) 2010  Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
