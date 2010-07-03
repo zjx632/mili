@@ -21,69 +21,7 @@ arith_utils.h: A minimal library with arithmetic utilities.
 #ifndef ARITH_UTILS_H
 #define ARITH_UTILS_H
 
-#include <stdlib.h>
-#include <sys/time.h>
-
 NAMESPACE_BEGIN
-
-template <class T>
-class Randomizer
-{
-    unsigned int seed;
-    const T min;
-    const int width;
-public:
-    Randomizer(T min, T max)
-        : min(min), width(int(max-min))
-    {
-        struct timeval tv;
-        gettimeofday(&tv, NULL);
-        seed = tv.tv_usec;
-    }
-    
-    Randomizer(T min, T max, unsigned int seed)
-        : min(min), width(int(max-min)), seed(seed)
-    {
-    }
-
-    T get()
-    {
-        return T(rand_r(&seed) % width) + min;
-    }
-};
-
-#define SPECIALIZE_RND(T)                           \
-template <>                                         \
-class Randomizer<T>                                 \
-{                                                   \
-    unsigned int seed;                              \
-    const T min;                                    \
-    const T factor;                                 \
-public:                                             \
-    Randomizer(T min, T max)                        \
-        : min(min), factor((max-min)/T(RAND_MAX))   \
-    {                                               \
-        struct timeval tv;                          \
-        gettimeofday(&tv, NULL);                    \
-        seed = tv.tv_usec;                          \
-    }                                               \
-                                                    \
-    Randomizer(T min, T max, unsigned int seed)     \
-        : min(min), factor((max-min)/T(RAND_MAX))   \
-        , seed(seed)                                \
-    {                                               \
-    }                                               \
-                                                    \
-    T get()                                         \
-    {                                               \
-        return T(rand_r(&seed)) * factor + min;     \
-    }                                               \
-}
-
-SPECIALIZE_RND(float);
-SPECIALIZE_RND(double);
-
-#undef SPECIALIZE_RND
 
 template <class T>
 class _bchain

@@ -1,6 +1,6 @@
 /*
 arith_utils: A minimal library with arithmetic utilities.
-    Copyright (C) 2009  Daniel Gutson, FuDePAN
+    Copyright (C) 2010  Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -25,16 +25,10 @@ arith_utils: A minimal library with arithmetic utilities.
 
 int main()
 {
-    if (bchain(1) < 2 < 3)
-        std::cout << "1 < 2 < 3 -> TRUE" << std::endl;
+    Randomizer<float> rnd(10.0f, 11.0f);
 
-    int x(10);
-    if (5 >= bchain(4) < 10 == x)
-        std::cout << "5 >= 4 < 10 == x -> TRUE" << std::endl;
+    std::cout << rnd.get() << std::endl;
 
-    if (in_range(3.141692f, 10.0f, 11.0f))
-        return EXIT_SUCCESS;
-    else
-        return EXIT_FAILURE;
+    return 0;
 }
 

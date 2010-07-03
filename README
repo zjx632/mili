@@ -28,6 +28,7 @@ Basic usage:
 	* fast_list:		NO_FAST_LIST
 	* ranker:		NO_RANKER
 	* variants_set:		NO_VARIANTS_SET
+	* random_gen:		NO_RANDOM_GEN
 
 You might want to copy the include files in an include directory.
 If so, just run the 'install.sh' script:

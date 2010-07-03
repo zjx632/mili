@@ -87,6 +87,10 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "arith_utils.h"
 #endif
 
+#ifndef NO_RANDOM_GEN
+#   include "random_gen.h"
+#endif
+
 #ifndef NO_LOOP_UNROLLING
 #   include "loop_unrolling.h"
 #endif
