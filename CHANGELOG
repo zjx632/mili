@@ -1,5 +1,5 @@
-Version 16.1
-=============
+Version 17
+===========
     * Added template_is_container to template_info
     * Randomizer moved from arith_utils.h to a new file random_gen.h
     * Fixed compiler error in Windows due to Randomizer's use of Unix functions.
@@ -8,6 +8,7 @@ Version 16.1
         - Added manual container readers.
         - Added generic container support.
         - Included a runtime_error exception hierarchy.
+    * Added generic_exception library
 
 Version 16
 ============
