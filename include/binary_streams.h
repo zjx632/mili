@@ -42,36 +42,48 @@ NAMESPACE_BEGIN
 declare_static_assert(pointers_not_allowed);
 declare_static_assert(must_use_container);
 
-struct container_not_finished : public std::runtime_error
+enum BstreamErrors
 {
-    container_not_finished( const char* msg ) :
-        std::runtime_error( msg )
-    {
-    }
+    container_not_finished,
+    container_finished,
+    stream_too_small,
+    skip_excess,
+    type_too_large
 };
 
-struct stream_too_small : public std::runtime_error
+template <BstreamErrors cause>
+struct bstream_exception;
+
+template <>
+struct bstream_exception<container_not_finished>  : public std::runtime_error
 {
-    stream_too_small( const char* msg ) :
-        std::runtime_error( msg )
-    {
-    }
+    bstream_exception() : std::runtime_error("More elements were expected to be written.") {}
 };
 
-struct skip_excess : public std::runtime_error
+template <>
+struct bstream_exception<container_finished>  : public std::runtime_error
 {
-    skip_excess( const char* msg ) :
-    std::runtime_error( msg )
-    {
-    }
+    bstream_exception() : std::runtime_error("The container was finished already.") {}
 };
 
-struct type_too_large : public std::runtime_error
+template <>
+struct bstream_exception<stream_too_small>  : public std::runtime_error
 {
-    type_too_large( const char* msg ) :
-    std::runtime_error( msg )
-    {
-    }
+    bstream_exception() :
+        std::runtime_error("Stream is too small for read size, maybe not a container.")
+    {}
+};
+
+template <>
+struct bstream_exception<skip_excess>  : public std::runtime_error
+{
+    bstream_exception() : std::runtime_error("Trying to skip too much.") {}
+};
+
+template <>
+struct bstream_exception<type_too_large>  : public std::runtime_error
+{
+    bstream_exception() : std::runtime_error("The string can't be read from the stream.") {}
 };
 
 class bostream
@@ -138,9 +150,9 @@ class bistream
     template<class T> friend class container_reader;
 
     template<class T, bool IsContainer> struct _extract_helper;
-    
+
     template<class T, bool IsContainer> friend struct _extract_helper;
-    
+
     public:
         bistream(const std::string& str) :
             _s(str),
@@ -186,10 +198,10 @@ class bistream
         {
             uint32_t size;
             (*this) >> size;
-            
+
             if( _s.size() < size + _pos )
-                throw type_too_large("The string can't be read from the stream.");
-            
+                throw bstream_exception<type_too_large>();
+
             str   = _s.substr(_pos,size);
 
             _pos += size;
@@ -218,9 +230,11 @@ class container_writer
             _bos << uint32_t( size );
         }
 
-        container_writer& operator<<(T element)
+        container_writer& operator<<(const T& element)
         {
-            assert( _elements_left > 0 );
+            if ( _elements_left == 0 )
+                throw bstream_exception<container_finished>();
+
             --_elements_left;
 
             _bos << element;
@@ -231,7 +245,7 @@ class container_writer
         ~container_writer()
         {
             if ( _elements_left != 0 )
-                throw container_not_finished("More elements were expected to be written.");
+                throw bstream_exception<container_not_finished>();
         }
     private:
         size_t    _elements_left;
@@ -247,9 +261,9 @@ class container_reader
             _bis( bis )
         {
             _bis >> _elements_left;
-            
+
             if ( (_bis._pos + sizeof(T)*_elements_left) > _bis._s.size() )
-                throw stream_too_small("Stream is too small for read size (Maybe not a container.)");
+                throw bstream_exception<stream_too_small>();
         }
 
         container_reader& operator>>(T& element)
@@ -265,7 +279,7 @@ class container_reader
         void skip(size_t elements = 1)
         {
             if ( elements > _elements_left )
-                throw skip_excess("Trying to skip too much.");
+                throw bstream_exception<skip_excess>();
 
             _elements_left -= elements;
 
@@ -305,9 +319,9 @@ struct bostream::_inserter_helper<T, true>
     {
         const uint32_t size(cont.size());
         (*bos) << size;
-        
+
         typename T::const_iterator it( cont.begin() );
-        
+
         for (; it != cont.end(); ++it)
             (*bos) << *it;
     }
@@ -319,8 +333,8 @@ struct bistream::_extract_helper<T, false>
     static void call(bistream* bis, T& x)
     {
         if( bis->_s.size() < bis->_pos + sizeof(x) )
-            throw type_too_large("The type is too large to fit the stream.");
-        
+            throw bstream_exception<type_too_large>();
+
         bis->_pos += bis->_s.copy(reinterpret_cast<char*>(&x), sizeof(x), bis->_pos);   
     }
 };
@@ -334,8 +348,8 @@ struct bistream::_extract_helper<T, true>
         (*bis) >> size;
 
         if ( bis->_s.size() < ( (size * sizeof(typename T::value_type)) + bis->_pos) )
-            throw stream_too_small("Stream is too small for read size (Maybe not a container.)");
-            
+            throw bstream_exception<stream_too_small>();
+
         for (size_t i(0); i < size; i++)
         {
             typename T::value_type elem;
