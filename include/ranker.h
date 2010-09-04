@@ -241,13 +241,13 @@ inline void Ranker<T, Behavior, Comp, DisposalPolicy>::clear()
 }
 
 template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline typename std::list<T>::const_iterator Ranker<T, Behavior, Comp, DisposalPolicy>::begin() const
+inline typename Ranker<T, Behavior, Comp, DisposalPolicy>::const_iterator Ranker<T, Behavior, Comp, DisposalPolicy>::begin() const
 {
     return ranking.begin();
 }
 
 template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline typename std::list<T>::const_iterator Ranker<T, Behavior, Comp, DisposalPolicy>::end() const
+inline typename Ranker<T, Behavior, Comp, DisposalPolicy>::const_iterator Ranker<T, Behavior, Comp, DisposalPolicy>::end() const
 {
     return ranking.end();
 }
