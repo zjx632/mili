@@ -9,8 +9,8 @@ Version 17
         - Added generic container support.
         - Included a runtime_error exception hierarchy.
     * Added generic_exception library
-		* Changing Ranker::begin and Ranker::end method definitions in ranker.h, 
-		  to support gcc 4.5.1.
+    * Changing Ranker::begin and Ranker::end method definitions in ranker.h, 
+      to support gcc 4.5.1.
 
 Version 16
 ============
