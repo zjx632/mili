@@ -111,6 +111,11 @@ class bostream
             return operator<< (s);
         }
 
+        void operator += (const bostream& other)
+        {
+            _s += other.str();
+        }
+
 
         const std::string& str() const
         {

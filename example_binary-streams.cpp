@@ -35,6 +35,10 @@ int main()
     bostream bos;
     bos << 1 << 2 << 3 << std::string("Hello ") << v << 4 << std::string("World!");
 
+    bostream bos2;
+    bos2 << 100;
+    bos +=  bos2;
+
     bistream bis(bos.str());
 
     int         nums[4];
