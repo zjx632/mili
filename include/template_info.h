@@ -80,6 +80,19 @@ struct template_is_native
     };
 };
 
+template<class T>
+struct template_is_string
+{
+    enum { value = 0 };
+};
+
+template<>
+struct template_is_string< std::string >
+{
+    enum { value = 1 };
+};
+
+
 template <class T>
 struct template_is_container
 {

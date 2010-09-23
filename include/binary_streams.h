@@ -32,6 +32,7 @@ binary_streams: A minimal library supporting encoding of different data
 #include "compile_assert.h"
 #include "generic_exception.h"
 #include "template_info.h"
+#include "container_utils.h"
 
 #ifdef BSTREAMS_DEBUG
 #   include <typeinfo>
@@ -333,18 +334,21 @@ struct bistream::_extract_helper<T, true>
         uint32_t size;
         (*bis) >> size;
 
-        if ( bis->_s.size() < ( (size * sizeof(typename T::value_type)) + bis->_pos) )
-            throw stream_too_small();
+        // If the elements of the container are not containers themselves (or strings),
+        // then check there is enough rooom.
+        if ( (! template_is_container< typename T::value_type >::value ) &&
+             (! template_is_string< typename T::value_type >::value )  )
+            if ( bis->_s.size() < ( (size * sizeof(typename T::value_type)) + bis->_pos) )
+                throw stream_too_small();
 
         for (size_t i(0); i < size; i++)
         {
             typename T::value_type elem;
             (*bis) >> elem;
-            cont.push_back( elem );
+            insert_into( cont, elem );
         }
     }
 };
-
 
 NAMESPACE_END
 
