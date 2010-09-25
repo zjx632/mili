@@ -99,7 +99,7 @@ class bostream
         bostream& operator<< (const T& x)
         {
             // Disallow pointers in binary streams.
-            template_compile_assert(!template_is_pointer<T>::value, pointers_not_allowed);
+            template_compile_assert(!template_info<T>::is_pointer, pointers_not_allowed);
 
 #ifdef BSTREAMS_DEBUG
             const std::string s(typeid(T).name());
@@ -108,7 +108,7 @@ class bostream
             _s += s;
 #endif
 
-            _inserter_helper<T, template_is_container<T>::value >::call(this, x);
+            _inserter_helper<T, template_info<T>::is_container >::call(this, x);
             return *this;
         }
 
@@ -211,7 +211,7 @@ class bistream
         bistream& operator >> (T& x)
         {
             // Disallow pointers in binary streams.
-            template_compile_assert(!template_is_pointer<T>::value, pointers_not_allowed);
+            template_compile_assert(!template_info<T>::is_pointer, pointers_not_allowed);
 
 #ifdef BSTREAMS_DEBUG
             std::string s(typeid(T).name());
@@ -224,7 +224,7 @@ class bistream
             assert( s == name);
 #endif
 
-            _extract_helper<T, template_is_container<T>::value >::call(this, x);
+            _extract_helper<T, template_info<T>::is_container >::call(this, x);
 
             return *this;
         }
@@ -458,8 +458,8 @@ struct bistream::_extract_helper<T, true>
 
         // If the elements of the container are not containers themselves (or strings),
         // then check there is enough rooom.
-        if ( (! template_is_container< typename T::value_type >::value ) &&
-             (! template_is_string< typename T::value_type >::value )  )
+        if ( (! template_info< typename T::value_type >::is_container ) &&
+             (! template_info< typename T::value_type >::is_basic_string )  )
             if ( bis->_s.size() < ( (size * sizeof(typename T::value_type)) + bis->_pos) )
                 throw stream_too_small();
 

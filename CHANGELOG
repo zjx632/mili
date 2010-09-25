@@ -1,5 +1,6 @@
 Version 17
 ===========
+    * Added is_basic_string to template_info.
     * Added bostream concatenation feature to binary_streams.
     * Added template_is_container to template_info
     * Randomizer moved from arith_utils.h to a new file random_gen.h
