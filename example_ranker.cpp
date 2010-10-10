@@ -26,8 +26,34 @@ example_ranker: An example that uses MiLi's Ranker.
 using namespace std;
 
 typedef Ranker<int, AddBeforeEqual> Ranking;
+typedef UniqueRanker<int> UniqueRanking;
 
-int main ()
+template <class T>
+void print (CAutonomousIterator<T> it)
+{
+    while(!it.end())
+    {
+        cout << *it << endl;
+        ++it;
+    }    
+}
+
+void unique_ranker_test ()
+{
+    UniqueRanking UR(5);
+    UR.insert(1);
+    UR.insert(1);
+    UR.insert(3);
+    UR.insert(6);
+    UR.insert(2); 
+    UR.insert(1);
+    UR.insert(5); 
+    UR.insert(4); 
+    CAutonomousIterator<UniqueRanking> it(UR);
+    print<UniqueRanking> (it);   
+}
+
+void ranker_test ()
 {
     const size_t TOP = 5;
     const int I = -10;
@@ -40,38 +66,40 @@ int main ()
     R.insert(I);
 
     CAutonomousIterator<Ranking> it(R);
-    while(!it.end())
-    {
-        cout << *it << endl;
-        ++it;
-    }
+    print<Ranking> (it);
 
     cout << "-- Insert 0 and 50 --" << endl;
     R.insert(0);
-    cout << R.insert(50) << endl;              /* will print 0 (false) */
+    R.insert(50);
 
     CAutonomousIterator<Ranking> it1(R);
-    while(!it1.end())
-    {
-        cout << *it1 << endl;
-        ++it1;
-    }
+    print<Ranking> (it1);
     
     R.remove_all(I);
     cout << "-- Remove All "<< I << " --" << endl;
 
-    Ranking::const_iterator it2 = R.begin();
-    while(it2 != R.end())
-    {
-        cout << *it2 << endl;
-        ++it2;
-    }
+    CAutonomousIterator<Ranking> it2(R);
+    print<Ranking> (it2);
     cout << "----- size: " << R.size() << endl;
     cout << "top: " << R.top() << " - bottom: "<< R.bottom() << endl;    
 
     if(!R.empty()) R.clear();
 
     cout << "size after clear: " << R.size() << endl;
+}
+
+int main()
+{
+    string test;
+    cout << "Indicate which library you want to test. (R = Ranker ; UR = Unique Ranker):" << endl;
+    cin >> test;
+
+    if(test == "R")
+        ranker_test();
+    else if (test == "UR")
+        unique_ranker_test();
+    else
+        cout << "Error: you must choose R or UR" << endl;
     return 0;
 }
 
