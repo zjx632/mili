@@ -264,6 +264,63 @@ inline const T& Ranker<T, Behavior, Comp, DisposalPolicy>::bottom() const
     return *(--ranking.end());
 }
 
-NAMESPACE_END
+//---------------- Unique Ranker --------------------
 
+template<class T, class Comp = std::less<T>, class CompEq = std::less<T>, class DisposalPolicy = DisposalNullPolicy<T> >
+class UniqueRanker: public Ranker<T, AddAfterEqual, Comp, DisposalPolicy>
+{
+    typedef Ranker<T, AddAfterEqual, Comp, DisposalPolicy> Inheritance;
+    typedef typename Inheritance::iterator rankingIterator;
+    typedef std::map<T,rankingIterator,CompEq> UniqueRanking;
+    typedef typename UniqueRanking::iterator iterator;
+
+    UniqueRanking unique;
+    size_t TOP;
+
+public:
+    UniqueRanker(size_t top): Inheritance::Ranker(top), TOP(top)
+    {}
+
+    /* Inserts the element. */
+    inline bool insert(const T& element);
+};
+
+template<class T, class Comp, class CompEq, class DisposalPolicy>
+inline bool UniqueRanker<T, Comp, CompEq, DisposalPolicy>::insert(const T& element)
+{
+    const iterator pos = unique.find(element);
+    bool success (true);
+
+    if(pos == unique.end())
+    {
+        const rankingIterator position = lower_bound (Inheritance::ranking.begin(), Inheritance::ranking.end(), element, Comp());
+        const bool top_not_reached (unique.size() < TOP);
+
+        if(!top_not_reached)
+        {
+            if(distance(position, Inheritance::ranking.end())==0)
+            {
+                success = false;
+                DisposalPolicy()(element);
+            }
+            else
+            {
+                Inheritance::ranking.insert(position, element);
+                unique.insert(std::pair<T,rankingIterator>(element, position));
+                DisposalPolicy()(*(--Inheritance::ranking.end()));
+                Inheritance::ranking.erase(--Inheritance::ranking.end());
+                unique.erase(--unique.end());
+            }
+        }else
+        {
+            Inheritance::ranking.insert(position, element);
+            unique.insert(std::pair<T,rankingIterator>(element, position));
+        }
+    }else
+        success = false;
+    return success;    
+}
+
+NAMESPACE_END
 #endif
+

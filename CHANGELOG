@@ -1,5 +1,6 @@
 Version 17
 ===========
+    * Added UniqueRanker library.
     * Added is_basic_string to template_info.
     * Added bostream concatenation feature to binary_streams.
     * Added template_is_container to template_info
@@ -10,7 +11,7 @@ Version 17
         - Added manual container readers.
         - Added generic container support.
         - Included a runtime_error exception hierarchy.
-    * Added generic_exception library
+    * Added generic_exception library.
     * Changing Ranker::begin and Ranker::end method definitions in ranker.h, 
       to support gcc 4.5.1.
 
