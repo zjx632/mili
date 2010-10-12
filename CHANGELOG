@@ -1,6 +1,6 @@
 Version 17
 ===========
-    * Added UniqueRanker library.
+    * Added UniqueRanker class to Ranker library.
     * Added is_basic_string to template_info.
     * Added bostream concatenation feature to binary_streams.
     * Added template_is_container to template_info

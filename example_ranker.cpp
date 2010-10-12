@@ -25,9 +25,6 @@ example_ranker: An example that uses MiLi's Ranker.
 
 using namespace std;
 
-typedef Ranker<int, AddBeforeEqual> Ranking;
-typedef UniqueRanker<int> UniqueRanking;
-
 template <class T>
 void print (CAutonomousIterator<T> it)
 {
@@ -37,21 +34,56 @@ void print (CAutonomousIterator<T> it)
         ++it;
     }    
 }
+//------------------------------
+
+struct Player
+{
+    string name;
+    float  score;
+
+    Player(string name, float score): name(name), score(score)
+    {}
+};
+
+struct PlayerUnique
+{
+    bool operator()(const Player& p1, const Player& p2)
+    {
+        return p1.name < p2.name; 
+    }
+};
+
+struct PlayerRanking
+{
+    bool operator()(const Player& p1, const Player& p2)
+    {
+        return p1.score > p2.score;
+    }
+};
+typedef UniqueRanker<int> UniqueRanking;
+typedef UniqueRanker<Player, PlayerRanking, PlayerUnique> PlayersRanking;
 
 void unique_ranker_test ()
 {
-    UniqueRanking UR(5);
-    UR.insert(1);
-    UR.insert(1);
-    UR.insert(3);
-    UR.insert(6);
-    UR.insert(2); 
-    UR.insert(1);
-    UR.insert(5); 
-    UR.insert(4); 
-    CAutonomousIterator<UniqueRanking> it(UR);
-    print<UniqueRanking> (it);   
+    PlayersRanking UR(5);
+    UR.insert(Player("Pepe", .1));
+    UR.insert(Player("Max", .2));
+    UR.insert(Player("Juan", .3));
+    UR.insert(Player("Raul", .4));
+    UR.insert(Player("Mitch", .4));
+    UR.insert(Player("Ro", .5));
+    UR.insert(Player("Lau", .6));
+    UR.insert(Player("Raul", .5));
+    CAutonomousIterator<PlayersRanking> it(UR);
+    while(!it.end())
+    {
+        cout << it->name << " - " << it->score << endl;
+        ++it;
+    }
 }
+
+//-------------------------------------------
+typedef Ranker<int, AddBeforeEqual> Ranking;
 
 void ranker_test ()
 {
@@ -88,6 +120,7 @@ void ranker_test ()
     cout << "size after clear: " << R.size() << endl;
 }
 
+//------------------------------------------------------
 int main()
 {
     string test;

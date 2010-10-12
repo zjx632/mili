@@ -69,6 +69,9 @@ protected:
     Ranking ranking;                           /* Container. */ 
     const size_t TOP;                          /* Maximum number of elements.*/
 
+    /* Insert an element and returns the position at it */
+    inline bool insert(const T& element, iterator& it);
+
 public:
     /* typedef to simulate STL */ 
     typedef typename Ranking::const_iterator const_iterator;
@@ -134,6 +137,32 @@ inline bool Ranker<T, Behavior, Comp, DisposalPolicy>::insert(const T& element)
     else
         pos = position.second;
 
+    ranking.insert(pos, element);
+
+    if(!top_not_reached)
+    {
+        if(distance(pos, ranking.end())==0)
+            success = false;
+        DisposalPolicy()(*(--ranking.end()));
+        ranking.erase(--ranking.end());
+    }
+    return success;   
+}
+
+template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
+inline bool Ranker<T, Behavior, Comp, DisposalPolicy>::insert(const T& element, iterator& it)
+{
+    const std::pair<iterator, iterator> position = equal_range(ranking.begin(), ranking.end(), element, Comp());
+    const bool top_not_reached (ranking.size() < TOP);
+    bool success (true);
+    iterator pos;
+
+    if(Behavior == AddBeforeEqual)
+        pos = position.first;
+    else
+        pos = position.second;
+
+    it = pos;
     ranking.insert(pos, element);
 
     if(!top_not_reached)
@@ -270,55 +299,64 @@ template<class T, class Comp = std::less<T>, class CompEq = std::less<T>, class 
 class UniqueRanker: public Ranker<T, AddAfterEqual, Comp, DisposalPolicy>
 {
     typedef Ranker<T, AddAfterEqual, Comp, DisposalPolicy> Inheritance;
-    typedef typename Inheritance::iterator rankingIterator;
-    typedef std::map<T,rankingIterator,CompEq> UniqueRanking;
-    typedef typename UniqueRanking::iterator iterator;
+
+    typedef typename Inheritance::iterator iterator;
+    typedef std::map<T,iterator,CompEq> UniqueRanking;
+    typedef typename UniqueRanking::iterator uniqueIterator;
 
     UniqueRanking unique;
     size_t TOP;
 
 public:
+    typedef typename Inheritance::const_iterator const_iterator;
+
     UniqueRanker(size_t top): Inheritance::Ranker(top), TOP(top)
     {}
 
     /* Inserts the element. */
     inline bool insert(const T& element);
+    /* Find a element. */
+    inline const_iterator find(const T& element);
 };
 
 template<class T, class Comp, class CompEq, class DisposalPolicy>
 inline bool UniqueRanker<T, Comp, CompEq, DisposalPolicy>::insert(const T& element)
 {
-    const iterator pos = unique.find(element);
+    const uniqueIterator pos = unique.find(element);
     bool success (true);
 
     if(pos == unique.end())
     {
-        const rankingIterator position = lower_bound (Inheritance::ranking.begin(), Inheritance::ranking.end(), element, Comp());
-        const bool top_not_reached (unique.size() < TOP);
-
-        if(!top_not_reached)
+        iterator it;
+        if(success = Inheritance::insert(element, it))
         {
-            if(distance(position, Inheritance::ranking.end())==0)
+            unique.insert(std::pair<T,iterator>(element, it));
+            iterator itAux = Inheritance::ranking.begin();
+            while(itAux != Inheritance::ranking.end())
             {
-                success = false;
-                DisposalPolicy()(element);
+                unique.find(*itAux)->second = itAux;
+                ++itAux;
             }
-            else
-            {
-                Inheritance::ranking.insert(position, element);
-                unique.insert(std::pair<T,rankingIterator>(element, position));
-                DisposalPolicy()(*(--Inheritance::ranking.end()));
-                Inheritance::ranking.erase(--Inheritance::ranking.end());
-                unique.erase(--unique.end());
-            }
-        }else
-        {
-            Inheritance::ranking.insert(position, element);
-            unique.insert(std::pair<T,rankingIterator>(element, position));
         }
     }else
-        success = false;
-    return success;    
+    {
+        if(Comp()(element, pos->first))
+        {
+            iterator it;
+            Inheritance::ranking.erase(pos->second);
+            success = Inheritance::insert(element, it);
+            pos->second = it;
+        }else
+            success = false;
+    }
+
+    return success;
+}
+
+template<class T, class Comp, class CompEq, class DisposalPolicy>
+inline typename UniqueRanker<T, Comp, CompEq, DisposalPolicy>::const_iterator UniqueRanker<T, Comp, CompEq, DisposalPolicy>::find(const T& element)
+{
+    return (unique.find(element))->second;
 }
 
 NAMESPACE_END
