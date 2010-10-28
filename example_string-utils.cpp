@@ -51,6 +51,18 @@ int main()
     int n;
     cout << to_number("abc", n) << endl;        /* prints 0 (false), because "abc" is not valid */
     cout << to_number<float>("123.4") << endl;
+    
+    std::string str = "Why?";
+    cout << ensure_found(str.find_first_of("h", 0)) << endl;    /* prints 1 */
+    try
+    {
+        cout << ensure_found(str.find_first_of(" ", 0)) << endl;    /* throw StringNotFound  */
+    }
+    catch (StringNotFound &f)
+    {
+        cout << "Do something" << endl;     /* prints Do something */
+    }
+    cout << ensure_found(str.find_first_of(" ", 0), str.size()) << endl;    /* prints str.size() */
 
     return 0;
 }

@@ -302,6 +302,24 @@ inline std::string trim(const std::string& s)
 return text;
 }
 
+struct StringNotFound : std::exception{};
+
+inline std::string::size_type ensure_found(std::string::size_type found) throw(StringNotFound)
+{    
+    if (found != std::string::npos)
+        return found;
+    else
+        throw StringNotFound();
+}
+
+inline std::string::size_type ensure_found(std::string::size_type found, std::string::size_type default_value)
+{ 
+    if (found != std::string::npos)
+        return found;
+    else
+        return default_value;
+}
+
 NAMESPACE_END
 
 #endif
