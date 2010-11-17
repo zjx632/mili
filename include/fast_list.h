@@ -34,7 +34,7 @@ struct NeverShrinkPolicy
     struct Chunk
     {
         Chunk(){}
-        Chunk(const Chunk& other){}
+        Chunk(const Chunk&){}
 
         bool empty() const
         {
@@ -43,7 +43,7 @@ struct NeverShrinkPolicy
 
         enum { NEED_INIT_NODES = false };
 
-        void init_node(Node& n){}
+        void init_node(Node&){}
         void mark_unused(){}
     };
 
@@ -53,7 +53,7 @@ struct NeverShrinkPolicy
         void destroy(){}
     };
 
-    void init_chunk(Chunk& chunk) {}
+    void init_chunk(Chunk&) {}
     enum { NEED_INIT_CHUNKS = false };
     enum { SHRINK_ENABLED = false };
     enum { NEED_NOTIFY_EMPTY_CHUNKS = false };
@@ -72,7 +72,7 @@ struct ShrinkOnRequestPolicy
         size_t used_count;
 
         Chunk(){}
-        Chunk(const Chunk& other) : used_count(0){}
+        Chunk(const Chunk&) : used_count(0){}
 
         bool empty() const
         {
@@ -103,7 +103,7 @@ struct ShrinkOnRequestPolicy
         }
     };
 
-    void init_chunk(Chunk& chunk)    {}
+    void init_chunk(Chunk&)    {}
 
     enum { NEED_INIT_CHUNKS = false };
     enum { SHRINK_ENABLED = true };
@@ -140,7 +140,7 @@ struct OptimizedShrinkOnRequestPolicy : ShrinkOnRequestPolicy
         OptimizedShrinkOnRequestPolicy* policy;
 
         Chunk(){}
-        Chunk(const Chunk& other) : used_count(0){}
+        Chunk(const Chunk&) : used_count(0){}
 
         bool empty() const
         {
@@ -241,7 +241,7 @@ struct DefaultHints
 struct InvalidateAfterDestroy
 {
     template <class T>
-    static T move(T prev, T next)
+    static T move(T, T)
     {
         return NULL;
     }
