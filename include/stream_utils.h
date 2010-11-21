@@ -54,7 +54,7 @@ inline std::istream& operator >> (std::istream& is, std::vector<T>& v)
 }
 
 template <class T>
-inline void _mili_base_output (std::ostream& os, const std::vector<T>& v, char separator)
+inline void _mili_base_output(std::ostream& os, const std::vector<T>& v, char separator)
 {
     const size_t max = v.size();
 
@@ -106,7 +106,7 @@ inline std::ostream& operator << (std::ostream& os, const _Separator<T>& s)
 
 template <class T>
 inline std::istream& operator >> (std::istream& is, const _Separator<T>& s)
-{    
+{
     std::string line;
 
     if (std::getline(is, line))
@@ -127,7 +127,8 @@ inline std::istream& operator >> (std::istream& is, const _Separator<T>& s)
                 );
                 last_pos = pos + 1;
             }
-        }while(found);
+        }
+        while (found);
 
         if (last_pos != std::string::npos)
             s.v.push_back(

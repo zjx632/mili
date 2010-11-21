@@ -47,10 +47,10 @@ struct template_##name<attribute>                   \
     enum {  value = 1   };                          \
 }
 
-_declare_template_attribute(is_pointer,T*);
-_declare_template_attribute(is_reference,T&);
-_declare_template_attribute(is_const,const T);
-_declare_template_attribute(is_volatile,volatile T);
+_declare_template_attribute(is_pointer, T*);
+_declare_template_attribute(is_reference, T&);
+_declare_template_attribute(is_const, const T);
+_declare_template_attribute(is_volatile, volatile T);
 
 #undef _declare_template_attribute
 
@@ -59,11 +59,11 @@ struct template_is_integral
 {
     enum
     {
-        value = 
-                type_equal<T, int>::value       || type_equal<T, unsigned int>::value ||
-                type_equal<T, short int>::value || type_equal<T, unsigned short int>::value ||
-                type_equal<T, long int>::value  || type_equal<T, unsigned long int>::value ||
-                type_equal<T, char>::value      || type_equal<T, unsigned char>::value || type_equal<T, signed char>::value
+        value =
+        type_equal<T, int>::value       || type_equal<T, unsigned int>::value ||
+        type_equal<T, short int>::value || type_equal<T, unsigned short int>::value ||
+        type_equal<T, long int>::value  || type_equal<T, unsigned long int>::value ||
+        type_equal<T, char>::value      || type_equal<T, unsigned char>::value || type_equal<T, signed char>::value
     };
 };
 
@@ -73,10 +73,10 @@ struct template_is_native
     enum
     {
         value =
-                template_is_integral<T>::value ||
-                type_equal<T, bool>::value     ||
-                type_equal<T, float>::value    ||
-                type_equal<T, double>::value
+        template_is_integral<T>::value ||
+        type_equal<T, bool>::value     ||
+        type_equal<T, float>::value    ||
+        type_equal<T, double>::value
     };
 };
 

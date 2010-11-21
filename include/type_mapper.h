@@ -29,7 +29,7 @@ NAMESPACE_BEGIN
     {                               \
         typedef From type;          \
     }
-    
+
 #define add_mapping(mapper, from_type, to_type) \
     template<>                                  \
     struct mapper<from_type>                    \

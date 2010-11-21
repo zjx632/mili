@@ -16,6 +16,7 @@ Version 17
       to support gcc 4.5.1.
     * Added ensure_found function to string_utils.h
     * Removed warnings in fast_list.h when compiling with -Wextra
+    * Ran astyle
 
 Version 16
 ============

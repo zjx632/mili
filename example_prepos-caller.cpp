@@ -28,7 +28,10 @@ using namespace std;
 class Test
 {
 public:
-    void f() { cout << "f" << endl; }
+    void f()
+    {
+        cout << "f" << endl;
+    }
 };
 
 
@@ -39,8 +42,8 @@ void sample_using_print()
     cout << "Sample using print:\n";
     Test t;
     PrePosPrinter pre("pre"), pos("pos");
-    PrePosCaller<Test* const, PrePosPrinter, PrePosPrinter> ppc(&t, pre, pos);
-    
+    PrePosCaller<Test * const, PrePosPrinter, PrePosPrinter> ppc(&t, pre, pos);
+
     ppc->f();
 }
 
@@ -50,12 +53,12 @@ void sample_using_mutex()
     cout << "\nSample using a mutex:\n";
     Test t;
     pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-    
+
     PreMutex pre(&mutex);
     PosMutex pos(&mutex);
-    
-    PrePosCaller<Test* const, PreMutex, PosMutex> ppc(&t, pre, pos);
-    
+
+    PrePosCaller<Test * const, PreMutex, PosMutex> ppc(&t, pre, pos);
+
     ppc->f();
 }
 
@@ -66,28 +69,28 @@ void sample_using_mutex_and_print()
     Test t;
 
     PrePosPrinter pre_print("pre"), pos_print("pos");
-    
-    typedef PrePosCaller<Test* const, PrePosPrinter, PrePosPrinter> PPC_Printer;
-    
+
+    typedef PrePosCaller<Test * const, PrePosPrinter, PrePosPrinter> PPC_Printer;
+
     PPC_Printer ppc_printer(&t, pre_print, pos_print);
 
-    
+
     pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
     PreMutex preMutex(&mutex);
     PosMutex posMutex(&mutex);
-    
+
     PrePosCaller<PPC_Printer, PreMutex, PosMutex> ppc(ppc_printer, preMutex, posMutex);
-    
+
     ppc->f();
 }
 
 int main()
 {
     sample_using_print();
-    
+
     sample_using_mutex();
-    
-    sample_using_mutex_and_print();    
-    
+
+    sample_using_mutex_and_print();
+
     return 0;
 }

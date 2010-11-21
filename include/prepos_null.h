@@ -16,7 +16,7 @@ prepos_caller: A minimal library for wrapping object methods calls.
 
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     This is the NULL action, useful when you want to do only
     a pre-call and not a post-call, or viceversa.
 */
@@ -25,7 +25,7 @@ prepos_caller: A minimal library for wrapping object methods calls.
 #define PREPOS_NULL_H
 
 struct PrePosNull
-{    
+{
     void operator()() const { }
 };
 

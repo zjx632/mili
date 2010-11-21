@@ -38,8 +38,14 @@ struct TreeNode
 
     TreeNode(bool is_white)
         : left(NULL), right(NULL), is_white(is_white), data(last++)
-    { cout << data << ": " << boolalpha << is_white << endl; }
-    ~TreeNode() { delete left; delete right; }
+    {
+        cout << data << ": " << boolalpha << is_white << endl;
+    }
+    ~TreeNode()
+    {
+        delete left;
+        delete right;
+    }
 };
 
 static TreeNode* build_sample_tree();
@@ -68,18 +74,18 @@ public:
                     child = (*child_iterator)(current->left);
                     if (child != NULL) mili_yield(child);
                 }
-                while(child != NULL);
+                while (child != NULL);
 
                 do
                 {
                     child = (*child_iterator)(current->right);
                     if (child != NULL) mili_yield(child);
                 }
-                while(child != NULL);
+                while (child != NULL);
 
                 delete child_iterator;
             }
-            
+
         }
         END_COROUTINE(NULL);
     }
@@ -108,7 +114,9 @@ public:
                         {
                             if (t3 != t1 && t3 != t2)
                             {
-                                elem1 = *t1; elem2 = *t2; elem3 = *t3;
+                                elem1 = *t1;
+                                elem2 = *t2;
+                                elem3 = *t3;
                                 mili_yield(true);
                             }
                         }
@@ -136,7 +144,10 @@ int main()
 
     // Example3:
     set<int> s;
-    s.insert(1); s.insert(2); s.insert(3); s.insert(4);
+    s.insert(1);
+    s.insert(2);
+    s.insert(3);
+    s.insert(4);
     SetTriplets<int> st;
     int e1, e2, e3;
     while (st(s, e1, e2, e3))

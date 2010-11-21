@@ -16,7 +16,7 @@ prepos_caller: A minimal library for wrapping object methods calls.
 
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     This action can be used either as a pre-call or pos-call,
     to print a message (either to stdout, stderr, etc.).
 */
@@ -31,10 +31,13 @@ struct PrePosPrinter
 {
     const std::string msg;
     std::ostream& os;
-    
+
     PrePosPrinter(const std::string& msg, std::ostream& os = std::cout) : msg(msg), os(os) {}
-    
-    void operator()() const { os << msg << std::endl; }
+
+    void operator()() const
+    {
+        os << msg << std::endl;
+    }
 };
 
 #endif

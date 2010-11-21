@@ -47,32 +47,35 @@ namespace invariant
                     throw InvariantNotMet();    \
             }                                   \
     }
-    
-    define_invariant(lt,<);
-    define_invariant(le,<=);
-    define_invariant(eq,==);
-    define_invariant(ne,!=);
-    define_invariant(ge,>=);
-    define_invariant(gt,>);
-    
-    template <class T>
-    class NeverNull
+
+define_invariant(lt, <);
+define_invariant(le, <=);
+define_invariant(eq, ==);
+define_invariant(ne, !=);
+define_invariant(ge, >=);
+define_invariant(gt, >);
+
+template <class T>
+class NeverNull
+{
+    T* const ptr;
+public:
+    NeverNull(T* ptr) : ptr(ptr)
     {
-            T* const ptr;
-        public:
-            NeverNull(T* ptr) : ptr(ptr)
-            {
-                if (ptr == NULL)
-                    throw InvariantNotMet();
-            }
-            operator T*() const { return ptr; }
-    };
-    
-    template <class T, T Min, T Max>
-    struct InRange : ge<T, Min>, le<T, Max>
+        if (ptr == NULL)
+            throw InvariantNotMet();
+    }
+    operator T*() const
     {
-        InRange(T t) : ge<T, Min>(t), le<T, Max>(t) {}
-    };
+        return ptr;
+    }
+};
+
+template <class T, T Min, T Max>
+struct InRange : ge<T, Min>, le<T, Max>
+{
+    InRange(T t) : ge<T, Min>(t), le<T, Max>(t) {}
+};
 }
 
 /* Part 2: Class Invariants */
@@ -91,15 +94,15 @@ public:
         {
             return &t;
         }
-        
+
         ~Temp()
         {
             if (!Invariant(t))
                 throw InvariantNotMet();
         }
     };
-    
-    InvariantClass(T& t) : t(t){};
+
+    InvariantClass(T& t) : t(t) {};
 
     Temp operator -> () const
     {

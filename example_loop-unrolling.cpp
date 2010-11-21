@@ -30,7 +30,7 @@ struct BitCounter
 {
     T value;
     size_t ret;
-    BitCounter(T value) : value(value), ret(0){}
+    BitCounter(T value) : value(value), ret(0) {}
 
     void operator()()
     {
@@ -43,7 +43,7 @@ template <class T>
 inline size_t CountBits(T x)
 {
     BitCounter<T> bc(x);
-    FOR<sizeof(T)*8, BitCounter<T> >::iterate(bc);
+    FOR<sizeof(T) * 8, BitCounter<T> >::iterate(bc);
     return bc.ret;
 }
 

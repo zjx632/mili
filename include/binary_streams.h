@@ -43,7 +43,7 @@ NAMESPACE_BEGIN
 declare_static_assert(pointers_not_allowed);
 declare_static_assert(must_use_container);
 
-class BstreamExceptionHierarchy{};
+class BstreamExceptionHierarchy {};
 
 typedef GenericException<BstreamExceptionHierarchy> BstreamException;
 
@@ -81,77 +81,77 @@ class bostream
 
     template<class T, bool IsContainer> friend struct _inserter_helper;
 
-    public:
-        /**
-         * Standard constructor.
-         */
-        bostream() :
-            _s()
-        {
-        }
+public:
+    /**
+     * Standard constructor.
+     */
+    bostream() :
+        _s()
+    {
+    }
 
-        /**
-         * Insert any object to the stream.
-         *
-         * @param x : A copy of the object being inserted.
-         */
-        template <class T>
-        bostream& operator<< (const T& x)
-        {
-            // Disallow pointers in binary streams.
-            template_compile_assert(!template_info<T>::is_pointer, pointers_not_allowed);
+    /**
+     * Insert any object to the stream.
+     *
+     * @param x : A copy of the object being inserted.
+     */
+    template <class T>
+    bostream& operator<< (const T& x)
+    {
+        // Disallow pointers in binary streams.
+        template_compile_assert(!template_info<T>::is_pointer, pointers_not_allowed);
 
 #ifdef BSTREAMS_DEBUG
-            const std::string s(typeid(T).name());
-            const size_t sz(s.size());
-            _s.append(reinterpret_cast<const char*>(&sz), sizeof(size_t));
-            _s += s;
+        const std::string s(typeid(T).name());
+        const size_t sz(s.size());
+        _s.append(reinterpret_cast<const char*>(&sz), sizeof(size_t));
+        _s += s;
 #endif
 
-            _inserter_helper<T, template_info<T>::is_container >::call(this, x);
-            return *this;
-        }
+        _inserter_helper<T, template_info<T>::is_container >::call(this, x);
+        return *this;
+    }
 
-        /* Inserting a string inserts its size first. */
+    /* Inserting a string inserts its size first. */
 
-        /**
-         * Insert a string to the stream.
-         */
-        bostream& operator<< (const std::string& s)
-        {
-            (*this) << uint32_t(s.size());
-            _s += s;
-            return *this;
-        }
+    /**
+     * Insert a string to the stream.
+     */
+    bostream& operator<< (const std::string& s)
+    {
+        (*this) << uint32_t(s.size());
+        _s += s;
+        return *this;
+    }
 
-        /** Insert a literal string. */
-        bostream& operator<< (const char* cs)
-        {
-            const std::string s(cs);
-            return operator<< (s);
-        }
+    /** Insert a literal string. */
+    bostream& operator<< (const char* cs)
+    {
+        const std::string s(cs);
+        return operator<< (s);
+    }
 
-        /** Concatenate a stream to this one. */
-        void operator += (const bostream& other)
-        {
-            _s += other.str();
-        }
+    /** Concatenate a stream to this one. */
+    void operator += (const bostream& other)
+    {
+        _s += other.str();
+    }
 
-        /** Obtain the string representing the stream. */
-        const std::string& str() const
-        {
-            return _s;
-        }
+    /** Obtain the string representing the stream. */
+    const std::string& str() const
+    {
+        return _s;
+    }
 
-        /** Clear the stream. Enables the user to use it several times. */
-        void clear()
-        {
-            _s.clear();
-        }
+    /** Clear the stream. Enables the user to use it several times. */
+    void clear()
+    {
+        _s.clear();
+    }
 
-    private:
-        /** The representation of the stream in memory. */
-        std::string _s;
+private:
+    /** The representation of the stream in memory. */
+    std::string _s;
 };
 
 /**
@@ -169,101 +169,101 @@ class bistream
 
     template<class T, bool IsContainer> friend struct _extract_helper;
 
-    public:
-        /**
-         * Construct a new input stream object using a string representing a binary stream
-         * as input.
-         */
-        bistream(const std::string& str) :
-            _s(str),
-            _pos(0)
-        {
-        }
+public:
+    /**
+     * Construct a new input stream object using a string representing a binary stream
+     * as input.
+     */
+    bistream(const std::string& str) :
+        _s(str),
+        _pos(0)
+    {
+    }
 
-        /**
-         * Creates a new input stream object, but with no data.
-         */
-        bistream() :
-            _s(),
-            _pos(0)
-        {
-        }
+    /**
+     * Creates a new input stream object, but with no data.
+     */
+    bistream() :
+        _s(),
+        _pos(0)
+    {
+    }
 
-        /**
-         * Set the representation binary string.
-         *
-         * @param str : The new binary stream representation string.
-         */
-        void str(const std::string& str)
-        {
-            _pos = 0;
-            _s = str;
-        }
+    /**
+     * Set the representation binary string.
+     *
+     * @param str : The new binary stream representation string.
+     */
+    void str(const std::string& str)
+    {
+        _pos = 0;
+        _s = str;
+    }
 
-        /**
-         * Read an element.
-         *
-         * @param x : A reference to the element you are reading into.
-         *
-         * @pre : The remaining input stream holds enough data to read the element.
-         */
-        template <class T>
-        bistream& operator >> (T& x)
-        {
-            // Disallow pointers in binary streams.
-            template_compile_assert(!template_info<T>::is_pointer, pointers_not_allowed);
+    /**
+     * Read an element.
+     *
+     * @param x : A reference to the element you are reading into.
+     *
+     * @pre : The remaining input stream holds enough data to read the element.
+     */
+    template <class T>
+    bistream& operator >> (T& x)
+    {
+        // Disallow pointers in binary streams.
+        template_compile_assert(!template_info<T>::is_pointer, pointers_not_allowed);
 
 #ifdef BSTREAMS_DEBUG
-            std::string s(typeid(T).name());
-            size_t sz;
-            _pos += _s.copy(reinterpret_cast<char*>(&sz), sizeof(size_t),_pos);
-            std::string name  = _s.substr(_pos,sz);
-            _pos += sz;
-            if (s != name)
-                std::cerr << s << " | " << name << std::endl;
-            assert( s == name);
+        std::string s(typeid(T).name());
+        size_t sz;
+        _pos += _s.copy(reinterpret_cast<char*>(&sz), sizeof(size_t), _pos);
+        std::string name  = _s.substr(_pos, sz);
+        _pos += sz;
+        if (s != name)
+            std::cerr << s << " | " << name << std::endl;
+        assert(s == name);
 #endif
 
-            _extract_helper<T, template_info<T>::is_container >::call(this, x);
+        _extract_helper<T, template_info<T>::is_container >::call(this, x);
 
-            return *this;
-        }
+        return *this;
+    }
 
-        /**
-         * Read a string.
-         *
-         * @param str : A reference to the string you are reading into.
-         *
-         * @pre : The stream is situated in a position holding a 32 bit unsigned integer
-         *        and then at least this very number of bytes remain.
-         */
-        bistream& operator >> (std::string& str)
-        {
-            uint32_t size;
-            (*this) >> size;
+    /**
+     * Read a string.
+     *
+     * @param str : A reference to the string you are reading into.
+     *
+     * @pre : The stream is situated in a position holding a 32 bit unsigned integer
+     *        and then at least this very number of bytes remain.
+     */
+    bistream& operator >> (std::string& str)
+    {
+        uint32_t size;
+        (*this) >> size;
 
-            if( _s.size() < size + _pos )
-                throw type_too_large();
+        if (_s.size() < size + _pos)
+            throw type_too_large();
 
-            str   = _s.substr(_pos,size);
+        str   = _s.substr(_pos, size);
 
-            _pos += size;
-            return *this;
-        }
+        _pos += size;
+        return *this;
+    }
 
-        /** Clear the input stream. */
-        void clear()
-        {
-            _s.clear();
-            _pos = 0;
-        }
+    /** Clear the input stream. */
+    void clear()
+    {
+        _s.clear();
+        _pos = 0;
+    }
 
-    private:
-        /** The string representing the input stream. */
-        std::string _s;
+private:
+    /** The string representing the input stream. */
+    std::string _s;
 
-        /** The position the stream is reading from.  */
-        std::size_t _pos;
+    /** The position the stream is reading from.  */
+    std::size_t _pos;
 };
 
 /**
@@ -276,53 +276,53 @@ class bistream
 template<class T>
 class container_writer
 {
-    public:
-        /**
-         * Default constructor.
-         *
-         * @param size : The amount of elements you will write.
-         * @param bos : A reference to the output stream where you will create the
-         *              container.
-         */
-        container_writer( size_t size, bostream& bos) :
-            _elements_left( size ),
-            _bos( bos )
-        {
-            _bos << uint32_t( size );
-        }
+public:
+    /**
+     * Default constructor.
+     *
+     * @param size : The amount of elements you will write.
+     * @param bos : A reference to the output stream where you will create the
+     *              container.
+     */
+    container_writer(size_t size, bostream& bos) :
+        _elements_left(size),
+        _bos(bos)
+    {
+        _bos << uint32_t(size);
+    }
 
-        /**
-         * Push an element.
-         */
-        container_writer& operator<<(const T& element)
-        {
-            if ( _elements_left == 0 )
-                throw container_finished();
+    /**
+     * Push an element.
+     */
+    container_writer& operator<<(const T& element)
+    {
+        if (_elements_left == 0)
+            throw container_finished();
 
-            --_elements_left;
+        --_elements_left;
 
-            _bos << element;
+        _bos << element;
 
-            return *this;
-        }
+        return *this;
+    }
 
-        /**
-         * Default destructor.
-         *
-         * @pre : The elements inserted equals the amount of elements that were promised
-         *        to be inserted at the time of creation (size parameter.)
-         */
-        ~container_writer()
-        {
-            if ( _elements_left != 0 )
-                throw container_not_finished();
-        }
-    private:
-        /** The amount of elements you have yet to insert. */
-        size_t    _elements_left;
+    /**
+     * Default destructor.
+     *
+     * @pre : The elements inserted equals the amount of elements that were promised
+     *        to be inserted at the time of creation (size parameter.)
+     */
+    ~container_writer()
+    {
+        if (_elements_left != 0)
+            throw container_not_finished();
+    }
+private:
+    /** The amount of elements you have yet to insert. */
+    size_t    _elements_left;
 
-        /** A reference to the output stream. */
-        bostream& _bos;
+    /** A reference to the output stream. */
+    bostream& _bos;
 };
 
 /**
@@ -335,81 +335,81 @@ class container_writer
 template<class T>
 class container_reader
 {
-    public:
-        /**
-         * Standard constructor.
-         *
-         * @param bis : The input stream holding the data.
-         */
-        container_reader( bistream& bis) :
-            _elements_left( 0 ),
-            _bis( bis )
-        {
-            _bis >> _elements_left;
+public:
+    /**
+     * Standard constructor.
+     *
+     * @param bis : The input stream holding the data.
+     */
+    container_reader(bistream& bis) :
+        _elements_left(0),
+        _bis(bis)
+    {
+        _bis >> _elements_left;
 
-            if ( (_bis._pos + sizeof(T)*_elements_left) > _bis._s.size() )
-                throw stream_too_small();
-        }
+        if ((_bis._pos + sizeof(T)*_elements_left) > _bis._s.size())
+            throw stream_too_small();
+    }
 
-        /**
-         * Read an element.
-         */
-        container_reader& operator>>(T& element)
-        {
-            assert( _elements_left > 0 );
-            --_elements_left;
+    /**
+     * Read an element.
+     */
+    container_reader& operator>>(T& element)
+    {
+        assert(_elements_left > 0);
+        --_elements_left;
 
-            _bis >> element;
+        _bis >> element;
 
-            return *this;
-        }
+        return *this;
+    }
 
-        /**
-         * Skip a given amount of elements, default: 1.
-         *
-         * Examples:
-         *    - skip();
-         *    - skip(10);
-         *
-         * @param elements : The amount of elements you want to skip. Default: 1.
-         *
-         * @pre : At least the amount of elements you want to skip remain.
-         */
-        void skip(size_t elements = 1)
-        {
-            if ( elements > _elements_left )
-                throw skip_excess();
+    /**
+     * Skip a given amount of elements, default: 1.
+     *
+     * Examples:
+     *    - skip();
+     *    - skip(10);
+     *
+     * @param elements : The amount of elements you want to skip. Default: 1.
+     *
+     * @pre : At least the amount of elements you want to skip remain.
+     */
+    void skip(size_t elements = 1)
+    {
+        if (elements > _elements_left)
+            throw skip_excess();
 
-            _elements_left -= elements;
+        _elements_left -= elements;
 
-            _bis._pos += sizeof(T) * elements;
-        }
+        _bis._pos += sizeof(T) * elements;
+    }
 
-        /**
-         * Signal that you have finished reading. It is the same as skipping the amount
-         * of elements left.
-         */
-        void finished()
-        {
-            skip( _elements_left );
-            _elements_left = 0;
-        }
+    /**
+     * Signal that you have finished reading. It is the same as skipping the amount
+     * of elements left.
+     */
+    void finished()
+    {
+        skip(_elements_left);
+        _elements_left = 0;
+    }
 
-        /**
-         * Standard destructor. Finishes the reading process if necessary.
-         */
-        ~container_reader()
-        {
-            if ( _elements_left != 0 )
-                finished();
-        }
+    /**
+     * Standard destructor. Finishes the reading process if necessary.
+     */
+    ~container_reader()
+    {
+        if (_elements_left != 0)
+            finished();
+    }
 
-    private:
-        /** The amount of elements that still haven't been read from the container. */
-        size_t    _elements_left;
+private:
+    /** The amount of elements that still haven't been read from the container. */
+    size_t    _elements_left;
 
-        /** A reference to the input stream. */
-        bistream& _bis;
+    /** A reference to the input stream. */
+    bistream& _bis;
 };
 
 template<class T>
@@ -429,7 +429,7 @@ struct bostream::_inserter_helper<T, true>
         const uint32_t size(cont.size());
         (*bos) << size;
 
-        typename T::const_iterator it( cont.begin() );
+        typename T::const_iterator it(cont.begin());
 
         for (; it != cont.end(); ++it)
             (*bos) << *it;
@@ -441,7 +441,7 @@ struct bistream::_extract_helper<T, false>
 {
     static void call(bistream* bis, T& x)
     {
-        if( bis->_s.size() < bis->_pos + sizeof(x) )
+        if (bis->_s.size() < bis->_pos + sizeof(x))
             throw type_too_large();
 
         bis->_pos += bis->_s.copy(reinterpret_cast<char*>(&x), sizeof(x), bis->_pos);
@@ -458,16 +458,16 @@ struct bistream::_extract_helper<T, true>
 
         // If the elements of the container are not containers themselves (or strings),
         // then check there is enough rooom.
-        if ( (! template_info< typename T::value_type >::is_container ) &&
-             (! template_info< typename T::value_type >::is_basic_string )  )
-            if ( bis->_s.size() < ( (size * sizeof(typename T::value_type)) + bis->_pos) )
+        if ((! template_info< typename T::value_type >::is_container) &&
+                (! template_info< typename T::value_type >::is_basic_string))
+            if (bis->_s.size() < ((size * sizeof(typename T::value_type)) + bis->_pos))
                 throw stream_too_small();
 
         for (size_t i(0); i < size; i++)
         {
             typename T::value_type elem;
             (*bis) >> elem;
-            insert_into( cont, elem );
+            insert_into(cont, elem);
         }
     }
 };

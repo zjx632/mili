@@ -53,7 +53,7 @@ protected:
         gettimeofday(&tv, NULL);
         seed = tv.tv_usec;
 #endif
-	}
+    }
 };
 
 #ifndef _WIN32
@@ -100,7 +100,7 @@ typedef GlobalSeedPolicy DefaultSeedPolicy;
 typedef AutonomousSeedPolicy DefaultSeedPolicy;
 #endif
 
-template <class T, class SeedPolicy = DefaultSeedPolicy>
+template < class T, class SeedPolicy = DefaultSeedPolicy >
 class Randomizer
 {
     SeedPolicy policy;
@@ -108,11 +108,11 @@ class Randomizer
     const int width;
 public:
     Randomizer(T min, T max)
-        : policy(), min(min), width(int(max-min))
+        : policy(), min(min), width(int(max - min))
     {}
-    
+
     Randomizer(T min, T max, unsigned int seed)
-        : policy(seed), min(min), width(int(max-min))
+        : policy(seed), min(min), width(int(max - min))
     {}
 
     T get()
