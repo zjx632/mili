@@ -35,12 +35,12 @@ public:
     {
         BEGIN_COROUTINE
         {
-            for(x=0; x<10; ++x)
+            for (x = 0; x < 10; ++x)
             {
-                for(y=0; y<10; ++y)
+                for (y = 0; y < 10; ++y)
                 {
-                    for(z=0; z<10; ++z)
-                        mili_yield(x+y+z);
+                    for (z = 0; z < 10; ++z)
+                        mili_yield(x + y + z);
                 }
                 mili_yield(-x);
             }
@@ -58,7 +58,7 @@ int main()
         ret = cr1();
         cout << ret << endl;
     }
-    while(ret != -1000);
+    while (ret != -1000);
     return ret;
 }
 

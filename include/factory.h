@@ -26,15 +26,15 @@ factory: A minimal library for a generic factory.
 
 NAMESPACE_BEGIN
 
-template <class Key, class Base, class ConstructorParameterType = void>
+template < class Key, class Base, class ConstructorParameterType = void >
 class Factory
 {
     struct Creator
     {
         virtual Base* create(ConstructorParameterType p) const = 0;
-        virtual ~Creator(){}
+        virtual ~Creator() {}
     };
-    
+
     std::map<Key, Creator*> _creators;
 
 public:
@@ -44,22 +44,24 @@ public:
         class ConcreteCreator : public Creator
         {
             virtual Base* create(ConstructorParameterType p) const
-            { return new DerivedClass(p); }
+            {
+                return new DerivedClass(p);
+            }
         };
-        
+
         _creators[key] = new ConcreteCreator;
     }
-    
+
     Base* new_class(const Key& key, ConstructorParameterType p) const
     {
         typename std::map<Key, Creator*>::const_iterator it = _creators.find(key);
-        
+
         if (it != _creators.end())
             return it->second->create(p);
         else
             return NULL;
     }
-    
+
     ~Factory()
     {
         delete_container(_creators);
@@ -72,34 +74,36 @@ class Factory<Key, Base, void>
     struct Creator
     {
         virtual Base* create() const = 0;
-        virtual ~Creator(){}
+        virtual ~Creator() {}
     };
-    
+
     std::map<Key, Creator*> _creators;
 
-public:    
+public:
     template <class DerivedClass>
     void register_factory(const Key& key)
     {
         class ConcreteCreator : public Creator
         {
             virtual Base* create() const
-            { return new DerivedClass; }
+            {
+                return new DerivedClass;
+            }
         };
-        
+
         _creators[key] = new ConcreteCreator;
     }
-    
+
     Base* new_class(const Key& key) const
     {
         typename std::map<Key, Creator*>::const_iterator it = _creators.find(key);
-        
+
         if (it != _creators.end())
             return it->second->create();
         else
             return NULL;
     }
-    
+
     ~Factory()
     {
         delete_container(_creators);

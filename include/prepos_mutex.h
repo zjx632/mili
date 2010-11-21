@@ -16,7 +16,7 @@ prepos_caller: A minimal library for wrapping object methods calls.
 
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     This file provides the pre-call and pos-call actions to lock/unlock
     a pthread mutex, respectivelly.
 */
@@ -29,21 +29,27 @@ prepos_caller: A minimal library for wrapping object methods calls.
 struct PreMutex
 {
     pthread_mutex_t * const mutex;
-    
+
     PreMutex(pthread_mutex_t* mutex) : mutex(mutex) {}
     PreMutex(const PreMutex& other) : mutex(other.mutex) {}
-    
-    void operator()() const { pthread_mutex_lock(mutex); }
+
+    void operator()() const
+    {
+        pthread_mutex_lock(mutex);
+    }
 };
 
 struct PosMutex
 {
     pthread_mutex_t * const mutex;
-    
+
     PosMutex(pthread_mutex_t* mutex) : mutex(mutex) {}
     PosMutex(const PosMutex& other) : mutex(other.mutex) {}
-    
-    void operator()() const { pthread_mutex_unlock(mutex); }
+
+    void operator()() const
+    {
+        pthread_mutex_unlock(mutex);
+    }
 };
 
 #endif

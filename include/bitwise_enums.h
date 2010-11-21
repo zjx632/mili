@@ -29,7 +29,7 @@ class bitwise_enum
     unsigned long int _value;
 public:
     typedef unsigned int Bits;
-    
+
     // CONSTRUCTORS:
     bitwise_enum(Enum init_value)
         : _value(init_value)
@@ -110,7 +110,7 @@ public:
         return (ret &= other);
     }
 
-    bitwise_enum<Enum> operator ^ (const bitwise_enum<Enum>& other) const
+    bitwise_enum<Enum> operator ^(const bitwise_enum<Enum>& other) const
     {
         bitwise_enum<Enum> ret(*this);
         return (ret ^= other);
@@ -137,7 +137,7 @@ public:
     {
         return _value != 0;
     }
-    
+
     bool has_bits(const bitwise_enum<Enum>& other) const
     {
         return (operator&(other)).has_bits();
@@ -148,7 +148,7 @@ public:
         unsigned long int v(_value);
         unsigned int result(0);
 
-        while( v>0 )
+        while (v > 0)
         {
             result++;
             v &= v - 1;
@@ -173,7 +173,7 @@ inline bitwise_enum<Enum> operator & (Enum value, const bitwise_enum<Enum>& e)
 }
 
 template <class Enum>
-inline bitwise_enum<Enum> operator ^ (Enum value, const bitwise_enum<Enum>& e)
+inline bitwise_enum<Enum> operator ^(Enum value, const bitwise_enum<Enum>& e)
 {
     return e ^ value;
 }
@@ -192,7 +192,7 @@ inline bitwise_enum<Enum> operator & (Enum a, Enum b)
 }
 
 template <class Enum>
-inline bitwise_enum<Enum> operator ^ (Enum a, Enum b)
+inline bitwise_enum<Enum> operator ^(Enum a, Enum b)
 {
     return bitwise_enum<Enum>(a) ^ bitwise_enum<Enum>(b);
 }

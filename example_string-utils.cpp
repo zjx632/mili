@@ -29,7 +29,7 @@ using namespace std;
 int main()
 {
     lstring ls("helLO");
-    
+
     ls[1] = 'E';
     cout << (ls[2] == 'L') << endl;             /* prints 1 (true) */
 
@@ -51,7 +51,7 @@ int main()
     int n;
     cout << to_number("abc", n) << endl;        /* prints 0 (false), because "abc" is not valid */
     cout << to_number<float>("123.4") << endl;
-    
+
     std::string str = "Why?";
     cout << ensure_found(str.find_first_of("h", 0)) << endl;    /* prints 1 */
     try

@@ -26,13 +26,13 @@ example_ranker: An example that uses MiLi's Ranker.
 using namespace std;
 
 template <class T>
-void print (CAutonomousIterator<T> it)
+void print(CAutonomousIterator<T> it)
 {
-    while(!it.end())
+    while (!it.end())
     {
         cout << *it << endl;
         ++it;
-    }    
+    }
 }
 //------------------------------
 
@@ -49,7 +49,7 @@ struct PlayerUnique
 {
     bool operator()(const Player& p1, const Player& p2)
     {
-        return p1.name < p2.name; 
+        return p1.name < p2.name;
     }
 };
 
@@ -63,7 +63,7 @@ struct PlayerRanking
 typedef UniqueRanker<int> UniqueRanking;
 typedef UniqueRanker<Player, PlayerRanking, PlayerUnique> PlayersRanking;
 
-void unique_ranker_test ()
+void unique_ranker_test()
 {
     PlayersRanking UR(5);
     UR.insert(Player("Pepe", .1));
@@ -75,7 +75,7 @@ void unique_ranker_test ()
     UR.insert(Player("Lau", .6));
     UR.insert(Player("Raul", .5));
     CAutonomousIterator<PlayersRanking> it(UR);
-    while(!it.end())
+    while (!it.end())
     {
         cout << it->name << " - " << it->score << endl;
         ++it;
@@ -85,7 +85,7 @@ void unique_ranker_test ()
 //-------------------------------------------
 typedef Ranker<int, AddBeforeEqual> Ranking;
 
-void ranker_test ()
+void ranker_test()
 {
     const size_t TOP = 5;
     const int I = -10;
@@ -106,16 +106,16 @@ void ranker_test ()
 
     CAutonomousIterator<Ranking> it1(R);
     print<Ranking> (it1);
-    
+
     R.remove_all(I);
-    cout << "-- Remove All "<< I << " --" << endl;
+    cout << "-- Remove All " << I << " --" << endl;
 
     CAutonomousIterator<Ranking> it2(R);
     print<Ranking> (it2);
     cout << "----- size: " << R.size() << endl;
-    cout << "top: " << R.top() << " - bottom: "<< R.bottom() << endl;    
+    cout << "top: " << R.top() << " - bottom: " << R.bottom() << endl;
 
-    if(!R.empty()) R.clear();
+    if (!R.empty()) R.clear();
 
     cout << "size after clear: " << R.size() << endl;
 }
@@ -127,7 +127,7 @@ int main()
     cout << "Indicate which library you want to test. (R = Ranker ; UR = Unique Ranker):" << endl;
     cin >> test;
 
-    if(test == "R")
+    if (test == "R")
         ranker_test();
     else if (test == "UR")
         unique_ranker_test();

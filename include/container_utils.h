@@ -36,7 +36,7 @@ container_utils: A minimal library with generic STL container utilities..
 
 NAMESPACE_BEGIN
 
-struct ElementNotFound : std::exception{};
+struct ElementNotFound : std::exception {};
 
 template <class Container, class Element>
 inline Element& find(Container& c, const Element& element) throw(ElementNotFound)
@@ -128,7 +128,7 @@ inline bool contains(const Container& c, const Element& element)
         find(c, element);
         return true;
     }
-    catch(ElementNotFound)
+    catch (ElementNotFound)
     {
         return false;
     }
@@ -216,9 +216,9 @@ template <class Key, class T, class Comp, class Alloc, class ElementType>
 inline bool remove_first_from(std::map<Key, T, Comp, Alloc>& m, const ElementType& element)
 {
     typename std::map<Key, T, Comp, Alloc>::iterator it = m.begin();
-    while(it != m.end())
+    while (it != m.end())
     {
-        if(it->second == element)
+        if (it->second == element)
         {
             m.erase(it);
             return true;
@@ -231,15 +231,15 @@ inline bool remove_first_from(std::map<Key, T, Comp, Alloc>& m, const ElementTyp
 //------------ Remove all Utilities
 
 /* This works for Non-associative containers */
-template <class T, class Alloc, template <class,class> class Container >
-inline bool remove_all_from(Container<T, Alloc>& cont, const typename Container<T, Alloc>::value_type& element) 
+template <class T, class Alloc, template <class, class> class Container >
+inline bool remove_all_from(Container<T, Alloc>& cont, const typename Container<T, Alloc>::value_type& element)
 {
     typename Container<T, Alloc>::iterator it = cont.begin();
     bool result(false);
 
     while (it != cont.end())
     {
-        if(*it == element)
+        if (*it == element)
         {
             it = cont.erase(it);
             result = true;
@@ -247,7 +247,7 @@ inline bool remove_all_from(Container<T, Alloc>& cont, const typename Container<
         else
         {
             ++it;
-        }    
+        }
     }
     return result;
 }
@@ -256,7 +256,7 @@ inline bool remove_all_from(Container<T, Alloc>& cont, const typename Container<
 template<class ElementType, class Comp, class Alloc>
 inline bool remove_all_from(std::set<ElementType, Comp, Alloc>& cont, const ElementType& element)
 {
-    return remove_first_from (cont, element);
+    return remove_first_from(cont, element);
 }
 
 /* This works for Maps */
@@ -265,9 +265,9 @@ inline bool remove_all_from(std::map<Key, T, Comp, Alloc>& m, const ElementType&
 {
     typename std::map<Key, T, Comp, Alloc>::iterator it = m.begin();
     bool result(false);
-    while(it != m.end())
+    while (it != m.end())
     {
-        if(it->second == element)
+        if (it->second == element)
         {
             m.erase(it);
             result = true;
@@ -293,7 +293,7 @@ struct ContainerAdapter
 {
     virtual void insert(const T& element) = 0;
     virtual void clear() = 0;
-    virtual ~ContainerAdapter(){}
+    virtual ~ContainerAdapter() {}
 };
 
 template <class T, class Impl>
@@ -318,14 +318,14 @@ public:
 template <class Impl>
 inline ContainerAdapterImpl<typename Impl::value_type, Impl> containerAdapter(Impl& container)
 {
-	return ContainerAdapterImpl<typename Impl::value_type, Impl>(container);
+    return ContainerAdapterImpl<typename Impl::value_type, Impl>(container);
 }
 
 // CopyContainer -----------------------------
 template <class C1, class C2>
 static inline void copy_container(const C1& c1, C2& c2)
 {
-	std::copy(c1.begin(), c1.end(), std::back_insert_iterator<C2> (c2));
+    std::copy(c1.begin(), c1.end(), std::back_insert_iterator<C2> (c2));
 }
 
 // TODO: Add more containers.
@@ -413,7 +413,7 @@ public:
     {
         return _current == _cont.end();
     }
-}; 
+};
 
 template <class Container>
 class AutonomousIterator : public AutonomousIteratorBase<Container, typename Container::iterator, AutonomousIterator<Container> >

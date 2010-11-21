@@ -62,12 +62,12 @@ public:
                _last_eval && (_last_value op other._last_value));           \
     }
 
-    BCHAIN_OPERATOR(<);
-    BCHAIN_OPERATOR(<=);
-    BCHAIN_OPERATOR(>);
-    BCHAIN_OPERATOR(>=);
-    BCHAIN_OPERATOR(==);
-    BCHAIN_OPERATOR(!=);
+    BCHAIN_OPERATOR( <);
+    BCHAIN_OPERATOR( <=);
+    BCHAIN_OPERATOR( >);
+    BCHAIN_OPERATOR( >=);
+    BCHAIN_OPERATOR( ==);
+    BCHAIN_OPERATOR( !=);
 
 #undef BCHAIN_OPERATOR
 };
@@ -79,17 +79,20 @@ inline _bchain<T> operator op (T value, const _bchain<T>& bch)  \
     return _bchain<T>(value) op bch;                            \
 }
 
-BCHAIN_NONMEMBER_OPERATOR(<)
-BCHAIN_NONMEMBER_OPERATOR(>)
-BCHAIN_NONMEMBER_OPERATOR(<=)
-BCHAIN_NONMEMBER_OPERATOR(>=)
-BCHAIN_NONMEMBER_OPERATOR(==)
-BCHAIN_NONMEMBER_OPERATOR(!=)
+BCHAIN_NONMEMBER_OPERATOR( <)
+BCHAIN_NONMEMBER_OPERATOR( >)
+BCHAIN_NONMEMBER_OPERATOR( <=)
+BCHAIN_NONMEMBER_OPERATOR( >=)
+BCHAIN_NONMEMBER_OPERATOR( ==)
+BCHAIN_NONMEMBER_OPERATOR( !=)
 
 #undef BCHAIN_NONMEMBER_OPERATOR
 
 template <class T>
-inline _bchain<T> bchain(T value) { return _bchain<T>(value); }
+inline _bchain<T> bchain(T value)
+{
+    return _bchain<T>(value);
+}
 
 template <class T>
 inline bool in_range(T val, T min, T max)
@@ -101,7 +104,7 @@ class FirstTimeFlag
 {
     bool value;
 public:
-    FirstTimeFlag() : value(true){}
+    FirstTimeFlag() : value(true) {}
 
     operator bool()
     {
@@ -114,7 +117,7 @@ public:
     {
         return !operator bool();
     }
-    
+
     void reset()
     {
         value = true;
@@ -124,8 +127,8 @@ public:
 template <class T>
 inline T square(T t)
 {
-    return t*t;
-} 
+    return t * t;
+}
 
 template <class T>
 inline T maximize(T& t, T value)
@@ -156,7 +159,7 @@ inline bool is_lossless_sum_bigsmall(T x, T y)
 template <class T>
 inline bool is_lossless_sum(T x, T y)
 {
-    return x == T(0) || y == T(0) || (x + y > std::max(x,y));
+    return x == T(0) || y == T(0) || (x + y > std::max(x, y));
 }
 
 NAMESPACE_END

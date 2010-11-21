@@ -30,30 +30,36 @@ using std::cout;
 struct Shape
 {
     virtual void print_shape() const = 0;
-    virtual ~Shape(){}
+    virtual ~Shape() {}
 };
 
 class Circle : public Shape
 {
-    virtual void print_shape() const { cout << "a circle\n"; }
+    virtual void print_shape() const
+    {
+        cout << "a circle\n";
+    }
 };
 
 class Rectangle : public Shape
 {
-    virtual void print_shape() const { cout << "a rectangle\n"; }
+    virtual void print_shape() const
+    {
+        cout << "a rectangle\n";
+    }
 };
 
 int main()
 {
     Factory<string, Shape> shapes_factory;
-    
+
     shapes_factory.register_factory<Circle>("circle");
-    shapes_factory.register_factory<Rectangle>("rectangle");    
+    shapes_factory.register_factory<Rectangle>("rectangle");
     Shape* s = shapes_factory.new_class("circle");
 
     s->print_shape();
-        
+
     delete s;
-    
+
     return 0;
 }

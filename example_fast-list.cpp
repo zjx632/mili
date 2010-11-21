@@ -32,7 +32,7 @@ static void print_list(const IntList& list)
     IntList::ConstElementHandler h(list.first());
 
     cout << list.size() << ":" << endl;
-    while(h.is_valid())
+    while (h.is_valid())
     {
         cout << *h << endl;
         ++h;
@@ -45,21 +45,22 @@ int main()
 {
     IntList list;
     IntList::RemovableElementHandler
-        one   = list.new_node(1),
-        two   = list.new_node(2),
-        three = list.new_node(3);
+    one   = list.new_node(1),
+    two   = list.new_node(2),
+    three = list.new_node(3);
 
     print_list(list);
 
     // remove 'two'
-    two.destroy(); list.shrink();
+    two.destroy();
+    list.shrink();
 
     print_list(list);
 
     two = list.new_node(2);
     print_list(list);
 
-    for(int i=10; i<20; ++i)
+    for (int i = 10; i < 20; ++i)
         list.new_node(i);
 
     print_list(list);
@@ -67,7 +68,7 @@ int main()
     list.clear();
     list.shrink();
 
-    for(int i=10; i<30; ++i)
+    for (int i = 10; i < 30; ++i)
         list.new_node(i);
 
     print_list(list);

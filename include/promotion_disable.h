@@ -26,66 +26,66 @@ NAMESPACE_BEGIN
 
 struct AllowConversion
 {
-  typedef int Type;
+    typedef int Type;
 };
 
 /* StrictRules disables any conversion; only T --> T allowed */
 template <class T, class U> struct StrictRules
-{};
+    {};
 
-template <class T> struct StrictRules<T,T> : AllowConversion
-{};
+template <class T> struct StrictRules<T, T> : AllowConversion
+    {};
 
 /* FloatingPoints allows T-->T, plus Double to Float */
 template <class T, class U>
 struct FloatingPoints : StrictRules<T, U>
-{};
+    {};
 
 template <>
-struct FloatingPoints<float,double>: AllowConversion
-{};
+struct FloatingPoints<float, double>: AllowConversion
+    {};
 
 /* RulesCondition<cond> will only allow conversion when cond==true */
 template<bool C>
 struct RulesCondition
-{};
+    {};
 
 template<>
 struct RulesCondition<true> : AllowConversion
-{};
+    {};
 
 /* disable conversion depending on size */
 
 template <class T, class U>
-struct NotNarrowing : RulesCondition<sizeof(T)<=sizeof(U)>
+struct NotNarrowing : RulesCondition < sizeof(T) <= sizeof(U) >
 {};
 
 /* now allow same types */
 template <class T>
-struct NotNarrowing<T,T> : AllowConversion
-{};
+struct NotNarrowing<T, T> : AllowConversion
+    {};
 
 /* disable conversion from int to float, if they have the same size */
 template <>
-struct NotNarrowing<float,int>
-{};
+struct NotNarrowing<float, int>
+    {};
 
-template <class T, template <class X, class Y> class ConversionRules = StrictRules>
+template < class T, template <class X, class Y> class ConversionRules = StrictRules >
 class Restrict
 {
-   const T value;
+    const T value;
 public:
-   template <class U>
-   Restrict(U u)
-     :value(u)
-   {
-      typedef typename ConversionRules<T,U>::Type dummy;
-   }
-   
-   operator T() const
-   {
-      return value;
-   }
+    template <class U>
+    Restrict(U u)
+        : value(u)
+    {
+        typedef typename ConversionRules<T, U>::Type dummy;
+    }
+
+    operator T() const
+    {
+        return value;
+    }
 };
 
 NAMESPACE_END

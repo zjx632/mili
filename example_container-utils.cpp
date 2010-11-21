@@ -45,7 +45,7 @@ int main()
     m["ハロー"] = "さようなら";
     m["hola"] = "adios";
     m["buenas"] = "adios";
-  
+
     CAutonomousIterator<map<string, string> > mi(m);
     try
     {
@@ -53,7 +53,7 @@ int main()
         cout << contains(m, "nothing") << endl;       /* will print 0 (false) */
 
         cout << "map: " << endl;
-        cout << remove_first_from(m,"au revoir") << endl; /* will print 1 (true) */
+        cout << remove_first_from(m, "au revoir") << endl; /* will print 1 (true) */
         cout << remove_all_from(m, "adios") << endl;      /* will print 1 (true) */
 
         CAutonomousIterator<map<string, string> > mi(m);
@@ -65,7 +65,7 @@ int main()
         cout << find(m, "hello") << endl;             /* will print "goodbye" */
         cout << find(m, "world") << endl;             /* will throw ElementNotFound */
     }
-    catch(ElementNotFound)
+    catch (ElementNotFound)
     {
         cerr << "Element not found!" << endl;
     }
@@ -88,7 +88,7 @@ static void insert_elements(T& container)
 template <class T>
 static void delete_elements(T& container)
 {
-    remove_first_from(container, 400);    /* amending iterators */             
+    remove_first_from(container, 400);    /* amending iterators */
     remove_all_from(container, 100);      /* amending iterators */
 
 }

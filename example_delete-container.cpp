@@ -16,7 +16,7 @@ delete_container: A minimal library for deleting the objects of a container of p
 
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     This is an example program.
 */
 
@@ -33,17 +33,17 @@ int main()
 {
     std::vector<AnObject*> vec1;
     auto_vector_delete_container<std::vector<char*> > vec2;
-    
+
     vec1.push_back(new AnObject);
     vec1.push_back(new AnObject);
     vec1.push_back(new AnObject);
-    
+
     vec2.push_back(new char[10]);
     vec2.push_back(new char[10]);
     vec2.push_back(new char[10]);
 
     delete_container(vec1);
     // vector_delete_container(vec2) is called when exiting
-    
+
     return 0;
 }

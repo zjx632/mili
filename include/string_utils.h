@@ -43,7 +43,10 @@ struct normalized_string : std::string
             : c(other.c)
         {}
 
-        operator std::string::value_type() const { return c; }
+        operator std::string::value_type() const
+        {
+            return c;
+        }
 
         normalized_char& operator = (std::string::value_type other)
         {
@@ -67,7 +70,7 @@ struct normalized_string : std::string
     void normalize()
     {
         const size_t max = size();
-        for(size_t i = 0; i < max; i++)
+        for (size_t i = 0; i < max; i++)
             std::string::operator[](i) = NORMALIZER(std::string::operator[](i));
     }
 
@@ -118,8 +121,8 @@ struct normalized_string : std::string
         return *this;                                                                       \
     }
 
-    SELF_NORMALIZED_OP(=);
-    SELF_NORMALIZED_OP(+=);
+    SELF_NORMALIZED_OP( =);
+    SELF_NORMALIZED_OP( +=);
 
     normalized_string<NORMALIZER> operator + (const normalized_string<NORMALIZER>& other) const
     {
@@ -155,23 +158,23 @@ struct normalized_string : std::string
         return *this op normalized_string<NORMALIZER>(s);               \
     }
 
-    BOOL_NORMALIZED_OP(==);
-    BOOL_NORMALIZED_OP(!=);
-    BOOL_NORMALIZED_OP(<);
-    BOOL_NORMALIZED_OP(<=);
-    BOOL_NORMALIZED_OP(>=);
-    BOOL_NORMALIZED_OP(>);
+    BOOL_NORMALIZED_OP( ==);
+    BOOL_NORMALIZED_OP( !=);
+    BOOL_NORMALIZED_OP( <);
+    BOOL_NORMALIZED_OP( <=);
+    BOOL_NORMALIZED_OP( >=);
+    BOOL_NORMALIZED_OP( >);
 
     //using std::string::operator [];
 
-    normalized_char operator[] (size_t index)
+    normalized_char operator[](size_t index)
     {
-        return normalized_char( std::string::operator[](index) );
+        return normalized_char(std::string::operator[](index));
     }
 
-    normalized_char operator[] (size_t index) const
+    normalized_char operator[](size_t index) const
     {
-        return normalized_char( std::string::operator[](index) );
+        return normalized_char(std::string::operator[](index));
     }
 
     std::string::size_type find(const normalized_string<NORMALIZER>& other) const
@@ -266,14 +269,14 @@ inline bool from_string(const std::string& s, T& t)
 template <>
 inline std::string from_string<std::string>(const std::string& s)
 {
-	return s;
+    return s;
 }
 
 template <>
 inline bool from_string<std::string>(const std::string& s, std::string& t)
 {
-	t = s;
-	return true;
+    t = s;
+    return true;
 }
 
 /* to_number is obsolete. from_string should be used instead. */
@@ -292,20 +295,20 @@ inline bool to_number(const std::string& s, Number& n)
 // Remove whitespace at both sides
 inline std::string trim(const std::string& s)
 {
- std::string text(s);
- 
- std::string::size_type positionStart = text.find_first_not_of(' ');
- text.erase(0,positionStart);
- std::string::size_type positionEnd = text.find_last_not_of(' ');
- text.erase(positionEnd+1);
- 
-return text;
+    std::string text(s);
+
+    std::string::size_type positionStart = text.find_first_not_of(' ');
+    text.erase(0, positionStart);
+    std::string::size_type positionEnd = text.find_last_not_of(' ');
+    text.erase(positionEnd + 1);
+
+    return text;
 }
 
-struct StringNotFound : std::exception{};
+struct StringNotFound : std::exception {};
 
 inline std::string::size_type ensure_found(std::string::size_type found) throw(StringNotFound)
-{    
+{
     if (found != std::string::npos)
         return found;
     else
@@ -313,7 +316,7 @@ inline std::string::size_type ensure_found(std::string::size_type found) throw(S
 }
 
 inline std::string::size_type ensure_found(std::string::size_type found, std::string::size_type default_value)
-{ 
+{
     if (found != std::string::npos)
         return found;
     else

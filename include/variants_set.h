@@ -1,8 +1,8 @@
 /*
 VariantsSet: A minimal library that implements a set of variables of heterogenic types.
-    Copyright (C) 2010 Ezequiel S. Velez  
+    Copyright (C) 2010 Ezequiel S. Velez
                        Daniel Gutson, FuDePAN
-                                        
+
     This file is part of the MiLi Minimalistic Library.
 
     MiLi is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ class VariantsSet
     VariantsSets elements;
 
 public:
-    /* typedef to simulate STL */ 
+    /* typedef to simulate STL */
     typedef VariantsSets::iterator iterator;
     typedef VariantsSets::const_iterator const_iterator;
     typedef VariantsSets::value_type value_type;
@@ -52,7 +52,7 @@ public:
     {
         return elements.begin();
     }
-    /* Returns a const_iterator pointing to the end of the VariantsSet. */ 
+    /* Returns a const_iterator pointing to the end of the VariantsSet. */
     inline const_iterator end() const
     {
         return elements.end();
@@ -62,7 +62,7 @@ public:
     {
         return elements.begin();
     }
-    /* Returns a iterator pointing to the end of the VariantsSet. */ 
+    /* Returns a iterator pointing to the end of the VariantsSet. */
     inline iterator end()
     {
         return elements.end();
@@ -70,35 +70,37 @@ public:
 
     /* returns the element called name */
     template <class T>
-    T get_element(const ElementName& name) const throw (BadElementType, BadElementName)
+    T get_element(const ElementName& name) const throw(BadElementType, BadElementName)
     {
         const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
         T element;
         if (it != elements.end())
         {
-             if(!from_string<T>(it->second, element))
-                 throw BadElementType();
-        }else
+            if (!from_string<T>(it->second, element))
+                throw BadElementType();
+        }
+        else
             throw BadElementName();
         return element;
     }
 
     template <class T>
-    void get_element(const ElementName& name, T& element) const throw (BadElementType, BadElementName)
+    void get_element(const ElementName& name, T& element) const throw(BadElementType, BadElementName)
     {
         const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
         if (it != elements.end())
         {
-             if(!from_string<T>(it->second, element))
-                 throw BadElementType();
-        }else
+            if (!from_string<T>(it->second, element))
+                throw BadElementType();
+        }
+        else
             throw BadElementName();
     }
 
-    
+
     /* get_element, nothrow versions */
     template <class T>
-    bool get_element(const ElementName& name, T& element, const std::nothrow_t&) const throw ()
+    bool get_element(const ElementName& name, T& element, const std::nothrow_t&) const throw()
     {
         const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
         const bool success_name(it != elements.end());
@@ -119,11 +121,11 @@ public:
     {
         return elements.empty();
     }
-    
-    void erase(const ElementName& name) throw (BadElementName)
+
+    void erase(const ElementName& name) throw(BadElementName)
     {
         const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
-        if(it != elements.end())
+        if (it != elements.end())
             elements.erase(name);
         else
             throw BadElementName();
@@ -140,7 +142,7 @@ public:
     }
 
     VariantsSet()
-    : elements()
+        : elements()
     {}
 };
 

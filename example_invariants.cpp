@@ -16,7 +16,7 @@ invariants: A minimal library for checking invariants.
 
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     This is an example file.
 */
 
@@ -25,16 +25,20 @@ invariants: A minimal library for checking invariants.
 
 using std::cout;
 
-invariant::NeverNull<const char> get_message(invariant::InRange<int,-1,1> number)
+invariant::NeverNull<const char> get_message(invariant::InRange < int, -1, 1 > number)
 {
     return "Hello World\n";
-} 
+}
 
 struct AClass
 {
     int x;
     int y;
-    void setxy(int newx, int newy) { x = newx; y = newy; }
+    void setxy(int newx, int newy)
+    {
+        x = newx;
+        y = newy;
+    }
 };
 
 bool AClassInvariant(const AClass& aclass)
@@ -49,7 +53,7 @@ int main()
     const char* msg = get_message(-1);
     cout << msg;
 
-    AClass aclass;    
+    AClass aclass;
     AClass_inv inv(aclass);
     inv->setxy(3, 4);
     cout << inv->x << std::endl;

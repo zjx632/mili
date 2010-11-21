@@ -29,7 +29,7 @@ struct _FOR
     static void iterate(Operation& op)
     {
         op();
-        _FOR<Unroll, N-1, Operation>::iterate(op);
+        _FOR < Unroll, N - 1, Operation >::iterate(op);
     }
 };
 
@@ -45,7 +45,7 @@ struct _FOR<false, N, Operation>
 {
     static void iterate(Operation& op)
     {
-        for (unsigned int i=0; i<N; ++i)
+        for (unsigned int i = 0; i < N; ++i)
             op();
     }
 };
@@ -69,7 +69,7 @@ struct UnrollUpToClause
     };
 };
 
-template <unsigned int N, class Operation, class UnrollClause = UnrollAlwaysClause >
+template < unsigned int N, class Operation, class UnrollClause = UnrollAlwaysClause >
 struct FOR
 {
     static void iterate(Operation& op)

@@ -33,8 +33,8 @@ struct NeverShrinkPolicy
 
     struct Chunk
     {
-        Chunk(){}
-        Chunk(const Chunk&){}
+        Chunk() {}
+        Chunk(const Chunk&) {}
 
         bool empty() const
         {
@@ -43,14 +43,14 @@ struct NeverShrinkPolicy
 
         enum { NEED_INIT_NODES = false };
 
-        void init_node(Node&){}
-        void mark_unused(){}
+        void init_node(Node&) {}
+        void mark_unused() {}
     };
 
     struct Node
     {
-        void create(){}
-        void destroy(){}
+        void create() {}
+        void destroy() {}
     };
 
     void init_chunk(Chunk&) {}
@@ -60,7 +60,10 @@ struct NeverShrinkPolicy
     enum { SHRINK_ON_CLEAR = false };
 
     void shrink()           {}
-    bool shrinkable() const { return false; }
+    bool shrinkable() const
+    {
+        return false;
+    }
 };
 
 struct ShrinkOnRequestPolicy
@@ -71,8 +74,8 @@ struct ShrinkOnRequestPolicy
     {
         size_t used_count;
 
-        Chunk(){}
-        Chunk(const Chunk&) : used_count(0){}
+        Chunk() {}
+        Chunk(const Chunk&) : used_count(0) {}
 
         bool empty() const
         {
@@ -111,7 +114,10 @@ struct ShrinkOnRequestPolicy
     enum { SHRINK_ON_CLEAR = false };
 
     void shrink()           {}
-    bool shrinkable() const { return true; }
+    bool shrinkable() const
+    {
+        return true;
+    }
 };
 
 inline void ShrinkOnRequestPolicy::Chunk::init_node(ShrinkOnRequestPolicy::Node& node)
@@ -139,8 +145,8 @@ struct OptimizedShrinkOnRequestPolicy : ShrinkOnRequestPolicy
         size_t used_count;
         OptimizedShrinkOnRequestPolicy* policy;
 
-        Chunk(){}
-        Chunk(const Chunk&) : used_count(0){}
+        Chunk() {}
+        Chunk(const Chunk&) : used_count(0) {}
 
         bool empty() const
         {
@@ -197,7 +203,10 @@ struct OptimizedShrinkOnRequestPolicy : ShrinkOnRequestPolicy
         empty_chunks = false;
     }
 
-    bool shrinkable() const { return empty_chunks; }
+    bool shrinkable() const
+    {
+        return empty_chunks;
+    }
 };
 inline void OptimizedShrinkOnRequestPolicy::Chunk::init_node(OptimizedShrinkOnRequestPolicy::Node& node)
 {
@@ -230,11 +239,11 @@ struct _HintsMapper<false>
 template <class T>
 struct DefaultHints
 {
-    typedef typename _HintsMapper<
-                        template_info<T>::is_native  ||
-                        template_info<T>::is_pointer ||
-                        template_info<T>::is_reference
-                    >::Hints Hints;
+    typedef typename _HintsMapper <
+    template_info<T>::is_native  ||
+    template_info<T>::is_pointer ||
+    template_info<T>::is_reference
+    >::Hints Hints;
 };
 
 // MoveOnDestroy policies
@@ -283,10 +292,10 @@ struct MovePrevOrNextAfterDestroy
     }
 };
 
-template <class T,
-          class ShrinkPolicy = NeverShrinkPolicy,
-          class TypeHints = typename DefaultHints<T>::Hints,
-          size_t CHUNK_SIZE = 10>
+template < class T,
+         class ShrinkPolicy = NeverShrinkPolicy,
+         class TypeHints = typename DefaultHints<T>::Hints,
+         size_t CHUNK_SIZE = 10 >
 class FastList
 {
     struct Node;
@@ -430,13 +439,13 @@ class FastList
         {
             if (ShrinkPolicy::Chunk::NEED_INIT_NODES)
             {
-                for (size_t i=0; i < CHUNK_SIZE; ++i)
+                for (size_t i = 0; i < CHUNK_SIZE; ++i)
                     init_node(nodes[i]);
             }
 
             if (CHUNK_SIZE > 1)
             {
-                for(size_t i=1; i < (CHUNK_SIZE - 1); ++i)
+                for (size_t i = 1; i < (CHUNK_SIZE - 1); ++i)
                     nodes[i].link_next(&nodes[i+1]);
 
                 nodes[1].make_first();
@@ -637,7 +646,7 @@ public:
             return this->is_valid();
         }
 
-        PRemovableElementHandler(){}
+        PRemovableElementHandler() {}
 
         PRemovableElementHandler(const _RemovableElementHandler& other)
             : _RemovableElementHandler(other)
@@ -681,9 +690,9 @@ public:
     {
         if (ShrinkPolicy::SHRINK_ENABLED && shrink_policy.shrinkable())
         {
-            for(typename std::list<Chunk>::iterator it = chunks.begin();
-                it != chunks.end();
-                ++it)
+            for (typename std::list<Chunk>::iterator it = chunks.begin();
+                    it != chunks.end();
+                    ++it)
             {
                 if (it->empty())
                 {
@@ -733,11 +742,11 @@ public:
             {
                 n->migrate_sublist(used_nodes, empty_nodes);
                 if (ShrinkPolicy::NEED_NOTIFY_EMPTY_CHUNKS &&
-                    !TypeHints::CALL_DESTRUCTOR)
+                        !TypeHints::CALL_DESTRUCTOR)
                 {
                     for (typename std::list<Chunk>::iterator it = chunks.begin();
-                         it != chunks.end();
-                         ++it)
+                            it != chunks.end();
+                            ++it)
                         it->mark_unused();
                 }
             }

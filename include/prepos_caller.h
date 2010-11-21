@@ -32,23 +32,26 @@ struct PrePosCaller
     {
         T& t;
         Pos& pos;
-        
+
         Temp(T& t, Pos& pos) : t(t), pos(pos) {}
-        
+
         T& operator -> () const
         {
             return t;
         }
-        
-        ~Temp() { pos(); }
+
+        ~Temp()
+        {
+            pos();
+        }
     };
-    
+
     T& t;
     Pre& pre;
     Pos& pos;
-    
+
     PrePosCaller(T& t, Pre& pre, Pos& pos) : t(t), pre(pre), pos(pos) {}
-    
+
     Temp operator -> () const
     {
         pre();
@@ -63,23 +66,26 @@ struct PrePosCaller<T*, Pre, Pos>
     {
         T* t;
         Pos& pos;
-        
+
         Temp(T* t, Pos& pos) : t(t), pos(pos) {}
-        
+
         T* operator -> () const
         {
             return t;
         }
-        
-        ~Temp() { pos(); }
+
+        ~Temp()
+        {
+            pos();
+        }
     };
-    
+
     T* t;
     Pre& pre;
     Pos& pos;
-    
+
     PrePosCaller(T* t, Pre& pre, Pos& pos) : t(t), pre(pre), pos(pos) {}
-    
+
     Temp operator -> () const
     {
         pre();
@@ -95,21 +101,24 @@ struct PrePosCaller<T* const, Pre, Pos>
         T* const t;
         Pos& pos;
         Temp(T* t, Pos& pos) : t(t), pos(pos) {}
-        
+
         T* operator -> () const
         {
             return t;
         }
-        
-        ~Temp() { pos(); }
+
+        ~Temp()
+        {
+            pos();
+        }
     };
-    
+
     T* const t;
     Pre& pre;
     Pos& pos;
-    
+
     PrePosCaller(T* t, Pre& pre, Pos& pos) : t(t), pre(pre), pos(pos) {}
-    
+
     Temp operator -> () const
     {
         pre();
