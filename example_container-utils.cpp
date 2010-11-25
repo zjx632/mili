@@ -25,6 +25,7 @@ find_utils: A minimal library with generic find functions with exceptions.
 #include <iostream>
 #include <vector>
 #include <string>
+#include <queue>
 
 #include "include/mili.h"
 
@@ -33,6 +34,8 @@ using namespace std;
 static void test_autonomous_iterators();
 template<class T>
 static void show_map_elements(CAutonomousIterator<T> it);
+template <class T>
+static void insert_elements(T& container);
 
 int main()
 {
@@ -69,7 +72,11 @@ int main()
     {
         cerr << "Element not found!" << endl;
     }
-
+    
+    /* TEST - queue in container_utils::insert_into */
+    queue<int> myqueue;
+    insert_elements(myqueue);
+    
     return 0;
 }
 
@@ -127,7 +134,6 @@ struct S
     int x;
 };
 
-
 void test_autonomous_iterators()
 {
     // Examples using containers of integers:
@@ -175,4 +181,3 @@ void test_autonomous_iterators()
     cout << vsi->x << endl;
     cout << (*vsi).x << endl;
 }
-
