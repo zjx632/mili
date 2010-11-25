@@ -182,6 +182,13 @@ inline void insert_into(Ranker<T, Behavior, Comp>& cont, const T& element)
     cont.insert(element);
 }
 
+/* This works for Queue */
+template <class ElementType>
+inline void insert_into(std::queue<ElementType>& cont, const ElementType& element)
+{
+    cont.push(element);
+}
+
 //------------ Remove first Utilities
 
 /* This works for Ranker */
