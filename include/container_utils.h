@@ -29,6 +29,7 @@ container_utils: A minimal library with generic STL container utilities..
 #include <set>
 #include "ranker.h"
 #include <new>
+#include <queue>
 
 #include <algorithm>
 #include <exception>
