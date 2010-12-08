@@ -63,7 +63,6 @@ int main()
     generate_file("stream-utils.test");
     load_file("stream-utils.test");
 
-    system("pause");
     return 0;
 }
 
