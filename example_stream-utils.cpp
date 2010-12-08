@@ -17,7 +17,7 @@ stream_utils: A minimal library that provides CSV and other file/stream
 
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
-
+    
     This is an example file.
 */
 
@@ -31,13 +31,13 @@ using namespace std;
 static void generate_file(const char* name)
 {
     ofstream f(name);
-    vector<float> v;
+    set<float> v;
 
-    for (int i = 0; i < 10; i++)
+    for(int i=0; i < 10; i++)
     {
         v.clear();
-        for (int j = 0; j <= i; j++)
-            v.push_back(i + j / 10.0f);
+        for(int j=0; j <= i; j++)
+            insert_into(v, i + j / 10.0f);
 
         f << v; /* PROVIDED BY MiLi */
 
@@ -63,6 +63,7 @@ int main()
     generate_file("stream-utils.test");
     load_file("stream-utils.test");
 
+    system("pause");
     return 0;
 }
 

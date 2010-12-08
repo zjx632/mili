@@ -23,90 +23,137 @@ stream_utils: A minimal library that provides CSV and other file/stream
 #define STREAM_UTILS_H
 
 #include <vector>
+#include <list>
+#include <set>
 #include <iostream>
 #include <string>
 #include "string_utils.h"
+#include "container_utils.h"
 
 NAMESPACE_BEGIN
 
-template <class T>
-inline std::istream& operator >> (std::istream& is, std::vector<T>& v)
+//------------ Separator
+
+template <class Container>
+struct _Separator
 {
-    T t;
-    std::string line;
+    Container& v;
+    const char s;
 
-    if (std::getline(is, line))
-    {
-        char sep;
-        std::stringstream ss(line);
+    _Separator(Container& v, char s)
+        : v(v), s(s)
+    {}
 
-        do
-        {
-            while (ss >> t)
-                v.push_back(t);
+    _Separator(const _Separator& other)
+        : v(other.v), s(other.s)
+    {}
+};
 
-            ss.clear();
-        }
-        while (ss >> sep);
-    }
-
-    return is;
+template <class Container>
+inline _Separator<Container> Separator(Container& v, char s)
+{
+    return _Separator<Container>(v, s);
 }
 
-template <class T>
-inline void _mili_base_output(std::ostream& os, const std::vector<T>& v, char separator)
+//------------ Output
+
+template <class Container>
+inline void _mili_base_output (std::ostream& os, const Container& v, char separator)
 {
     const size_t max = v.size();
 
     if (max > 0)    /* This is done for optimization purposes.  */
     {
-        const size_t before_last(max - 1);
+        typename Container::const_iterator it = v.begin();
 
-        for (size_t i = 0; i < before_last; i++)
-            os << v[i] << separator;
+        /* Print the first value */
+        os << *it;
 
-        os << v[before_last];
+        /* Prints the following values */
+        for (++it; it != v.end(); ++it)
+            os << separator << *it;
     }
 }
 
-template <class T>
-inline std::ostream& operator << (std::ostream& os, const std::vector<T>& v)
+//------------ Operator <<
+
+/* This works for vectors and lists */
+template < class T, template <class T, class A = std::allocator<T> > class Container>
+inline std::ostream& operator << (std::ostream& os, const Container<T>& v)
 {
-    _mili_base_output(os, v, ',');
+    _mili_base_output(os, v, ',');    /* By default uses a comma as a separator */
     return os;
 }
 
-template <class T>
-struct _Separator
+/* This work for sets */
+template <class Key>
+inline std::ostream& operator << (std::ostream& os, const std::set<Key>& v)
 {
-    std::vector<T>& v;
-    const char      s;
-
-    _Separator(std::vector<T>& v, char s)
-        : v(v), s(s)
-    {}
-
-    _Separator(const _Separator<T>& other)
-        : v(other.v), s(other.s)
-    {}
-};
-
-template <class T>
-inline _Separator<T> Separator(std::vector<T>& v, char s)
-{
-    return _Separator<T>(v, s);
+    _mili_base_output(os, v, ',');    /* By default uses a comma as a separator */
+    return os;
 }
 
-template <class T>
-inline std::ostream& operator << (std::ostream& os, const _Separator<T>& s)
+/* This works for _Separator 
+(Receives container and separator through a _Separator type) */
+template <class Container>
+inline std::ostream& operator << (std::ostream& os, const _Separator<Container>& s)
 {
     _mili_base_output(os, s.v, s.s);
     return os;
 }
 
+//------------ Input
+
+template <class Container>
+inline void _mili_base_input (std::istream& is, Container& v)
+{
+    typename Container::value_type t;
+    std::string line;
+
+    /* Extracts characters from is and stores them into line 
+    until a delimitation character is found. (\n) */
+    if (std::getline(is, line))
+    {
+        char sep;
+        
+        /* provides an interface to manipulate strings
+        as if they were input/output streams. */
+        std::stringstream ss(line);
+        
+        do
+        {
+            while (ss >> t)
+                insert_into(v, t);
+
+            ss.clear();
+        }
+        while (ss >> sep);
+    }
+}
+
+//------------ Operator >>
+
+/* This works for vectors and lists */
+template <class T, template <class T, class A = std::allocator<T> > class Container>
+inline std::istream& operator >> (std::istream& is, Container<T>& v)
+{
+    _mili_base_input(is, v);
+    return is;
+}
+
+/* This works for sets */
+template <class Key>
+inline std::istream& operator >> (std::istream& is, std::set<Key>& v)
+{
+    _mili_base_input(is, v);
+    return is;
+}
+
+/* This works for _Separator 
+(Receives container and separator through a _Separator type) */
 template <class T>
 inline std::istream& operator >> (std::istream& is, const _Separator<T>& s)
-{
+{    
     std::string line;
 
     if (std::getline(is, line))
@@ -120,18 +167,19 @@ inline std::istream& operator >> (std::istream& is, const _Separator<T>& s)
             found = (pos !=  std::string::npos);
             if (found)
             {
-                s.v.push_back(
+                insert_into(s.v,
+                    /* Converts from string to type T */
                     from_string<T>(
                         line.substr(last_pos, pos - last_pos)
                     )
                 );
+
                 last_pos = pos + 1;
             }
-        }
-        while (found);
+        } while(found);
 
         if (last_pos != std::string::npos)
-            s.v.push_back(
+            insert_into(s.v,
                 from_string<T>(
                     line.substr(last_pos)
                 )
@@ -144,4 +192,3 @@ inline std::istream& operator >> (std::istream& is, const _Separator<T>& s)
 NAMESPACE_END
 
 #endif
-

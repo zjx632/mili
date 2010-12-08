@@ -1,5 +1,6 @@
 Version 17
 ===========
+    * Added support for list and set in stream_utils.
     * Added support for queue in container_utils::insert_into
     * Added UniqueRanker class to Ranker library.
     * Added is_basic_string to template_info.
