@@ -78,16 +78,16 @@ inline void _mili_base_output (std::ostream& os, const Container& v, char separa
 //------------ Operator <<
 
 /* This works for vectors and lists */
-template < class T, template <class T, class A = std::allocator<T> > class Container>
-inline std::ostream& operator << (std::ostream& os, const Container<T>& v)
+template < class T, class Alloc, template <class,class> class Container>
+inline std::ostream& operator << (std::ostream& os, const Container<T, Alloc>& v)
 {
     _mili_base_output(os, v, ',');    /* By default uses a comma as a separator */
     return os;
 }
 
 /* This work for sets */
-template <class Key>
-inline std::ostream& operator << (std::ostream& os, const std::set<Key>& v)
+template <class Key, class Comp, class Alloc>
+inline std::ostream& operator << (std::ostream& os, const std::set<Key, Comp, Alloc>& v)
 {
     _mili_base_output(os, v, ',');    /* By default uses a comma as a separator */
     return os;
@@ -134,16 +134,16 @@ inline void _mili_base_input (std::istream& is, Container& v)
 //------------ Operator >>
 
 /* This works for vectors and lists */
-template <class T, template <class T, class A = std::allocator<T> > class Container>
-inline std::istream& operator >> (std::istream& is, Container<T>& v)
+template <class T, class Alloc, template <class,class> class Container>
+inline std::istream& operator >> (std::istream& is, Container<T, Alloc>& v)
 {
     _mili_base_input(is, v);
     return is;
 }
 
 /* This works for sets */
-template <class Key>
-inline std::istream& operator >> (std::istream& is, std::set<Key>& v)
+template <class Key, class Comp, class Alloc>
+inline std::istream& operator >> (std::istream& is, std::set<Key, Comp, Alloc>& v)
 {
     _mili_base_input(is, v);
     return is;
