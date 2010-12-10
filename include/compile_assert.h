@@ -24,6 +24,8 @@ compile_assert: A minimal library supporting compile time (static) assertions,
 
 //NAMESPACE_BEGIN
 
+#ifndef __GXX_EXPERIMENTAL_CXX0X__  // replace this by __cplusplus > 199711L when available
+
 #define declare_static_assert(name)     \
 template <bool Condition>               \
 struct name                             \
@@ -47,6 +49,14 @@ declare_static_assert(GenericAssertion);
 
 #define template_generic_assert(condition)   \
     compile_assert(condition, GenericAssertion)
+
+#else
+#   define declare_static_assert(name)
+#   define compile_assert(condition, name) static_assert(condition, #name)
+#   define template_compile_assert(condition, name) static_assert(condition, #name)
+#   define generic_assert(condition) static_assert(condition, #condition)
+#   define template_generic_assert(condition) static_assert(condition, #condition)
+#endif
 
 //NAMESPACE_END
 

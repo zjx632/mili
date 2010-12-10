@@ -26,11 +26,11 @@ compile_assert: A minimal library supporting compile time (static) assertions,
 generic_assert(sizeof(int) == 4);
 
 declare_static_assert(this_assertion_will_always_fail);
-declare_static_assert(pointers_not_allowed);
+declare_static_assert(pointers_not_allowed_assert);
 
 template <class T> struct MyType
 {
-    template_compile_assert(!template_is_pointer<T>::value, pointers_not_allowed);
+    template_compile_assert(!template_is_pointer<T>::value, pointers_not_allowed_assert);
 };
 
 int main()
