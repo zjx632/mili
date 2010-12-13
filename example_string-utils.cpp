@@ -58,7 +58,7 @@ int main()
     {
         cout << ensure_found(str.find_first_of(" ", 0)) << endl;    /* throw StringNotFound  */
     }
-    catch (const StringNotFound &f)
+    catch (const StringNotFound& f)
     {
         cout << "Do something" << endl;     /* prints Do something */
     }
