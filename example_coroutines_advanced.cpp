@@ -30,8 +30,8 @@ using namespace std;
 
 struct TreeNode
 {
-    TreeNode *left;
-    TreeNode *right;
+    TreeNode* left;
+    TreeNode* right;
     const bool is_white;
     const int data;
     static int last;

@@ -72,11 +72,11 @@ int main()
     {
         cerr << "Element not found!" << endl;
     }
-    
+
     /* TEST - queue in container_utils::insert_into */
     queue<int> myqueue;
     insert_elements(myqueue);
-    
+
     return 0;
 }
 
