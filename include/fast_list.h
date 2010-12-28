@@ -446,10 +446,10 @@ class FastList
             if (CHUNK_SIZE > 1)
             {
                 for (size_t i = 1; i < (CHUNK_SIZE - 1); ++i)
-                    nodes[i].link_next(&nodes[i+1]);
+                    nodes[i].link_next(&nodes[i + 1]);
 
                 nodes[1].make_first();
-                nodes[CHUNK_SIZE-1].make_last();
+                nodes[CHUNK_SIZE - 1].make_last();
             }
         }
     };
@@ -474,7 +474,7 @@ class FastList
             if (CHUNK_SIZE > 1)
             {
                 empty_nodes.first = &new_chunk.nodes[1];
-                empty_nodes.last  = &new_chunk.nodes[CHUNK_SIZE-1];
+                empty_nodes.last  = &new_chunk.nodes[CHUNK_SIZE - 1];
             }
         }
         else

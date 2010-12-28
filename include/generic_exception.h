@@ -41,7 +41,7 @@ public:
     ~GenericException() throw() {};
 
     //! what redefinition
-    virtual const char * what() const throw()
+    virtual const char* what() const throw()
     {
         return description.c_str();
     }

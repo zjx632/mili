@@ -28,7 +28,7 @@ prepos_caller: A minimal library for wrapping object methods calls.
 
 struct PreMutex
 {
-    pthread_mutex_t * const mutex;
+    pthread_mutex_t* const mutex;
 
     PreMutex(pthread_mutex_t* mutex) : mutex(mutex) {}
     PreMutex(const PreMutex& other) : mutex(other.mutex) {}
@@ -41,7 +41,7 @@ struct PreMutex
 
 struct PosMutex
 {
-    pthread_mutex_t * const mutex;
+    pthread_mutex_t* const mutex;
 
     PosMutex(pthread_mutex_t* mutex) : mutex(mutex) {}
     PosMutex(const PosMutex& other) : mutex(other.mutex) {}
