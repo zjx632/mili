@@ -166,6 +166,7 @@ public:
     }
 };
 
+//TODO[C++0x]: this template should be move inside power function 
 template<int E>
 class IsNegative
 {
