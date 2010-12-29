@@ -29,8 +29,29 @@ int main()
         std::cout << "1 < 2 < 3 -> TRUE" << std::endl;
 
     int x(10);
-    if (5 >= bchain(4) < 10 == x)
+    if ((5 >= bchain(4) < 10) == x)
         std::cout << "5 >= 4 < 10 == x -> TRUE" << std::endl;
+
+    float r = power<2>(2);
+    std::cout << "2^2 == " << r << std::endl;
+    if (r != 4)
+    {
+        return EXIT_FAILURE;
+    }
+
+    r = power<-2>(2);
+    std::cout << "2^(-2) == " << r << std::endl;
+    if (r != .25)
+    {
+        return EXIT_FAILURE;
+    }
+
+    r = cubic_root(27);
+    std::cout << "27^(1/3) == " << r << std::endl;
+    if (r != 3)
+    {
+        return EXIT_FAILURE;
+    }
 
     if (in_range(3.141692f, 10.0f, 11.0f))
         return EXIT_SUCCESS;
