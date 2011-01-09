@@ -71,9 +71,6 @@ protected:
     Ranking ranking;                           /* Container. */
     const size_t TOP;                          /* Maximum number of elements.*/
 
-    /* Insert an element and returns the position at it */
-    inline bool insert(const T& element, iterator& it, T* last_element);
-
 public:
     /* typedef to simulate STL */
     typedef typename Ranking::const_iterator const_iterator;
@@ -130,7 +127,7 @@ template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
 inline bool Ranker<T, Behavior, Comp, DisposalPolicy>::insert(const T& element)
 {
     const std::pair<iterator, iterator> position = equal_range(ranking.begin(), ranking.end(), element, Comp());
-    const bool top_not_reached(ranking.size() < TOP);
+    const bool top_reached(ranking.size() >= TOP);
     bool success(true);
     iterator pos;
 
@@ -140,43 +137,13 @@ inline bool Ranker<T, Behavior, Comp, DisposalPolicy>::insert(const T& element)
         pos = position.second;
 
     ranking.insert(pos, element);
+    const iterator bottom_element = --ranking.end();
 
-    if (!top_not_reached)
+    if (top_reached)
     {
-        if (distance(pos, ranking.end()) == 0)
-            success = false;
-        DisposalPolicy()(*(--ranking.end()));
-        ranking.erase(--ranking.end());
-    }
-    return success;
-}
-
-template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline bool Ranker<T, Behavior, Comp, DisposalPolicy>::insert(const T& element, iterator& it, T* last_element)
-{
-    const std::pair<iterator, iterator> position = equal_range(ranking.begin(), ranking.end(), element, Comp());
-    const bool top_not_reached(ranking.size() < TOP);
-    bool success(true);
-    iterator pos;
-
-    if (Behavior == AddBeforeEqual)
-        pos = position.first;
-    else
-        pos = position.second;
-
-    it = pos;
-    ranking.insert(pos, element);
-
-    if (!top_not_reached)
-    {
-        if (distance(pos, ranking.end()) == 0)
-        {
-            success = false;
-            *last_element = element;
-        }
-        *last_element = *(--ranking.end());
-        DisposalPolicy()(*(--ranking.end()));
-        ranking.erase(--ranking.end());
+        success = (pos != ranking.end());
+        DisposalPolicy()(*bottom_element);
+        ranking.erase(bottom_element);
     }
     return success;
 }
@@ -185,8 +152,11 @@ template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
 inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(const T& element)
 {
     const iterator pos = find(ranking.begin(), ranking.end(), element);
-    DisposalPolicy()(*pos);
-    ranking.erase(pos);
+    if(pos != ranking.end())
+    {
+        DisposalPolicy()(*pos);
+        ranking.erase(pos);
+    }
 }
 
 template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
@@ -206,8 +176,11 @@ template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
 inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(T* element)
 {
     const iterator pos = find(ranking.begin(), ranking.end(), *element);
-    DisposalPolicy()(*element);
-    ranking.erase(pos);
+    if(pos != ranking.end())
+    {
+        DisposalPolicy()(*element);
+        ranking.erase(pos);
+    }
 }
 
 template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
@@ -228,7 +201,10 @@ template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
 inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(const T& element, _NoDisposalPolicy)
 {
     const iterator pos = find(ranking.begin(), ranking.end(), element);
-    ranking.erase(pos);
+    if(pos != ranking.end())
+    {
+        ranking.erase(pos);
+    }
 }
 
 template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
@@ -241,7 +217,10 @@ template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
 inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(T* element, _NoDisposalPolicy)
 {
     const iterator pos = find(ranking.begin(), ranking.end(), *element);
-    ranking.erase(pos);
+    if(pos != ranking.end())
+    {
+        ranking.erase(pos);
+    }
 }
 
 template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
@@ -370,15 +349,15 @@ inline bool UniqueRanker<T, Comp, CompEq, DisposalPolicy>::insert(const T& eleme
     const iterator rankPos = ranking.insert(element);
     const std::pair<uiterator,bool> aux = unique.insert(std::pair<T,iterator>(element,rankPos));
     bool success(true);
+    const iterator bottom_element = --ranking.end();
 
     if(aux.second)                                            // It is new
     {
         if(ranking.size() > TOP)
         {
-            unique.erase(*(--ranking.end()));                 // Remove the last one
-            ranking.erase(--ranking.end());
-            if(rankPos == --ranking.end())
-                success = false;
+            unique.erase(*bottom_element);                 // Remove the last one
+            ranking.erase(bottom_element);
+            success = (rankPos != bottom_element);
         }
     }else                                                     // Already exist
     {
@@ -400,18 +379,24 @@ template<class T, class Comp, class CompEq, class DisposalPolicy>
 inline void UniqueRanker<T, Comp, CompEq, DisposalPolicy>::remove(const T& element)
 {
     const uiterator pos = unique.find(element);
-    DisposalPolicy()(pos->first);
-    ranking.erase(pos->second);
-    unique.erase(pos);
+    if(pos != unique.end())
+    {
+        DisposalPolicy()(pos->first);
+        ranking.erase(pos->second);
+        unique.erase(pos);
+    }
 }
 
 template<class T, class Comp, class CompEq, class DisposalPolicy>
 inline void UniqueRanker<T, Comp, CompEq, DisposalPolicy>::remove(T* element)
 {
     const uiterator pos = unique.find(*element);
-    DisposalPolicy()(pos->first);
-    ranking.erase(pos->second);
-    unique.erase(pos);
+    if(pos != unique.end())
+    {
+        DisposalPolicy()(pos->first);
+        ranking.erase(pos->second);
+        unique.erase(pos);
+    }
 }
 
 /* version which does not apply DisposalPolicy */
@@ -420,16 +405,22 @@ template<class T, class Comp, class CompEq, class DisposalPolicy>
 inline void UniqueRanker<T, Comp, CompEq, DisposalPolicy>::remove(const T& element, _NoDisposalPolicy)
 {
     const uiterator pos = unique.find(element);
-    ranking.erase(pos->second);
-    unique.erase(pos);
+    if(pos != unique.end())
+    {
+        ranking.erase(pos->second);
+        unique.erase(pos);
+    }
 }
 
 template<class T, class Comp, class CompEq, class DisposalPolicy>
 inline void UniqueRanker<T, Comp, CompEq, DisposalPolicy>::remove(T* element, _NoDisposalPolicy)
 {
     const uiterator pos = unique.find(*element);
-    ranking.erase(pos->second);
-    unique.erase(pos);
+    if(pos != unique.end())
+    {
+        ranking.erase(pos->second);
+        unique.erase(pos);
+    }
 }
 
 /*---------------------------------------------------------------*/
