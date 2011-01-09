@@ -43,16 +43,26 @@ struct Player
 
     Player(string name, float score): name(name), score(score)
     {}
+
+    void print () const
+    {
+        cout << name << " - " << score << endl;
+    }
 };
 
+/* Compare two Players' names */
 struct PlayerUnique
 {
     bool operator()(const Player& p1, const Player& p2)
     {
-        return p1.name < p2.name;
+        if((p1.name).compare(p2.name) > 0)
+            return true;
+        else
+            return false;
     }
 };
 
+/* Compare two Players' scores */
 struct PlayerRanking
 {
     bool operator()(const Player& p1, const Player& p2)
@@ -60,26 +70,42 @@ struct PlayerRanking
         return p1.score > p2.score;
     }
 };
-typedef UniqueRanker<int> UniqueRanking;
+
 typedef UniqueRanker<Player, PlayerRanking, PlayerUnique> PlayersRanking;
+
+void print_classes (CAutonomousIterator<PlayersRanking> it)
+{
+    while (!it.end())
+    {
+        it->print();
+        ++it;
+    }
+    cout << "_______________________" << endl;
+}
 
 void unique_ranker_test()
 {
     PlayersRanking UR(5);
-    UR.insert(Player("Pepe", .1));
-    UR.insert(Player("Max", .2));
-    UR.insert(Player("Juan", .3));
-    UR.insert(Player("Raul", .4));
-    UR.insert(Player("Mitch", .4));
-    UR.insert(Player("Ro", .5));
-    UR.insert(Player("Lau", .6));
-    UR.insert(Player("Raul", .5));
+
+    cout << UR.insert(Player("Umpa lumpa A", .1)) << endl;;
+    cout << UR.insert(Player("Umpa lumpa B", .3)) << endl;
+    cout << UR.insert(Player("Umpa lumpa C", .3)) << endl;
+    cout << UR.insert(Player("Umpa lumpa B", .2)) << endl;
+    cout << UR.insert(Player("Umpa lumpa D", .5)) << endl;
+    cout << UR.insert(Player("Umpa lumpa E", .6)) << endl;
+    cout << UR.insert(Player("Umpa lumpa B", .5)) << endl;
+    cout << UR.insert(Player("Umpa lumpa F", .8)) << endl;
+
     CAutonomousIterator<PlayersRanking> it(UR);
-    while (!it.end())
-    {
-        cout << it->name << " - " << it->score << endl;
-        ++it;
-    }
+    print_classes(it);
+
+    UR.top().print();                     // Print the top Umpa Lumpa
+    UR.bottom().print();                  // Print the bottom Umpa Lumpa
+
+    cout << "-------- remove Umpa lumpa E --------" << endl;
+    UR.remove(Player("Umpa lumpa E", .6));
+    CAutonomousIterator<PlayersRanking> it2(UR);
+    print_classes(it2);
 }
 
 //-------------------------------------------
