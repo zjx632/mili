@@ -1,5 +1,6 @@
 Version 17
 ===========
+    * Changed the interface of Disposal Policy. 
     * Initial support for C++0x static_assert in compile_assert.
     * Fixed example_compile-assert.cpp
     * Added support for list and set in stream_utils.
