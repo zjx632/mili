@@ -48,14 +48,14 @@ enum _NoDisposalPolicy
 template<class T>
 struct DisposalNullPolicy
 {
-    void operator()(const T& element)
+    static void destroy(const T& element)
     {}
 };
 
 template<class T>
 struct DisposalDeletePolicy
 {
-    void operator()(const T& element)
+    static void destroy(const T& element)
     {
         delete element;
     }
@@ -119,7 +119,12 @@ public:
 
     ~Ranker()
     {
-        this->clear();
+        iterator it = ranking.begin();
+        while (it != ranking.end())
+        {
+            DisposalPolicy::destroy(*it);
+            ++it;
+        }
     }
 };
 
@@ -142,7 +147,7 @@ inline bool Ranker<T, Behavior, Comp, DisposalPolicy>::insert(const T& element)
     if (top_reached)
     {
         success = (pos != ranking.end());
-        DisposalPolicy()(*bottom_element);
+        DisposalPolicy::destroy(*bottom_element);
         ranking.erase(bottom_element);
     }
     return success;
@@ -154,7 +159,7 @@ inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(const T& ele
     const iterator pos = find(ranking.begin(), ranking.end(), element);
     if(pos != ranking.end())
     {
-        DisposalPolicy()(*pos);
+        DisposalPolicy::destroy(*pos);
         ranking.erase(pos);
     }
 }
@@ -166,7 +171,7 @@ inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_all(const T& eleme
     while (it != ranking.end())
     {
         if (element == *it)
-            DisposalPolicy()(*it);
+            DisposalPolicy::destroy(*it);
         ++it;
     }
     ranking.remove(element);
@@ -178,7 +183,7 @@ inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(T* element)
     const iterator pos = find(ranking.begin(), ranking.end(), *element);
     if(pos != ranking.end())
     {
-        DisposalPolicy()(*element);
+        DisposalPolicy::destroy(*element);
         ranking.erase(pos);
     }
 }
@@ -190,7 +195,7 @@ inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_all(T* element)
     while (it != ranking.end())
     {
         if (*element == *it)
-            DisposalPolicy()(*it);
+            DisposalPolicy::destroy(*it);
         ++it;
     }
     ranking.remove(*element);
@@ -248,7 +253,7 @@ inline void Ranker<T, Behavior, Comp, DisposalPolicy>::clear()
     iterator it = ranking.begin();
     while (it != ranking.end())
     {
-        DisposalPolicy()(*it);
+        DisposalPolicy::destroy(*it);
         ++it;
     }
     ranking.clear();
@@ -310,7 +315,12 @@ public:
 
     ~UniqueRanker()
     {
-        this->clear();
+        uiterator it = unique.begin();
+        while (it != unique.end())
+        {
+            DisposalPolicy::destroy(it->first);
+            ++it;
+        }
     }
 
     /* Members */
@@ -381,7 +391,7 @@ inline void UniqueRanker<T, Comp, CompEq, DisposalPolicy>::remove(const T& eleme
     const uiterator pos = unique.find(element);
     if(pos != unique.end())
     {
-        DisposalPolicy()(pos->first);
+        DisposalPolicy::destroy(pos->first);
         ranking.erase(pos->second);
         unique.erase(pos);
     }
@@ -393,7 +403,7 @@ inline void UniqueRanker<T, Comp, CompEq, DisposalPolicy>::remove(T* element)
     const uiterator pos = unique.find(*element);
     if(pos != unique.end())
     {
-        DisposalPolicy()(pos->first);
+        DisposalPolicy::destroy(pos->first);
         ranking.erase(pos->second);
         unique.erase(pos);
     }
@@ -443,7 +453,7 @@ inline void UniqueRanker<T, Comp, CompEq, DisposalPolicy>::clear()
     uiterator it = unique.begin();
     while (it != unique.end())
     {
-        DisposalPolicy()(it->first);
+        DisposalPolicy::destroy(it->first);
         ++it;
     }
     unique.clear();
