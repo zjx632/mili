@@ -22,7 +22,7 @@ Version 17  UNRELEASED
     * Added ensure_found function to string_utils.h
     * Removed warnings in fast_list.h when compiling with -Wextra
     * Ran astyle
-    * Added power in arith_utils
+    * Added power() function in arith_utils
     * Added cubic_root in arith_utils
 
 Version 16
