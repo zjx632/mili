@@ -119,6 +119,10 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "generic_exception.h"
 #endif
 
+#ifndef NO_RAII
+#   include "raii.h"
+#endif
+
 #undef NAMESPACE_BEGIN
 #undef NAMESPACE_END
 
