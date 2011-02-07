@@ -23,11 +23,10 @@ raii.h: A minimal library for generic RAII implementation
 #include <iostream>
 #include <cstdio>
 
-#include <pthread.h>
+class file
+{
 
-class file {
 public:
-
     file (std::string path): _file(std::fopen(path.c_str(),"w")){} 
     void close(){fclose(_file);}
     void write(std::string str) {std::fputs(str.c_str(), _file);}
