@@ -1,7 +1,3 @@
-Version 18  UNRELEASED
-===========
-    * Added raii.
-
 Version 17  UNRELEASED
 ===========
     * Changed the interface of Disposal Policy.
@@ -28,6 +24,7 @@ Version 17  UNRELEASED
     * Ran astyle
     * Added power() function in arith_utils
     * Added cubic_root in arith_utils
+    * Added RAII library.
 
 Version 16
 ============
