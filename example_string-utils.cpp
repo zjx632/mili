@@ -64,6 +64,9 @@ int main()
     }
     cout << ensure_found(str.find_first_of(" ", 0), str.size()) << endl;    /* prints str.size() */
 
+    cout << substr("Hola Mundo", Pos(2), Count(6)) << endl;     /* prints "la Mun" */
+    cout << substr("Hola Mundo", Pos(2), Pos(6)) << endl;       /* prints "la Mu" */
+
     return 0;
 }
 
