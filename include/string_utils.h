@@ -323,6 +323,36 @@ inline std::string::size_type ensure_found(std::string::size_type found, std::st
         return default_value;
 }
 
+struct _Count
+{
+    explicit _Count(size_t count) :
+        _count(count)
+    {
+    }
+
+    const size_t _count;
+};
+
+struct _Pos
+{
+    explicit _Pos(size_t pos) :
+        _pos(pos)
+    {
+    }
+
+    const size_t _pos;
+};
+
+inline std::string substr(const std::string& str, const _Pos& start, const _Count& count)
+{
+    return str.substr(start._pos, count._count);
+}
+
+inline std::string substr(const std::string& str, const _Pos& start, const _Pos& end)
+{
+    return str.substr(start._pos, end._pos - start._pos + 1);
+}
+
 NAMESPACE_END
 
 #endif
