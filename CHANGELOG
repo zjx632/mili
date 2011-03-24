@@ -25,6 +25,7 @@ Version 17  UNRELEASED
     * Added power() function in arith_utils
     * Added cubic_root in arith_utils
     * Added RAII library.
+    * Added substr() functions in string_utils.
 
 Version 16
 ============
