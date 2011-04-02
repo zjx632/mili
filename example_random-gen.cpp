@@ -21,7 +21,7 @@ example_random: A minimal library for generating random numbers.
 */
 
 #include <iostream>
-#include "include/mili.h"
+#include "mili/mili.h"
 
 int main()
 {

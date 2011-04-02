@@ -22,7 +22,7 @@ string_utils: A minimal library with string utilities.
 
 #include <iostream>
 #include <map>
-#include "include/mili.h"
+#include "mili/mili.h"
 
 using namespace std;
 

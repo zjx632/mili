@@ -23,7 +23,7 @@ bitwise_enums: A minimal library for doing type-safe bitwise operations.
 #include <iostream>
 using std::cout;
 
-#include "include/mili.h"
+#include "mili/mili.h"
 
 enum MasksSet1
 {

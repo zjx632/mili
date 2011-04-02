@@ -21,7 +21,7 @@ example_coroutines: An example that uses coroutines.
 */
 
 #include <iostream>
-#include "include/mili.h"
+#include "mili/mili.h"
 
 using namespace std;
 

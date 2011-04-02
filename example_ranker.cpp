@@ -21,7 +21,7 @@ example_ranker: An example that uses MiLi's Ranker.
 */
 
 #include <iostream>
-#include "include/mili.h"
+#include "mili/mili.h"
 
 using namespace std;
 

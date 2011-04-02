@@ -21,7 +21,7 @@ invariants: A minimal library for checking invariants.
 */
 
 #include <iostream>
-#include "include/mili.h"
+#include "mili/mili.h"
 
 using std::cout;
 

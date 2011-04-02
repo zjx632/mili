@@ -19,7 +19,7 @@ raii.h: A minimal library for generic RAII implementation
 */
 
 
-#include "include/mili.h"
+#include "mili/mili.h"
 #include <iostream>
 #include <cstdio>
 

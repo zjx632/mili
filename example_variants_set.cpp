@@ -21,7 +21,7 @@ example_variants_set: An example that uses MiLi's Variants Set.
 */
 
 #include <iostream>
-#include "include/mili.h"
+#include "mili/mili.h"
 
 using namespace std;
 

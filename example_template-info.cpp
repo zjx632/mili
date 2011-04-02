@@ -22,7 +22,7 @@ template_info: A minimal library to obtain type information of a template
 */
 
 #include <iostream>
-#include "include/mili.h"
+#include "mili/mili.h"
 #include <vector>
 #include <set>
 

@@ -20,7 +20,7 @@ properties: A minimal library that implements object properties.
     This is an example file.
 */
 
-#include "include/mili.h"
+#include "mili/mili.h"
 #include <iostream>
 
 using namespace std;

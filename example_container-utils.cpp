@@ -27,7 +27,7 @@ find_utils: A minimal library with generic find functions with exceptions.
 #include <string>
 #include <queue>
 
-#include "include/mili.h"
+#include "mili/mili.h"
 
 using namespace std;
 
