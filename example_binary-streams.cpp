@@ -24,7 +24,7 @@ binary_streams: A minimal library supporting encoding of different data
 #include <iostream>
 #include <string>
 #include <vector>
-#include "include/mili.h"
+#include "mili/mili.h"
 
 int main()
 {

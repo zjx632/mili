@@ -21,7 +21,7 @@ arith_utils: A minimal library with arithmetic utilities.
 */
 
 #include <iostream>
-#include "include/mili.h"
+#include "mili/mili.h"
 
 int main()
 {

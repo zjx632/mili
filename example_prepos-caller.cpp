@@ -19,9 +19,9 @@ prepos_caller: A minimal library for wrapping object methods calls.
 
     This is the sample cpp program, that shows how to use PrePosCaller.
 */
-#include "include/mili.h"
-#include "include/prepos_printer.h"
-#include "include/prepos_mutex.h"
+#include "mili/mili.h"
+#include "mili/prepos_printer.h"
+#include "mili/prepos_mutex.h"
 
 using namespace std;
 

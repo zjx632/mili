@@ -22,7 +22,7 @@ factory: A minimal library for a generic factory.
 
 #include <string>
 #include <iostream>
-#include "include/mili.h"
+#include "mili/mili.h"
 
 using std::string;
 using std::cout;

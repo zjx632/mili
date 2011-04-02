@@ -4,7 +4,7 @@
 #include <iostream>
 #include <time.h>
 
-#include "include/mili.h"
+#include "mili/mili.h"
 
 const unsigned long GOAL = 1e9; //find 1000 million cases
 

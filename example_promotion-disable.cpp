@@ -21,7 +21,7 @@ promotion_disable.h: A minimalistic library to disable undesired
     C++ Example.
 */
 
-#include "include/mili.h"
+#include "mili/mili.h"
 
 float f(Restrict<float> rf)
 {

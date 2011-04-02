@@ -21,7 +21,7 @@ compile_assert: A minimal library supporting compile time (static) assertions,
     This is an example file.
 */
 
-#include "include/mili.h"
+#include "mili/mili.h"
 
 generic_assert(sizeof(int) == 4);
 

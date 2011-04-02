@@ -21,7 +21,7 @@ loop_unrolling: A minimal library for TMP loop unrolling.
 */
 
 #include <iostream>
-#include "include/mili.h"
+#include "mili/mili.h"
 
 using std::cout;
 
