@@ -100,6 +100,7 @@ typedef GlobalSeedPolicy DefaultSeedPolicy;
 typedef AutonomousSeedPolicy DefaultSeedPolicy;
 #endif
 
+// this is for integral values
 template < class T, class SeedPolicy = DefaultSeedPolicy >
 class Randomizer
 {
@@ -108,11 +109,11 @@ class Randomizer
     const int width;
 public:
     Randomizer(T min, T max)
-        : policy(), min(min), width(int(max - min))
+        : policy(), min(min), width(int(max - min) + 1)
     {}
 
     Randomizer(T min, T max, unsigned int seed)
-        : policy(seed), min(min), width(int(max - min))
+        : policy(seed), min(min), width(int(max - min) + 1)
     {}
 
     T get()
