@@ -169,7 +169,7 @@ inline std::istream& operator >> (std::istream& is, const _Separator<T>& s)
             {
                 insert_into(s.v,
                     /* Converts from string to type T */
-                    from_string<T>(
+                    from_string<typename T::value_type>(
                         line.substr(last_pos, pos - last_pos)
                     )
                 );
@@ -180,7 +180,7 @@ inline std::istream& operator >> (std::istream& is, const _Separator<T>& s)
 
         if (last_pos != std::string::npos)
             insert_into(s.v,
-                from_string<T>(
+                from_string<typename T::value_type>(
                     line.substr(last_pos)
                 )
             );
