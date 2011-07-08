@@ -1,6 +1,5 @@
 /*
-raii.h: A minimal library to provide the RAII feature
-    Copyright (C) 2011 Lucas Besso & Raul Striglio, UNRC
+    Copyright (C) 2011 Hugo Arregui, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -16,28 +15,33 @@ raii.h: A minimal library to provide the RAII feature
 
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
+
+    This is a test file.
 */
 
-#ifndef RAII_H
-#define RAII_H
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+#include <vector>
+#include <set>
+#include "mili/mili.h"
 
-NAMESPACE_BEGIN
+using namespace mili;
 
-template <class T, void (T::*M)(void)>
-class RAII
+struct S {};
+
+TEST(TemplateInfoTest, is_native)
 {
+    ASSERT_FALSE(bool(template_info<S>::is_native));
+    ASSERT_TRUE(bool(template_info<char>::is_native));
+}
 
-public:
-    RAII(T& inst) : _var(inst) {}
-    ~RAII()
-    {
-        (_var.*M)();
-    }
+TEST(TemplateInfoTest, is_same_size)
+{
+    ASSERT_EQ(sizeof(int) == sizeof(long int), bool(template_info<int>::is_same_size<long int>::value));
+}
 
-private:
-    T& _var;
-};
-
-NAMESPACE_END
-
-#endif
+TEST(TemplateInfoTest, is_container)
+{
+    ASSERT_TRUE(bool(template_info<std::vector<int> >::is_container));
+    ASSERT_TRUE(bool(template_info<std::set<int> >::is_container));
+}

@@ -1,6 +1,5 @@
 /*
-raii.h: A minimal library to provide the RAII feature
-    Copyright (C) 2011 Lucas Besso & Raul Striglio, UNRC
+    Copyright (C) 2011  Hugo Arregui, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -16,28 +15,45 @@ raii.h: A minimal library to provide the RAII feature
 
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
+
+    This is a test file.
 */
 
-#ifndef RAII_H
-#define RAII_H
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+#include "mili/mili.h"
 
-NAMESPACE_BEGIN
+#include <iostream>
+using namespace mili;
 
-template <class T, void (T::*M)(void)>
-class RAII
+using std::cout;
+
+template <class T>
+struct BitCounter
 {
+    T value;
+    size_t ret;
+    BitCounter(T value) : value(value), ret(0) {}
 
-public:
-    RAII(T& inst) : _var(inst) {}
-    ~RAII()
+    void operator()()
     {
-        (_var.*M)();
+        ret += value & 1;
+        value >>= 1;
     }
-
-private:
-    T& _var;
 };
 
-NAMESPACE_END
+template <class T>
+inline size_t CountBits(T x)
+{
+    BitCounter<T> bc(x);
+    FOR<sizeof(T) * 8, BitCounter<T> >::iterate(bc);
+    return bc.ret;
+}
 
-#endif
+TEST(LoopUnrollingTest, test)
+{
+    int i = -1;
+    ASSERT_EQ(32, CountBits(i));
+}
+
+

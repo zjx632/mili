@@ -157,7 +157,7 @@ template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
 inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(const T& element)
 {
     const iterator pos = find(ranking.begin(), ranking.end(), element);
-    if(pos != ranking.end())
+    if (pos != ranking.end())
     {
         DisposalPolicy::destroy(*pos);
         ranking.erase(pos);
@@ -181,7 +181,7 @@ template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
 inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(T* element)
 {
     const iterator pos = find(ranking.begin(), ranking.end(), *element);
-    if(pos != ranking.end())
+    if (pos != ranking.end())
     {
         DisposalPolicy::destroy(*element);
         ranking.erase(pos);
@@ -206,7 +206,7 @@ template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
 inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(const T& element, _NoDisposalPolicy)
 {
     const iterator pos = find(ranking.begin(), ranking.end(), element);
-    if(pos != ranking.end())
+    if (pos != ranking.end())
     {
         ranking.erase(pos);
     }
@@ -222,7 +222,7 @@ template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
 inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(T* element, _NoDisposalPolicy)
 {
     const iterator pos = find(ranking.begin(), ranking.end(), *element);
-    if(pos != ranking.end())
+    if (pos != ranking.end())
     {
         ranking.erase(pos);
     }
@@ -296,7 +296,7 @@ class UniqueRanker
     typedef std::multiset<T, Comp> Ranking;
     typedef typename Ranking::iterator iterator;
 
-    typedef std::map<T,iterator,CompEq> Unique;
+    typedef std::map<T, iterator, CompEq> Unique;
     typedef typename Unique::iterator uiterator;
 
     size_t   TOP;
@@ -357,26 +357,28 @@ template<class T, class Comp, class CompEq, class DisposalPolicy>
 inline bool UniqueRanker<T, Comp, CompEq, DisposalPolicy>::insert(const T& element)
 {
     const iterator rankPos = ranking.insert(element);
-    const std::pair<uiterator,bool> aux = unique.insert(std::pair<T,iterator>(element,rankPos));
+    const std::pair<uiterator, bool> aux = unique.insert(std::pair<T, iterator>(element, rankPos));
     bool success(true);
     const iterator bottom_element = --ranking.end();
 
-    if(aux.second)                                            // It is new
+    if (aux.second)                                           // It is new
     {
-        if(ranking.size() > TOP)
+        if (ranking.size() > TOP)
         {
             unique.erase(*bottom_element);                 // Remove the last one
             ranking.erase(bottom_element);
             success = (rankPos != bottom_element);
         }
-    }else                                                     // Already exist
+    }
+    else                                                      // Already exist
     {
-        if(Comp()(element,(aux.first)->first))                // The new one is better
+        if (Comp()(element, (aux.first)->first))              // The new one is better
         {
             unique.erase(aux.first);                          // Remove the old one
             ranking.erase((aux.first)->second);
-            unique.insert(std::pair<T,iterator>(element,rankPos));
-        }else                                                 // The old one is better
+            unique.insert(std::pair<T, iterator>(element, rankPos));
+        }
+        else                                                  // The old one is better
         {
             ranking.erase(rankPos);
             success = false;
@@ -389,7 +391,7 @@ template<class T, class Comp, class CompEq, class DisposalPolicy>
 inline void UniqueRanker<T, Comp, CompEq, DisposalPolicy>::remove(const T& element)
 {
     const uiterator pos = unique.find(element);
-    if(pos != unique.end())
+    if (pos != unique.end())
     {
         DisposalPolicy::destroy(pos->first);
         ranking.erase(pos->second);
@@ -401,7 +403,7 @@ template<class T, class Comp, class CompEq, class DisposalPolicy>
 inline void UniqueRanker<T, Comp, CompEq, DisposalPolicy>::remove(T* element)
 {
     const uiterator pos = unique.find(*element);
-    if(pos != unique.end())
+    if (pos != unique.end())
     {
         DisposalPolicy::destroy(pos->first);
         ranking.erase(pos->second);
@@ -415,7 +417,7 @@ template<class T, class Comp, class CompEq, class DisposalPolicy>
 inline void UniqueRanker<T, Comp, CompEq, DisposalPolicy>::remove(const T& element, _NoDisposalPolicy)
 {
     const uiterator pos = unique.find(element);
-    if(pos != unique.end())
+    if (pos != unique.end())
     {
         ranking.erase(pos->second);
         unique.erase(pos);
@@ -426,7 +428,7 @@ template<class T, class Comp, class CompEq, class DisposalPolicy>
 inline void UniqueRanker<T, Comp, CompEq, DisposalPolicy>::remove(T* element, _NoDisposalPolicy)
 {
     const uiterator pos = unique.find(*element);
-    if(pos != unique.end())
+    if (pos != unique.end())
     {
         ranking.erase(pos->second);
         unique.erase(pos);

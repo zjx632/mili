@@ -1,6 +1,5 @@
 /*
-raii.h: A minimal library to provide the RAII feature
-    Copyright (C) 2011 Lucas Besso & Raul Striglio, UNRC
+    Copyright (C) 2011 Hugo Arregui FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -16,28 +15,35 @@ raii.h: A minimal library to provide the RAII feature
 
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
+
+    This is a test file.
 */
 
-#ifndef RAII_H
-#define RAII_H
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+#include "mili/mili.h"
 
-NAMESPACE_BEGIN
+using namespace mili;
+using std::cout;
 
-template <class T, void (T::*M)(void)>
-class RAII
+enum MasksSet1
 {
-
-public:
-    RAII(T& inst) : _var(inst) {}
-    ~RAII()
-    {
-        (_var.*M)();
-    }
-
-private:
-    T& _var;
+    kZero   = 0,
+    kOne    = 1,
+    kTwo    = 2,
+    kThree  = 4,
+    kFour   = 8
 };
 
-NAMESPACE_END
+typedef bitwise_enum<MasksSet1> M1;
 
-#endif
+TEST(BitwiseEnumsTest, test)
+{
+    M1 b = kOne | kFour;
+
+    ASSERT_FALSE(b.has_bits(kZero));
+    ASSERT_TRUE(b.has_bits(kOne));
+    ASSERT_FALSE(b.has_bits(kTwo));
+    ASSERT_FALSE(b.has_bits(kThree));
+    ASSERT_TRUE(b.has_bits(kFour));
+}
