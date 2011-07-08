@@ -1,6 +1,5 @@
 /*
-raii.h: A minimal library to provide the RAII feature
-    Copyright (C) 2011 Lucas Besso & Raul Striglio, UNRC
+    Copyright (C) 2011 Hugo Arregui, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -18,26 +17,26 @@ raii.h: A minimal library to provide the RAII feature
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RAII_H
-#define RAII_H
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+#include <cstdio>
+#include "mili/mili.h"
 
-NAMESPACE_BEGIN
+using namespace mili;
+using namespace std;
 
-template <class T, void (T::*M)(void)>
-class RAII
+class file
 {
-
 public:
-    RAII(T& inst) : _var(inst) {}
-    ~RAII()
-    {
-        (_var.*M)();
-    }
-
-private:
-    T& _var;
+    void write(string str)
+    {}
+    MOCK_METHOD0(close, void());
 };
 
-NAMESPACE_END
-
-#endif
+TEST(RaiiTest, test)
+{
+    file fi;
+    RAII<file, &file::close> rs(fi);
+    fi.write("new line in the file");
+    EXPECT_CALL(fi, close()).Times(1);
+}

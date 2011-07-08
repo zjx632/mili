@@ -54,8 +54,8 @@ int main()
     }
 
     if (in_range(3.141692f, 10.0f, 11.0f))
-        return EXIT_SUCCESS;
-    else
         return EXIT_FAILURE;
+    else
+        return EXIT_SUCCESS;
 }
 

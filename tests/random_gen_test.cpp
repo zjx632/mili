@@ -1,6 +1,5 @@
 /*
-raii.h: A minimal library to provide the RAII feature
-    Copyright (C) 2011 Lucas Besso & Raul Striglio, UNRC
+    Copyright (C) 2011  Hugo Arregui, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -16,28 +15,28 @@ raii.h: A minimal library to provide the RAII feature
 
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
+
+    This is a test file.
 */
 
-#ifndef RAII_H
-#define RAII_H
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+#include "mili/mili.h"
 
-NAMESPACE_BEGIN
+using namespace mili;
 
-template <class T, void (T::*M)(void)>
-class RAII
+TEST(RandomGenTest, rnd)
 {
+    const float max = 11.0f;
+    const float min = 10.0f;
 
-public:
-    RAII(T& inst) : _var(inst) {}
-    ~RAII()
+    Randomizer<float> rnd(min, max);
+
+    for (unsigned int i = 0; i < 100; ++i)
     {
-        (_var.*M)();
+        const float r = rnd.get();
+        ASSERT_LE(r, max);
+        ASSERT_GE(r, min);
     }
+}
 
-private:
-    T& _var;
-};
-
-NAMESPACE_END
-
-#endif
