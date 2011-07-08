@@ -28,6 +28,7 @@ Version 17  UNRELEASED
     * Added substr() functions in string_utils.
     * Fixed a bug in random_gen for integral type ranges of size 1.
     * Fixed a bug in stream_utils for operator>> with Separator
+    * Added implies() function in arith_utils
 
 Version 16
 ============

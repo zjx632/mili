@@ -229,6 +229,12 @@ inline map_type(ToFloatMapper, T) deg2rad(T deg)
 }
 
 
+inline bool implies(bool p, bool q)
+{
+    return !p || q;
+}
+
+
 #if _BSD_SOURCE || _SVID_SOURCE || _XOPEN_SOURCE >= 600 || _ISOC99_SOURCE || _POSIX_C_SOURCE >= 200112L
 
 template <class T>
