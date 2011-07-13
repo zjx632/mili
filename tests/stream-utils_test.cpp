@@ -66,5 +66,6 @@ TEST(StreamUtilsTest, test)
     const char file[] = "stream-utils.test";
     generate_file(file);
     load_file(file);
+    remove(file);
 }
 
