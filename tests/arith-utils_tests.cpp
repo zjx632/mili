@@ -52,3 +52,11 @@ TEST(ArithUtilsTest, in_range)
 {
     ASSERT_FALSE(in_range(3.141692f, 10.0f, 11.0f));
 }
+
+TEST(ArithUtilsTest, implies)
+{
+    ASSERT_TRUE(implies(true, true));
+    ASSERT_FALSE(implies(true, false));
+    ASSERT_TRUE(implies(false, true));
+    ASSERT_TRUE(implies(false, false));
+}
