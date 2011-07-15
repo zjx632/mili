@@ -31,7 +31,9 @@ struct Player
     string name;
     float  score;
 
-    Player(string name, float score): name(name), score(score)
+    Player(string name, float score) : 
+        name(name), 
+        score(score)
     {}
 };
 

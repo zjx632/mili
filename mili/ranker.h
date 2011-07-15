@@ -48,7 +48,7 @@ enum _NoDisposalPolicy
 template<class T>
 struct DisposalNullPolicy
 {
-    static void destroy(const T& element)
+    static void destroy(const T& /*element*/)
     {}
 };
 

@@ -5,5 +5,4 @@ inc = env.Dir('.')
 src = env.Glob('*.cpp')
 deps = ['mili','gmock','gtest_main']
 
-env.CreateTest(name, inc, src, deps)
-
+env.CreateTest(name, inc, src, deps, CXXFLAGS = ['-Wall', '-Wextra', '-Wno-sign-compare'])
