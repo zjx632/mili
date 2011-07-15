@@ -27,7 +27,7 @@
 using std::cout;
 using namespace mili;
 
-invariant::NeverNull<const char> get_message(invariant::InRange < int, -1, 1 > number)
+invariant::NeverNull<const char> get_message(invariant::InRange < int, -1, 1 > /*number*/)
 {
     return "Hello World\n";
 }

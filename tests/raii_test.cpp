@@ -28,7 +28,7 @@ using namespace std;
 class file
 {
 public:
-    void write(string str)
+    void write(string /*str*/)
     {}
     MOCK_METHOD0(close, void());
 };
