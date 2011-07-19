@@ -53,10 +53,9 @@ static bool compare(const IntList& flist, const std::list<int>& l)
 TEST(FastListTest, test)
 {
     IntList flist;
-    IntList::RemovableElementHandler
-    one   = flist.new_node(1),
-    two   = flist.new_node(2),
-    three = flist.new_node(3);
+    flist.new_node(1);
+    IntList::RemovableElementHandler two = flist.new_node(2);
+    flist.new_node(3);
 
     std::list<int> rlist;
     rlist.push_back(1);
