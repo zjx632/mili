@@ -28,11 +28,12 @@ string_utils: A minimal library with string utilities.
 
 NAMESPACE_BEGIN
 
-template <int (*NORMALIZER)(int)>
+template <class NORMALIZER>
 struct normalized_string : std::string
 {
     class normalized_char
     {
+        NORMALIZER normalize;
         std::string::value_type& c;
     public:
         normalized_char(std::string::value_type& c)
@@ -50,18 +51,18 @@ struct normalized_string : std::string
 
         normalized_char& operator = (std::string::value_type other)
         {
-            c = NORMALIZER(other);
+            c = normalize(other);
             return *this;
         }
 
         bool operator == (std::string::value_type other) const
         {
-            return c == NORMALIZER(other);
+            return c == normalize(other);
         }
 
         bool operator != (std::string::value_type other) const
         {
-            return c != NORMALIZER(other);
+            return c != normalize(other);
         }
 
         // TODO: implement ++, --, +=, -=, etc.
@@ -69,9 +70,10 @@ struct normalized_string : std::string
 
     void normalize()
     {
+        NORMALIZER normalize;
         const size_t max = size();
         for (size_t i = 0; i < max; i++)
-            std::string::operator[](i) = NORMALIZER(std::string::operator[](i));
+            std::string::operator[](i) = normalize(std::string::operator[](i));
     }
 
     normalized_string()
@@ -199,8 +201,24 @@ struct normalized_string : std::string
 
 };
 
-typedef normalized_string<toupper> ustring;
-typedef normalized_string<tolower> lstring;
+struct TO_UPPER_FUNCTOR
+{
+    int operator()(int c) const
+    {
+        return toupper(c);
+    }
+};
+
+struct TO_LOWER_FUNCTOR
+{
+    int operator()(int c) const
+    {
+        return tolower(c);
+    }
+};
+
+typedef normalized_string<TO_UPPER_FUNCTOR> ustring;
+typedef normalized_string<TO_LOWER_FUNCTOR> lstring;
 
 inline std::string tolower(const std::string& s)
 {

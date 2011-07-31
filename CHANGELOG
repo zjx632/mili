@@ -30,6 +30,7 @@ Version 17  UNRELEASED
     * Fixed a bug in stream_utils for operator>> with Separator
     * Fixed a bug in arith_utils in_range example
     * Added implies() function in arith_utils
+    * Fixed a bug for using string_utils in Mac OS Ver. 10.6.8
 
 Version 16
 ============
