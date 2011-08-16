@@ -31,6 +31,7 @@ Basic usage:
 	* random_gen:           NO_RANDOM_GEN
 	* generic_exception:    NO_GENERIC_EXCEPTION
 	* raii:                 NO_RAII
+    * auto_array            NO_AUTO_ARRAY
 
 You might want to copy the include files in an include directory.
 If so, just run the 'install.sh' script:
