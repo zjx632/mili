@@ -1,5 +1,5 @@
 /*
-    auto_array = an auto_ptr clone for array objects
+    auto_array: an auto_ptr counterpart for array objects
     Copyright (C) 2011, Hugo Arregui, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
@@ -20,8 +20,6 @@
 
 #ifndef AUTO_ARRAY_H
 #define AUTO_ARRAY_H
-
-#include <iostream>
 
 NAMESPACE_BEGIN
 
@@ -48,9 +46,14 @@ public:
         return array[n];
     }
 
+    const T& operator[](size_t n) const
+    {
+        return array[n];
+    }
+
     auto_array<T>& operator=(const auto_array<T>& b)
     {
-        array = b.array;
+        reset(b.array);
         return *this;
     }
 
@@ -62,7 +65,7 @@ public:
 
     T* release()
     {
-        T* tmp = array;
+        T* const tmp = array;
         if (array != NULL)
         {
             delete[] array;
