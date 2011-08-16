@@ -66,11 +66,8 @@ public:
     T* release()
     {
         T* const tmp = array;
-        if (array != NULL)
-        {
-            delete[] array;
-            array = NULL;
-        }
+        delete[] array;
+        array = NULL;
         return tmp;
     }
 private:
