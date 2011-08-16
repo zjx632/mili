@@ -123,6 +123,10 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "raii.h"
 #endif
 
+#ifndef NO_AUTO_ARRAY
+#   include "auto_array.h"
+#endif
+
 #undef NAMESPACE_BEGIN
 #undef NAMESPACE_END
 
