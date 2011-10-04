@@ -27,13 +27,13 @@ using namespace mili;
 
 TEST(MetaprogrammingUtils, testTrue)
 {
-    const bool result = mili::template_info<Select<true, int, float>::value>::is_equal_to<int>::value;
+    const bool result = mili::template_info<Select<true, int, float>::result>::is_equal_to<int>::value;
     ASSERT_TRUE(result);
 }
 
 TEST(MetaprogrammingUtils, testFalse)
 {
-    const bool result = mili::template_info<Select<false, int, float>::value>::is_equal_to<float>::value;
+    const bool result = mili::template_info<Select<false, int, float>::result>::is_equal_to<float>::value;
     ASSERT_TRUE(result);
 }
 
