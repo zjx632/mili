@@ -54,5 +54,5 @@ inline size_t CountBits(T x)
 TEST(LoopUnrollingTest, test)
 {
     int i = -1;
-    ASSERT_EQ(32, CountBits(i));
+    ASSERT_EQ(sizeof(int)*8, CountBits(i));
 }
