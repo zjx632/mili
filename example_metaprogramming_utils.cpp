@@ -25,7 +25,7 @@
 
 int main()
 {
-    Select<true, int, float>::value n = 1;
+    Select<true, int, float>::result n = 1;
     std::cout << n << std::endl;
     return 0;
 }

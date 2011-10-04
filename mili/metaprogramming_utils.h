@@ -26,13 +26,13 @@ NAMESPACE_BEGIN
 template <bool COND, class T, class F>
 struct Select
 {
-    typedef F value;
+    typedef F result;
 };
 
 template <class T, class F>
 struct Select<true, T, F>
 {
-    typedef T value;
+    typedef T result;
 };
 
 NAMESPACE_END
