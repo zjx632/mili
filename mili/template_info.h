@@ -1,7 +1,7 @@
 /*
-template_info: A minimal library to obtain type information of a template
+    template_info: A minimal library to obtain type information of a template
     parameter.
-    Copyright (C) 2009  Daniel Gutson, FuDePAN
+    Copyright (C) 2009  Daniel Gutson, FuDePAN; 2011 Hugo Arregui, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -49,7 +49,6 @@ struct template_##name<attribute>                   \
 
 _declare_template_attribute(is_pointer, T*);
 _declare_template_attribute(is_reference, T&);
-_declare_template_attribute(is_const, const T);
 _declare_template_attribute(is_volatile, volatile T);
 
 #undef _declare_template_attribute
@@ -119,6 +118,31 @@ _declare_template_container_assoc(multimap);
 
 #undef _declare_template_container
 #undef _declare_template_container_assoc
+
+template<class T>
+struct template_is_const
+{
+    enum {value = false};
+};
+
+template<class T>
+struct template_is_const<const T>
+{
+    enum {value = true};
+};
+
+template<class T>
+struct template_is_const<const T&>
+{
+    enum {value = true};
+};
+
+template<class T>
+struct template_is_const<const T*>
+{
+    enum {value = true};
+};
+
 
 // this encapsulates all
 template <class T>
