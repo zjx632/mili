@@ -127,6 +127,14 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "auto_array.h"
 #endif
 
+#ifndef NO_NON_COPYABLE
+#   include "non_copyable.h"
+#endif
+
+#ifndef NO_METAPROGRAMMIN_UTILS
+#   include "metaprogramming_utils.h"
+#endif
+
 #undef NAMESPACE_BEGIN
 #undef NAMESPACE_END
 
