@@ -35,6 +35,13 @@ struct Select<true, T, F>
     typedef T result;
 };
 
+template <class T>
+struct ParameterType
+{
+    typedef template_info<T> info;
+    typedef typename Select < info::is_pointer || info::is_native, T, const T& >::result type;
+};
+
 NAMESPACE_END
 
 #endif
