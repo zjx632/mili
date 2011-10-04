@@ -33,6 +33,7 @@ Version 17  UNRELEASED
     * Fixed a bug for using string_utils in Mac OS Ver. 10.6.8
     * Added auto_array
     * Added metaprogramming_utils
+    * Added a bug in template_info is_const for pointer and references
 
 Version 16
 ============
