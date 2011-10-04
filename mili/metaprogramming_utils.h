@@ -1,5 +1,6 @@
+
 /*
-    Copyright (C) 2011  Hugo Arregui, FuDePAN
+    Copyright (C) 2011, Hugo Arregui, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -15,44 +16,25 @@
 
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
-
-    This is a test file.
 */
 
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
-#include "mili/mili.h"
+#ifndef METAPROGRAMMING_UTILS_H
+#define METAPROGRAMMING_UTILS_H
 
-using namespace mili;
+NAMESPACE_BEGIN
 
-template <class T>
-struct BitCounter
+template <bool COND, class T, class F>
+struct Select
 {
-    T value;
-    size_t ret;
-
-    BitCounter(T value) : 
-        value(value), 
-        ret(0) 
-    {}
-
-    void operator()()
-    {
-        ret += value & 1;
-        value >>= 1;
-    }
+    typedef F value;
 };
 
-template <class T>
-inline size_t CountBits(T x)
+template <class T, class F>
+struct Select<true, T, F>
 {
-    BitCounter<T> bc(x);
-    FOR<sizeof(T) * 8, BitCounter<T> >::iterate(bc);
-    return bc.ret;
-}
+    typedef T value;
+};
 
-TEST(LoopUnrollingTest, test)
-{
-    int i = -1;
-    ASSERT_EQ(32, CountBits(i));
-}
+NAMESPACE_END
+
+#endif

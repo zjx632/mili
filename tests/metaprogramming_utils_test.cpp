@@ -25,34 +25,16 @@
 
 using namespace mili;
 
-template <class T>
-struct BitCounter
+TEST(MetaprogrammingUtils, testTrue)
 {
-    T value;
-    size_t ret;
-
-    BitCounter(T value) : 
-        value(value), 
-        ret(0) 
-    {}
-
-    void operator()()
-    {
-        ret += value & 1;
-        value >>= 1;
-    }
-};
-
-template <class T>
-inline size_t CountBits(T x)
-{
-    BitCounter<T> bc(x);
-    FOR<sizeof(T) * 8, BitCounter<T> >::iterate(bc);
-    return bc.ret;
+    const bool result = mili::template_info<Select<true, int, float>::value>::is_equal_to<int>::value;
+    ASSERT_TRUE(result);
 }
 
-TEST(LoopUnrollingTest, test)
+TEST(MetaprogrammingUtils, testFalse)
 {
-    int i = -1;
-    ASSERT_EQ(32, CountBits(i));
+    const bool result = mili::template_info<Select<false, int, float>::value>::is_equal_to<float>::value;
+    ASSERT_TRUE(result);
 }
+
+
