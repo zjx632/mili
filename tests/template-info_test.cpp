@@ -45,3 +45,9 @@ TEST(TemplateInfoTest, is_container)
     ASSERT_TRUE(bool(template_info<std::vector<int> >::is_container));
     ASSERT_TRUE(bool(template_info<std::set<int> >::is_container));
 }
+
+TEST(TemplateInfoTest, is_const)
+{
+    ASSERT_TRUE(bool(template_info<const int>::is_const));
+    ASSERT_TRUE(bool(template_info<const int*>::is_const));
+}
