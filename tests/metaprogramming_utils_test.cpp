@@ -25,26 +25,16 @@
 
 using namespace mili;
 
-TEST(MetaprogrammingUtils, testSelectTrue)
+TEST(MetaprogrammingUtils, Select)
 {
-    const bool result = template_info<Select<true, int, float>::result>::is_equal_to<int>::value;
-    ASSERT_TRUE(result);
+    ASSERT_TRUE(bool(template_info<Select<true, int, float>::result>::is_equal_to<int>::value));
+    ASSERT_TRUE(bool(template_info<Select<false, int, float>::result>::is_equal_to<float>::value));
 }
 
-TEST(MetaprogrammingUtils, testSelectFalse)
+TEST(MetaprogrammingUtils, ParameterType)
 {
-    const bool result = template_info<Select<false, int, float>::result>::is_equal_to<float>::value;
-    ASSERT_TRUE(result);
+    ASSERT_TRUE(bool(template_info<ParameterType<int>::type>::is_equal_to<int>::value));
+    ASSERT_TRUE(bool(template_info<ParameterType<std::string>::type>::is_equal_to<const std::string&>::value));
+    ASSERT_TRUE(bool(template_info<ParameterType<const std::string>::type>::is_equal_to<const std::string&>::value));
 }
 
-TEST(MetaprogrammingUtils, testParameterTypePrimitive)
-{
-    const bool result = template_info<ParameterType<int>::type>::is_equal_to<int>::value;
-    ASSERT_TRUE(result);
-}
-
-TEST(MetaprogrammingUtils, testParameterTypeStd)
-{
-    const bool result = template_info<ParameterType<std::string>::type>::is_equal_to<const std::string&>::value;
-    ASSERT_TRUE(result);
-}

@@ -21,6 +21,8 @@
 #ifndef METAPROGRAMMING_UTILS_H
 #define METAPROGRAMMING_UTILS_H
 
+#include "template_info.h"
+
 NAMESPACE_BEGIN
 
 template <bool COND, class T, class F>
@@ -39,7 +41,7 @@ template <class T>
 struct ParameterType
 {
     typedef template_info<T> info;
-    typedef typename Select < info::is_pointer || info::is_native, T, const T& >::result type;
+    typedef typename Select < info::is_pointer || info::is_native || info::is_reference, T, const T& >::result type;
 };
 
 NAMESPACE_END
