@@ -24,6 +24,30 @@
 
 NAMESPACE_BEGIN
 
+template <class T>
+struct Unconst
+{
+    typedef T type;
+};
+
+template <class T>
+struct Unconst<const T>
+{
+    typedef T type;
+};
+
+template <class T>
+struct Unconst<const T&>
+{
+    typedef T& type;
+};
+
+template <class T>
+struct Unconst<T* const>
+{
+    typedef T* type;
+};
+
 template <class T1, class T2>
 struct type_equal
 {
@@ -47,15 +71,22 @@ struct template_##name<attribute>                   \
     enum {  value = 1   };                          \
 }
 
-_declare_template_attribute(is_pointer, T*);
+_declare_template_attribute(is_unconst_pointer, T*);
 _declare_template_attribute(is_reference, T&);
 _declare_template_attribute(is_volatile, volatile T);
 
 #undef _declare_template_attribute
 
 template <class T>
+struct template_is_pointer
+{
+    enum { value = template_is_unconst_pointer<typename Unconst<T>::type>::value };
+};
+
+template <class E>
 struct template_is_integral
 {
+    typedef typename Unconst<E>::type T;
     enum
     {
         value =
@@ -66,9 +97,10 @@ struct template_is_integral
     };
 };
 
-template <class T>
+template <class E>
 struct template_is_native
 {
+    typedef typename Unconst<E>::type T;
     enum
     {
         value =
@@ -82,13 +114,7 @@ struct template_is_native
 template<class T>
 struct template_is_basic_string
 {
-    enum { value = 0 };
-};
-
-template<>
-struct template_is_basic_string< std::string >
-{
-    enum { value = 1 };
+    enum { value = type_equal<typename Unconst<T>::type, std::string>::value };
 };
 
 template <class T>
@@ -96,17 +122,28 @@ struct template_is_container
 {
     enum {  value = 0   };
 };
-#define _declare_template_container(cont)       \
-template <class T>                              \
-struct template_is_container<std::cont<T> >     \
-{                                               \
-    enum {  value = 1   };                      \
+#define _declare_template_container(cont)         \
+template <class T>                                \
+struct template_is_container<std::cont<T> >       \
+{                                                 \
+    enum {  value = 1   };                        \
+};                                                \
+template <class T>                                \
+struct template_is_container<const std::cont<T> > \
+{                                                 \
+    enum {  value = 1   };                        \
 }
-#define _declare_template_container_assoc(cont) \
-template <class K, class D>                     \
-struct template_is_container<std::cont<K, D> >  \
-{                                               \
-    enum {  value = 1   };                      \
+
+#define _declare_template_container_assoc(cont)      \
+template <class K, class D>                          \
+struct template_is_container<std::cont<K, D> >       \
+{                                                    \
+    enum {  value = 1   };                           \
+};                                                   \
+template <class K, class D>                          \
+struct template_is_container<const std::cont<K, D> > \
+{                                                    \
+    enum {  value = 1   };                           \
 }
 
 _declare_template_container(vector);
@@ -122,27 +159,8 @@ _declare_template_container_assoc(multimap);
 template<class T>
 struct template_is_const
 {
-    enum {value = false};
+    enum {value = !type_equal<T, typename Unconst<T>::type>::value  };
 };
-
-template<class T>
-struct template_is_const<const T>
-{
-    enum {value = true};
-};
-
-template<class T>
-struct template_is_const<const T&>
-{
-    enum {value = true};
-};
-
-template<class T>
-struct template_is_const<const T*>
-{
-    enum {value = true};
-};
-
 
 // this encapsulates all
 template <class T>
