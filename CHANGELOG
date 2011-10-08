@@ -34,6 +34,7 @@ Version 17  UNRELEASED
     * Added auto_array
     * Added metaprogramming_utils
     * Fixed some bugs in template_info for const pointer and references
+    * Added NonCopyable
 
 Version 16
 ============
