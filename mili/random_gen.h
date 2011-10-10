@@ -38,8 +38,8 @@ class TimeBasedSeedPolicy
 protected:
     unsigned int seed;
 
-    TimeBasedSeedPolicy(unsigned int seed)
-        : seed(seed)
+    TimeBasedSeedPolicy(unsigned int seed) :
+        seed(seed)
     {}
 
     TimeBasedSeedPolicy()
@@ -59,12 +59,12 @@ protected:
 #ifndef _WIN32
 struct AutonomousSeedPolicy : TimeBasedSeedPolicy
 {
-    AutonomousSeedPolicy(unsigned int seed)
-        : TimeBasedSeedPolicy(seed)
+    AutonomousSeedPolicy(unsigned int seed) :
+        TimeBasedSeedPolicy(seed)
     {}
 
-    AutonomousSeedPolicy()
-        : TimeBasedSeedPolicy()
+    AutonomousSeedPolicy() :
+        TimeBasedSeedPolicy()
     {}
 
     int get()
@@ -76,14 +76,14 @@ struct AutonomousSeedPolicy : TimeBasedSeedPolicy
 
 struct GlobalSeedPolicy : TimeBasedSeedPolicy
 {
-    GlobalSeedPolicy()
-        : TimeBasedSeedPolicy()
+    GlobalSeedPolicy() :
+        TimeBasedSeedPolicy()
     {
         srand(seed);
     }
 
-    GlobalSeedPolicy(unsigned int seed)
-        : TimeBasedSeedPolicy(seed)
+    GlobalSeedPolicy(unsigned int seed) :
+        TimeBasedSeedPolicy(seed)
     {
         srand(seed);
     }
@@ -108,12 +108,16 @@ class Randomizer
     const T min;
     const int width;
 public:
-    Randomizer(T min, T max)
-        : policy(), min(min), width(int(max - min) + 1)
+    Randomizer(T min, T max) :
+        policy(),
+        min(min),
+        width(int(max - min) + 1)
     {}
 
-    Randomizer(T min, T max, unsigned int seed)
-        : policy(seed), min(min), width(int(max - min) + 1)
+    Randomizer(T min, T max, unsigned int seed) :
+        policy(seed),
+        min(min),
+        width(int(max - min) + 1)
     {}
 
     T get()
@@ -130,15 +134,17 @@ class Randomizer<T, SeedPolicy>                     \
     const T min;                                    \
     const T factor;                                 \
 public:                                             \
-    Randomizer(T min, T max)                        \
-        : policy(),                                 \
-          min(min), factor((max-min)/T(RAND_MAX))   \
+    Randomizer(T min, T max) :                      \
+        policy(),                                   \
+        min(min),                                   \
+        factor((max-min)/T(RAND_MAX))               \
     {                                               \
     }                                               \
                                                     \
-    Randomizer(T min, T max, unsigned int seed)     \
-        : policy(seed),                             \
-          min(min), factor((max-min)/T(RAND_MAX))   \
+    Randomizer(T min, T max, unsigned int seed) :   \
+        policy(seed),                               \
+        min(min),                                   \
+        factor((max-min)/T(RAND_MAX))               \
     {                                               \
     }                                               \
                                                     \
