@@ -17,13 +17,13 @@ bitwise_enums: A minimal library for doing type-safe bitwise operations.
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
 
-    Example source file.
+    Example source file.    
 */
 
 #include <iostream>
 using std::cout;
 
-#include "mili/mili.h"
+#include "mili/mili/mili.h"
 
 enum MasksSet1
 {
@@ -34,6 +34,18 @@ enum MasksSet1
     kFour   = 8
 };
 
+enum MasksSet2
+{
+    kFour2   = 8
+};
+
+template <>
+struct EnumEnabler<MasksSet1>
+{
+    enum { EnabledConversion = true };
+};
+
+
 typedef bitwise_enum<MasksSet1> M1;
 
 void show_bits(M1 b)
@@ -42,12 +54,20 @@ void show_bits(M1 b)
     if (b.has_bits(kOne))   cout << "kOne   turned on\n";
     if (b.has_bits(kTwo))   cout << "kTwo   turned on\n";
     if (b.has_bits(kThree)) cout << "kThree turned on\n";
-    if (b.has_bits(kFour))  cout << "kFour  turned on\n";
+    if (b.has_bits(kFour))  cout << "kFour  turned on\n";   
+    cout << std::endl;
 }
 
 int main()
-{
-    show_bits(kOne | kFour);
+{   
+    bitwise_enum<MasksSet1>  miEnum(kOne | kTwo | kFour);
+
+    show_bits(miEnum);
+
+    miEnum = kOne & miEnum;
+    show_bits(miEnum);
+
+    show_bits(kOne | kThree);
 
     return 0;
 }
