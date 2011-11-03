@@ -158,43 +158,100 @@ public:
     }
 };
 
-
-//Nonmember operators:
+//Enum Enabler
 template <class Enum>
-inline bitwise_enum<Enum> operator | (Enum value, const bitwise_enum<Enum>& e)
+struct EnumEnabler
 {
-    return e | value;
+    enum { EnabledConversion = false };
+};
+
+//Mapper for built-in types
+template <class Enum, bool EnabledConversion>
+struct EnumMapper
+{
+    typedef int ReturnType;
+    static int operationOr(Enum e1, Enum e2)
+    { 
+        return int(e1) | int(e2); 
+    }
+};
+
+//Mapper for bitwise enums
+template <class Enum>
+struct EnumMapper<Enum, true>
+{
+    typedef bitwise_enum<Enum> ReturnType;
+
+
+    static bitwise_enum<Enum> operationOrConst(Enum value, const bitwise_enum<Enum>& e)
+    { 
+        return bitwise_enum<Enum>(value) | e;
+    }
+
+    static bitwise_enum<Enum> operationAndConst(Enum value, const bitwise_enum<Enum>& e)
+    { 
+        return bitwise_enum<Enum>(value) & e;
+    }
+
+    static bitwise_enum<Enum> operationXorConst(Enum value, const bitwise_enum<Enum>& e)
+    { 
+        return bitwise_enum<Enum>(value) ^ e;
+    }
+
+
+    static bitwise_enum<Enum> operationOr(Enum a, Enum b)
+    { 
+        return bitwise_enum<Enum>(a) | bitwise_enum<Enum>(b);
+    }
+
+    static bitwise_enum<Enum> operationAnd(Enum a, Enum b)
+    {
+        return bitwise_enum<Enum>(a) & bitwise_enum<Enum>(b);
+    }
+
+    static bitwise_enum<Enum> operationXor(Enum a, Enum b)
+    {
+        return bitwise_enum<Enum>(a) ^ bitwise_enum<Enum>(b);
+    }
+};
+
+
+
+template <class Enum>
+inline typename EnumMapper<Enum, EnumEnabler<Enum>::EnabledConversion>::ReturnType operator|(Enum value, const bitwise_enum<Enum>& e)
+{
+    return EnumMapper<Enum, EnumEnabler<Enum>::EnabledConversion>::operationOrConst(value, e);
 }
 
 template <class Enum>
-inline bitwise_enum<Enum> operator & (Enum value, const bitwise_enum<Enum>& e)
+inline typename EnumMapper<Enum, EnumEnabler<Enum>::EnabledConversion>::ReturnType operator&(Enum value, const bitwise_enum<Enum>& e)
 {
-    return e & value;
+    return EnumMapper<Enum, EnumEnabler<Enum>::EnabledConversion>::operationAndConst(value, e);
 }
 
 template <class Enum>
-inline bitwise_enum<Enum> operator ^(Enum value, const bitwise_enum<Enum>& e)
+inline typename EnumMapper<Enum, EnumEnabler<Enum>::EnabledConversion>::ReturnType operator^(Enum value, const bitwise_enum<Enum>& e)
 {
-    return e ^ value;
+    return EnumMapper<Enum, EnumEnabler<Enum>::EnabledConversion>::operationXorConst(value, e);
 }
 
 
 template <class Enum>
-inline bitwise_enum<Enum> operator | (Enum a, Enum b)
+inline typename EnumMapper<Enum, EnumEnabler<Enum>::EnabledConversion>::ReturnType operator|(Enum a, Enum b)
 {
-    return bitwise_enum<Enum>(a) | bitwise_enum<Enum>(b);
+    return EnumMapper<Enum, EnumEnabler<Enum>::EnabledConversion>::operationOr(a, b);
 }
 
 template <class Enum>
-inline bitwise_enum<Enum> operator & (Enum a, Enum b)
+inline typename EnumMapper<Enum, EnumEnabler<Enum>::EnabledConversion>::ReturnType operator&(Enum a, Enum b)
 {
-    return bitwise_enum<Enum>(a) & bitwise_enum<Enum>(b);
+    return EnumMapper<Enum, EnumEnabler<Enum>::EnabledConversion>::operationAnd(a, b);
 }
 
 template <class Enum>
-inline bitwise_enum<Enum> operator ^(Enum a, Enum b)
+inline typename EnumMapper<Enum, EnumEnabler<Enum>::EnabledConversion>::ReturnType operator^(Enum a, Enum b)
 {
-    return bitwise_enum<Enum>(a) ^ bitwise_enum<Enum>(b);
+    return EnumMapper<Enum, EnumEnabler<Enum>::EnabledConversion>::operationXor(a, b);
 }
 
 NAMESPACE_END
