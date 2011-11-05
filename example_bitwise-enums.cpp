@@ -23,7 +23,7 @@ bitwise_enums: A minimal library for doing type-safe bitwise operations.
 #include <iostream>
 using std::cout;
 
-#include "mili/mili/mili.h"
+#include "mili/mili.h"
 
 enum MasksSet1
 {
@@ -33,18 +33,13 @@ enum MasksSet1
     kThree  = 4,
     kFour   = 8
 };
+BITWISE_ENUM_ENABLE(MasksSet1)
 
 enum MasksSet2
 {
-    kFour2   = 8
+    kEight   = 8,
+    kSixteen = 16,
 };
-
-template <>
-struct EnumEnabler<MasksSet1>
-{
-    enum { EnabledConversion = true };
-};
-
 
 typedef bitwise_enum<MasksSet1> M1;
 
@@ -60,16 +55,28 @@ void show_bits(M1 b)
 
 int main()
 {   
-    bitwise_enum<MasksSet1>  miEnum(kOne | kTwo | kFour);
+    //with bitwise nums
+    bitwise_enum<MasksSet1>  myEnum(kOne | kTwo | kFour);
 
-    show_bits(miEnum);
+    show_bits(myEnum);
 
-    miEnum = kOne & miEnum;
-    show_bits(miEnum);
+    myEnum = kOne & myEnum;
+    show_bits(myEnum);
 
     show_bits(kOne | kThree);
 
+    cout << "<< Operator test: 0x" << std::hex << (myEnum << 2) << std::endl;
+
+    //without bitwise nums (built-in types)
+    int normalEnum = kEight | kSixteen;
+    cout << "Normal Enum: 0x" << std::hex << normalEnum << std::endl;
+
+    normalEnum = kEight << 2;
+    cout << "Normal Enum: 0x" << std::hex << normalEnum << std::endl;
+
     return 0;
 }
+
+
 
 
