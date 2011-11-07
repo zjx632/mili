@@ -47,10 +47,10 @@ struct Equal<T, T>
 
 TEST(TypeMapperTest, test)
 {
-    bool v = Equal<int, map_type(TypeMapper, char)>::value;
+    bool v = Equal<int, map_type_(TypeMapper, char)>::value;
     ASSERT_TRUE(v);
-    v = Equal<int, map_type(TypeMapper, void*)>::value;
+    v = Equal<int, map_type_(TypeMapper, void*)>::value;
     ASSERT_TRUE(v);
-    v = Equal<unsigned char, map_type(TypeMapper, unsigned char)>::value;
+    v = Equal<unsigned char, map_type_(TypeMapper, unsigned char)>::value;
     ASSERT_TRUE(v);
 }
