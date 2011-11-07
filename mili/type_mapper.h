@@ -58,7 +58,8 @@ NAMESPACE_BEGIN
         typedef typename mapper<From>::type type;   \
     }
 
-#define map_type(mapper, from_type) typename mapper<from_type>::type
+#define map_type_(mapper, from_type) mapper<from_type>::type
+#define map_type(mapper, from_type) typename map_type_(mapper, from_type)
 
 // Some useful mappers:
 
