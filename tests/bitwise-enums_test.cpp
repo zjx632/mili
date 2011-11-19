@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2011 Hugo Arregui FuDePAN
+                  2011 Adrian Remonda FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -20,10 +21,10 @@
 */
 
 #include <iostream>
-using std::cout;
-
 #include <gtest/gtest.h>
 #include "mili/mili.h"
+
+using std::cout;
 
 enum MasksSet1
 {
