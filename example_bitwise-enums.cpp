@@ -1,6 +1,7 @@
 /*
 bitwise_enums: A minimal library for doing type-safe bitwise operations.
     Copyright (C) 2008, 2009  Daniel Gutson, FuDePAN
+                  2011 Adrian Remonda FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -21,9 +22,9 @@ bitwise_enums: A minimal library for doing type-safe bitwise operations.
 */
 
 #include <iostream>
-using std::cout;
-
 #include "mili/mili.h"
+
+using std::cout;
 
 enum MasksSet1
 {
@@ -53,6 +54,7 @@ void show_bits(M1 b)
     cout << std::endl;
 }
 
+
 int main()
 {   
     //with bitwise nums
@@ -60,11 +62,14 @@ int main()
 
     show_bits(myEnum);
 
+    //enum with bitwise enum
     myEnum = kOne & myEnum;
     show_bits(myEnum);
 
+    // 2 enums
     show_bits(kOne | kThree);
 
+    // << operator
     cout << "<< Operator test: 0x" << std::hex << (myEnum << 2) << std::endl;
 
     //without bitwise nums (built-in types)

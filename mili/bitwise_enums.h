@@ -1,6 +1,7 @@
 /*
 bitwise_enums: A minimal library for doing type-safe bitwise operations.
     Copyright (C) 2008, 2009  Daniel Gutson, FuDePAN
+                  2011 Adrian Remonda FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -160,14 +161,14 @@ public:
 
 // Bitwise Enum Enabler
 template <class Enum>
-struct bitwiseEnumEnabler
+struct BitwiseEnumEnabler
 {
     enum { EnabledConversion = false };
 };
 
 // Mapper for built-in types
 template <class Enum, bool EnabledConversion>
-struct bitwiseEnumMapper
+struct BitwiseEnumMapper
 {
     typedef int ReturnType;
     static int operationOr(Enum e1, Enum e2)
@@ -188,7 +189,7 @@ struct bitwiseEnumMapper
 
 // Mapper for bitwise enums
 template <class Enum>
-struct bitwiseEnumMapper<Enum, true>
+struct BitwiseEnumMapper<Enum, true>
 {
     typedef bitwise_enum<Enum> ReturnType;
 
@@ -223,48 +224,33 @@ struct bitwiseEnumMapper<Enum, true>
     }
 };
 
-
-
-template <class Enum>
-inline typename bitwiseEnumMapper<Enum, bitwiseEnumEnabler<Enum>::EnabledConversion>::ReturnType operator|(Enum value, const bitwise_enum<Enum>& e)
-{
-    return bitwiseEnumMapper<Enum, bitwiseEnumEnabler<Enum>::EnabledConversion>::operationOrConst(value, e);
+#define IMPLEMENT_BITWISE_OPERATOR_CONST(mili_bitwise_symbol, mili_bitwise_text)                                                \
+template <class Enum>                                                                                                           \
+inline typename BitwiseEnumMapper<Enum, BitwiseEnumEnabler<Enum>::EnabledConversion>::ReturnType operator mili_bitwise_symbol   \
+            (Enum value, const bitwise_enum<Enum>& e)                                                                           \
+{                                                                                                                               \
+    return BitwiseEnumMapper<Enum, BitwiseEnumEnabler<Enum>::EnabledConversion>::operation##mili_bitwise_text##Const(value, e); \
 }
 
-template <class Enum>
-inline typename bitwiseEnumMapper<Enum, bitwiseEnumEnabler<Enum>::EnabledConversion>::ReturnType operator&(Enum value, const bitwise_enum<Enum>& e)
-{
-    return bitwiseEnumMapper<Enum, bitwiseEnumEnabler<Enum>::EnabledConversion>::operationAndConst(value, e);
+#define IMPLEMENT_BITWISE_OPERATOR(mili_bitwise_symbol, mili_bitwise_text)                                                      \
+template <class Enum>                                                                                                           \
+inline typename BitwiseEnumMapper<Enum, BitwiseEnumEnabler<Enum>::EnabledConversion>::ReturnType operator mili_bitwise_symbol   \
+            (Enum a, Enum b)                                                                                                    \
+{                                                                                                                               \
+    return BitwiseEnumMapper<Enum, BitwiseEnumEnabler<Enum>::EnabledConversion>::operation##mili_bitwise_text (a, b);           \
 }
 
-template <class Enum>
-inline typename bitwiseEnumMapper<Enum, bitwiseEnumEnabler<Enum>::EnabledConversion>::ReturnType operator^(Enum value, const bitwise_enum<Enum>& e)
-{
-    return bitwiseEnumMapper<Enum, bitwiseEnumEnabler<Enum>::EnabledConversion>::operationXorConst(value, e);
-}
+IMPLEMENT_BITWISE_OPERATOR_CONST(|,Or);
+IMPLEMENT_BITWISE_OPERATOR_CONST(&,And);
+IMPLEMENT_BITWISE_OPERATOR_CONST(^,Xor);
 
-
-template <class Enum>
-inline typename bitwiseEnumMapper<Enum, bitwiseEnumEnabler<Enum>::EnabledConversion>::ReturnType operator|(Enum a, Enum b)
-{
-    return bitwiseEnumMapper<Enum, bitwiseEnumEnabler<Enum>::EnabledConversion>::operationOr(a, b);
-}
-
-template <class Enum>
-inline typename bitwiseEnumMapper<Enum, bitwiseEnumEnabler<Enum>::EnabledConversion>::ReturnType operator&(Enum a, Enum b)
-{
-    return bitwiseEnumMapper<Enum, bitwiseEnumEnabler<Enum>::EnabledConversion>::operationAnd(a, b);
-}
-
-template <class Enum>
-inline typename bitwiseEnumMapper<Enum, bitwiseEnumEnabler<Enum>::EnabledConversion>::ReturnType operator^(Enum a, Enum b)
-{
-    return bitwiseEnumMapper<Enum, bitwiseEnumEnabler<Enum>::EnabledConversion>::operationXor(a, b);
-}
+IMPLEMENT_BITWISE_OPERATOR(|,Or);
+IMPLEMENT_BITWISE_OPERATOR(&,And);
+IMPLEMENT_BITWISE_OPERATOR(^,Xor);
 
 #define BITWISE_ENUM_ENABLE(enumtype)   \
 template <>                             \
-struct bitwiseEnumEnabler<enumtype>     \
+struct BitwiseEnumEnabler<enumtype>     \
 {                                       \
     enum { EnabledConversion = true };  \
 };                                      \
