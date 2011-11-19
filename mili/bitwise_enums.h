@@ -232,7 +232,7 @@ inline typename BitwiseEnumMapper<Enum, BitwiseEnumEnabler<Enum>::EnabledConvers
     return BitwiseEnumMapper<Enum, BitwiseEnumEnabler<Enum>::EnabledConversion>::operation##mili_bitwise_text##Const(value, e); \
 }
 
-#define IMPLEMENT_BITWISE_OPERATOR(mili_bitwise_symbol, mili_bitwise_text)                                                      \
+#define IMPLEMENT_BITWISE_OPERATOR_NONCONST(mili_bitwise_symbol, mili_bitwise_text)                                             \
 template <class Enum>                                                                                                           \
 inline typename BitwiseEnumMapper<Enum, BitwiseEnumEnabler<Enum>::EnabledConversion>::ReturnType operator mili_bitwise_symbol   \
             (Enum a, Enum b)                                                                                                    \
@@ -240,9 +240,9 @@ inline typename BitwiseEnumMapper<Enum, BitwiseEnumEnabler<Enum>::EnabledConvers
     return BitwiseEnumMapper<Enum, BitwiseEnumEnabler<Enum>::EnabledConversion>::operation##mili_bitwise_text (a, b);           \
 }
 
-IMPLEMENT_BITWISE_OPERATOR_CONST(|,Or);
-IMPLEMENT_BITWISE_OPERATOR_CONST(&,And);
-IMPLEMENT_BITWISE_OPERATOR_CONST(^,Xor);
+#define IMPLEMENT_BITWISE_OPERATOR(mili_bitwise_symbol, mili_bitwise_text)          \
+    IMPLEMENT_BITWISE_OPERATOR_CONST( mili_bitwise_symbol, mili_bitwise_text);      \
+    IMPLEMENT_BITWISE_OPERATOR_NONCONST( mili_bitwise_symbol, mili_bitwise_text); 
 
 IMPLEMENT_BITWISE_OPERATOR(|,Or);
 IMPLEMENT_BITWISE_OPERATOR(&,And);
