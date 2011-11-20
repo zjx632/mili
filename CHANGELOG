@@ -35,6 +35,7 @@ Version 17  UNRELEASED
     * Added metaprogramming_utils
     * Fixed some bugs in template_info for const pointer and references
     * Added NonCopyable
+	* Fixed the overloading an operator with templates in global namespace topic
 
 Version 16
 ============
