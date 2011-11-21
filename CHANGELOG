@@ -36,6 +36,7 @@ Version 17  UNRELEASED
     * Added metaprogramming_utils
     * Fixed some bugs in template_info for const pointer and references
     * Added NonCopyable
+    * Fixed Generic Exceptions bug when MILI_NAMESPACE is used
 
 Version 16
 ============
