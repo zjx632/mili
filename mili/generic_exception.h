@@ -47,8 +47,14 @@ public:
     }
 };
 
+#ifdef MILI_NAMESPACE
+    #define GENERIC_EXCEPTION(subtype) mili::GenericException<subtype>
+#else
+    #define GENERIC_EXCEPTION(subtype) GenericException<subtype>
+#endif
+
 #define DEFINE_SPECIFIC_EXCEPTION(name, subtype)                \
-class name : public GenericException<subtype>                   \
+class name : public GENERIC_EXCEPTION(subtype)                  \
 {                                                               \
 public:                                                         \
     name() : GenericException<subtype>(#name)                   \
@@ -60,7 +66,7 @@ public:                                                         \
 }
 
 #define DEFINE_SPECIFIC_EXCEPTION_TEXT(name, subtype, text)     \
-class name : public GenericException<subtype>                   \
+class name : public GENERIC_EXCEPTION(subtype)                  \
 {                                                               \
 public:                                                         \
     name() : GenericException<subtype>(text)                    \
