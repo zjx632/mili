@@ -54,19 +54,6 @@ public:
 #    define EXCEPTION_NAMESPACE
 #endif
 
-#define DEFINE_SPECIFIC_EXCEPTION(name, subtype)                     \
-class name : public EXCEPTION_NAMESPACE::GenericException<subtype>   \
-{                                                                    \
-public:                                                              \
-    name() :                                                         \
-        GenericException<subtype>(#name)                             \
-    {}                                                               \
-                                                                     \
-    name(const std::string& description) :                           \
-        GenericException<subtype>(#name ": " + description)          \
-    {}                                                               \
-}
-
 #define DEFINE_SPECIFIC_EXCEPTION_TEXT(name, subtype, text)          \
 class name : public EXCEPTION_NAMESPACE::GenericException<subtype>   \
 {                                                                    \
@@ -79,6 +66,8 @@ public:                                                              \
         GenericException<subtype>(text ": " + description)           \
     {}                                                               \
 }
+
+#define DEFINE_SPECIFIC_EXCEPTION(name, subtype) DEFINE_SPECIFIC_EXCEPTION_TEXT(name, subtype, #name)
 
 NAMESPACE_END
 
