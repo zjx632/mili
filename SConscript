@@ -8,4 +8,4 @@ deps = []
 
 env.AppendUnique(CPPFLAGS = ['-DMILI_NAMESPACE'])
 env.CreateHeaderOnlyLibrary(name, inc, ext_inc, deps)
-
+env.CreateDoc(name)
