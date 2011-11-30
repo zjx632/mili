@@ -1,7 +1,7 @@
 /*
-Ranker: A minimal library that implements a ranking of elements.
+    Ranker: A minimal library that implements a ranking of elements.
     Copyright (C) 2010  Ezequiel S. Velez
-                        Daniel Gutson, FuDePAN
+                        Daniel Gutson, Emmanuel Teisaire, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -29,6 +29,7 @@ Ranker: A minimal library that implements a ranking of elements.
 #include <algorithm>
 #include <functional>
 #include <utility>
+#include "metaprogramming_utils.h"
 
 NAMESPACE_BEGIN
 
@@ -61,7 +62,9 @@ struct DisposalDeletePolicy
     }
 };
 
-template < class T, SameValueBehavior Behavior = AddAfterEqual, class Comp = std::less<T>, class DisposalPolicy = DisposalNullPolicy<T> >
+template < class T, SameValueBehavior Behavior = AddAfterEqual, 
+           class Comp = std::less<T>, 
+           class DisposalPolicy = DisposalNullPolicy<T> >
 class Ranker
 {
 protected:
@@ -79,7 +82,9 @@ public:
     typedef typename Ranking::const_reference const_reference;
 
     /* Constructor */
-    Ranker(size_t top): ranking(), TOP(top)
+    Ranker(size_t top) :
+        ranking(),
+        TOP(top)
     {}
 
     /* Member: */
@@ -128,161 +133,6 @@ public:
     }
 };
 
-template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline bool Ranker<T, Behavior, Comp, DisposalPolicy>::insert(const T& element)
-{
-    const std::pair<iterator, iterator> position = equal_range(ranking.begin(), ranking.end(), element, Comp());
-    const bool top_reached(ranking.size() >= TOP);
-    bool success(true);
-    iterator pos;
-
-    if (Behavior == AddBeforeEqual)
-        pos = position.first;
-    else
-        pos = position.second;
-
-    ranking.insert(pos, element);
-    const iterator bottom_element = --ranking.end();
-
-    if (top_reached)
-    {
-        success = (pos != ranking.end());
-        DisposalPolicy::destroy(*bottom_element);
-        ranking.erase(bottom_element);
-    }
-    return success;
-}
-
-template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(const T& element)
-{
-    const iterator pos = find(ranking.begin(), ranking.end(), element);
-    if (pos != ranking.end())
-    {
-        DisposalPolicy::destroy(*pos);
-        ranking.erase(pos);
-    }
-}
-
-template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_all(const T& element)
-{
-    iterator it = ranking.begin();
-    while (it != ranking.end())
-    {
-        if (element == *it)
-            DisposalPolicy::destroy(*it);
-        ++it;
-    }
-    ranking.remove(element);
-}
-
-template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(T* element)
-{
-    const iterator pos = find(ranking.begin(), ranking.end(), *element);
-    if (pos != ranking.end())
-    {
-        DisposalPolicy::destroy(*element);
-        ranking.erase(pos);
-    }
-}
-
-template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_all(T* element)
-{
-    iterator it = ranking.begin();
-    while (it != ranking.end())
-    {
-        if (*element == *it)
-            DisposalPolicy::destroy(*it);
-        ++it;
-    }
-    ranking.remove(*element);
-}
-
-/* version which does not apply DisposalPolicy */
-template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(const T& element, _NoDisposalPolicy)
-{
-    const iterator pos = find(ranking.begin(), ranking.end(), element);
-    if (pos != ranking.end())
-    {
-        ranking.erase(pos);
-    }
-}
-
-template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_all(const T& element, _NoDisposalPolicy)
-{
-    ranking.remove(element);
-}
-
-template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_first(T* element, _NoDisposalPolicy)
-{
-    const iterator pos = find(ranking.begin(), ranking.end(), *element);
-    if (pos != ranking.end())
-    {
-        ranking.erase(pos);
-    }
-}
-
-template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline void Ranker<T, Behavior, Comp, DisposalPolicy>::remove_all(T* element, _NoDisposalPolicy)
-{
-    ranking.remove(*element);
-}
-
-/*---------------------------------------------------------------*/
-template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline bool Ranker<T, Behavior, Comp, DisposalPolicy>::empty() const
-{
-    return ranking.empty();
-}
-
-template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline size_t Ranker<T, Behavior, Comp, DisposalPolicy>::size() const
-{
-    return ranking.size();
-}
-
-template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline void Ranker<T, Behavior, Comp, DisposalPolicy>::clear()
-{
-    iterator it = ranking.begin();
-    while (it != ranking.end())
-    {
-        DisposalPolicy::destroy(*it);
-        ++it;
-    }
-    ranking.clear();
-}
-
-template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline typename Ranker<T, Behavior, Comp, DisposalPolicy>::const_iterator Ranker<T, Behavior, Comp, DisposalPolicy>::begin() const
-{
-    return ranking.begin();
-}
-
-template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline typename Ranker<T, Behavior, Comp, DisposalPolicy>::const_iterator Ranker<T, Behavior, Comp, DisposalPolicy>::end() const
-{
-    return ranking.end();
-}
-
-template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline const T& Ranker<T, Behavior, Comp, DisposalPolicy>::top() const
-{
-    return *(ranking.begin());
-}
-
-template<class T, SameValueBehavior Behavior, class Comp, class DisposalPolicy>
-inline const T& Ranker<T, Behavior, Comp, DisposalPolicy>::bottom() const
-{
-    return *(--ranking.end());
-}
-
 //---------------- Unique Ranker --------------------
 /*
   T:       type to be rank.
@@ -290,9 +140,13 @@ inline const T& Ranker<T, Behavior, Comp, DisposalPolicy>::bottom() const
   CompEq:  functor to compare the elements.
   DisposalPolicy: functor to delete an element.
 */
-template < class T, class Comp = std::less<T>, class CompEq = std::less<T>, class DisposalPolicy = DisposalNullPolicy<T> >
-class UniqueRanker
+
+template < class T, class Comp, class CompEq, class DisposalPolicy>
+class BaseUniqueRanker
 {
+
+protected:
+    
     typedef std::multiset<T, Comp> Ranking;
     typedef typename Ranking::iterator iterator;
 
@@ -310,10 +164,11 @@ public:
     typedef typename Ranking::reference reference;
     typedef typename Ranking::const_reference const_reference;
 
-    UniqueRanker(const size_t top): TOP(top)
+    BaseUniqueRanker(const size_t top) :
+        TOP(top)
     {}
 
-    ~UniqueRanker()
+    ~BaseUniqueRanker()
     {
         uiterator it = unique.begin();
         while (it != unique.end())
@@ -324,9 +179,6 @@ public:
     }
 
     /* Members */
-
-    /* Inserts the element. */
-    inline bool insert(const T& element);
     /* Removes the first occurrence of element. */
     inline void remove(const T& element);
     /* Removes the first occurrence of element. */
@@ -349,145 +201,66 @@ public:
     inline const T& top() const;
     /* Returns the bottom element. */
     inline const T& bottom() const;
-
 };
 
-/* Complexity: Logarithmic */
-template<class T, class Comp, class CompEq, class DisposalPolicy>
-inline bool UniqueRanker<T, Comp, CompEq, DisposalPolicy>::insert(const T& element)
+
+template < class T, 
+           class Comp = std::less<T>, 
+           class CompEq = std::less<T>, 
+           class DisposalPolicy = DisposalNullPolicy<T> >
+class UniqueRanker : public BaseUniqueRanker<T, Comp, CompEq, DisposalPolicy>
 {
-    const iterator rankPos = ranking.insert(element);
-    const std::pair<uiterator, bool> aux = unique.insert(std::pair<T, iterator>(element, rankPos));
-    bool success(true);
-    const iterator bottom_element = --ranking.end();
-
-    if (aux.second)                                           // It is new
-    {
-        if (ranking.size() > TOP)
-        {
-            unique.erase(*bottom_element);                 // Remove the last one
-            ranking.erase(bottom_element);
-            success = (rankPos != bottom_element);
-        }
-    }
-    else                                                      // Already exist
-    {
-        if (Comp()(element, (aux.first)->first))              // The new one is better
-        {
-            unique.erase(aux.first);                          // Remove the old one
-            ranking.erase((aux.first)->second);
-            unique.insert(std::pair<T, iterator>(element, rankPos));
-        }
-        else                                                  // The old one is better
-        {
-            ranking.erase(rankPos);
-            success = false;
-        }
-    }
-    return success;
-}
-
-template<class T, class Comp, class CompEq, class DisposalPolicy>
-inline void UniqueRanker<T, Comp, CompEq, DisposalPolicy>::remove(const T& element)
-{
-    const uiterator pos = unique.find(element);
-    if (pos != unique.end())
-    {
-        DisposalPolicy::destroy(pos->first);
-        ranking.erase(pos->second);
-        unique.erase(pos);
-    }
-}
-
-template<class T, class Comp, class CompEq, class DisposalPolicy>
-inline void UniqueRanker<T, Comp, CompEq, DisposalPolicy>::remove(T* element)
-{
-    const uiterator pos = unique.find(*element);
-    if (pos != unique.end())
-    {
-        DisposalPolicy::destroy(pos->first);
-        ranking.erase(pos->second);
-        unique.erase(pos);
-    }
-}
-
-/* version which does not apply DisposalPolicy */
-
-template<class T, class Comp, class CompEq, class DisposalPolicy>
-inline void UniqueRanker<T, Comp, CompEq, DisposalPolicy>::remove(const T& element, _NoDisposalPolicy)
-{
-    const uiterator pos = unique.find(element);
-    if (pos != unique.end())
-    {
-        ranking.erase(pos->second);
-        unique.erase(pos);
-    }
-}
-
-template<class T, class Comp, class CompEq, class DisposalPolicy>
-inline void UniqueRanker<T, Comp, CompEq, DisposalPolicy>::remove(T* element, _NoDisposalPolicy)
-{
-    const uiterator pos = unique.find(*element);
-    if (pos != unique.end())
-    {
-        ranking.erase(pos->second);
-        unique.erase(pos);
-    }
-}
+    typedef BaseUniqueRanker<T, Comp, CompEq, DisposalPolicy> Parent;
+    typedef typename Parent::iterator iterator;
+    typedef typename Parent::Ranking Ranking;
+    typedef typename Parent::uiterator uiterator;
+protected:
+    using Parent::ranking;
+    using Parent::TOP;
+    using Parent::unique;
+public:
+    UniqueRanker(const size_t top) : 
+        Parent(top)
+    {}
+    /* Inserts the element. */
+    inline bool insert(const T& element);
+};
 
 /*---------------------------------------------------------------*/
 
-template<class T, class Comp, class CompEq, class DisposalPolicy>
-inline bool UniqueRanker<T, Comp, CompEq, DisposalPolicy>::empty() const
+template<class T>
+struct DummyComparator
 {
-    return ranking.empty();
-}
-
-template<class T, class Comp, class CompEq, class DisposalPolicy>
-inline size_t UniqueRanker<T, Comp, CompEq, DisposalPolicy>::size() const
-{
-    return ranking.size();
-}
-
-template<class T, class Comp, class CompEq, class DisposalPolicy>
-inline void UniqueRanker<T, Comp, CompEq, DisposalPolicy>::clear()
-{
-    uiterator it = unique.begin();
-    while (it != unique.end())
+    bool operator()(typename ParameterType<T>::type, typename ParameterType<T>::type)
     {
-        DisposalPolicy::destroy(it->first);
-        ++it;
+        return true;
     }
-    unique.clear();
-    ranking.clear();
-}
+};
 
-template<class T, class Comp, class CompEq, class DisposalPolicy>
-inline typename UniqueRanker<T, Comp, CompEq, DisposalPolicy>::const_iterator UniqueRanker<T, Comp, CompEq, DisposalPolicy>::begin() const
+template < class T, class Comp = std::less<T>, class DisposalPolicy = DisposalNullPolicy<T> >
+
+class UniqueRankerLineal : public BaseUniqueRanker<T, Comp, DummyComparator<T>, DisposalPolicy>
 {
-    return ranking.begin();
-}
+    typedef BaseUniqueRanker<T, Comp, DummyComparator<T>, DisposalPolicy> Parent;
+    typedef typename Parent::Ranking Ranking;
+    typedef typename Parent::iterator iterator;
 
-template<class T, class Comp, class CompEq, class DisposalPolicy>
-inline typename UniqueRanker<T, Comp, CompEq, DisposalPolicy>::const_iterator UniqueRanker<T, Comp, CompEq, DisposalPolicy>::end() const
-{
-    return ranking.end();
-}
+protected:
+    using Parent::ranking;
+    using Parent::TOP;
+public:
+    UniqueRankerLineal(const size_t top) :
+        Parent(top)
+    {}
+    
+    /* Inserts the element. */
+    inline bool insert(const T& element);
+};
 
-template<class T, class Comp, class CompEq, class DisposalPolicy>
-inline const T& UniqueRanker<T, Comp, CompEq, DisposalPolicy>::top() const
-{
-    return *(ranking.begin());
-}
-
-template<class T, class Comp, class CompEq, class DisposalPolicy>
-inline const T& UniqueRanker<T, Comp, CompEq, DisposalPolicy>::bottom() const
-{
-    return *(--ranking.end());
-}
-
+#define RANKER_INLINE_H
+#include "ranker_inline.h"
+#undef RANKER_INLINE_H
 
 NAMESPACE_END
-
 #endif
 

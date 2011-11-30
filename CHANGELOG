@@ -37,6 +37,7 @@ Version 17  UNRELEASED
     * Fixed some bugs in template_info for const pointer and references
     * Added NonCopyable
     * Fixed Generic Exceptions bug when MILI_NAMESPACE is used
+    * Adapted UniqueRanker to support incomparable elements 
 
 Version 16
 ============

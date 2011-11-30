@@ -55,10 +55,7 @@ struct PlayerUnique
 {
     bool operator()(const Player& p1, const Player& p2)
     {
-        if((p1.name).compare(p2.name) > 0)
-            return true;
-        else
-            return false;
+        return p1.name == p2.name;
     }
 };
 
@@ -87,7 +84,7 @@ void unique_ranker_test()
 {
     PlayersRanking UR(5);
 
-    cout << UR.insert(Player("Umpa lumpa A", .1)) << endl;;
+    cout << UR.insert(Player("Umpa lumpa A", .1)) << endl;
     cout << UR.insert(Player("Umpa lumpa B", .3)) << endl;
     cout << UR.insert(Player("Umpa lumpa C", .3)) << endl;
     cout << UR.insert(Player("Umpa lumpa B", .2)) << endl;
@@ -106,6 +103,57 @@ void unique_ranker_test()
     UR.remove(Player("Umpa lumpa E", .6));
     CAutonomousIterator<PlayersRanking> it2(UR);
     print_classes(it2);
+}
+
+
+//----------UNIQUE RANKER LINEAL TEST--------------
+
+struct PlayerLineal : Player
+{
+    PlayerLineal(const string& name, float score): Player(name, score)
+    {}
+    
+    bool operator == (const Player& aPlayer) const
+    {
+        return name == aPlayer.name;
+    }
+};
+
+typedef UniqueRankerLineal<PlayerLineal, PlayerRanking> PlayersRankingLineal;
+
+void print_classes_lineal (CAutonomousIterator<PlayersRankingLineal> it)
+{
+    while (!it.end())
+    {
+        it->print();
+        ++it;
+    }
+    cout << "_______________________" << endl;
+}
+
+void unique_ranker_lineal_test()
+{
+    PlayersRankingLineal UR(5);
+
+    cout << UR.insert(PlayerLineal("Umpa lumpa A", .1)) << endl;
+    cout << UR.insert(PlayerLineal("Umpa lumpa B", .3)) << endl;
+    cout << UR.insert(PlayerLineal("Umpa lumpa C", .3)) << endl;
+    cout << UR.insert(PlayerLineal("Umpa lumpa B", .2)) << endl;
+    cout << UR.insert(PlayerLineal("Umpa lumpa D", .5)) << endl;
+    cout << UR.insert(PlayerLineal("Umpa lumpa E", .6)) << endl;
+    cout << UR.insert(PlayerLineal("Umpa lumpa B", .5)) << endl;
+    cout << UR.insert(PlayerLineal("Umpa lumpa F", .8)) << endl;
+
+    CAutonomousIterator<PlayersRankingLineal> it(UR);
+    print_classes_lineal(it);
+
+    UR.top().print();                     // Print the top Umpa Lumpa
+    UR.bottom().print();                  // Print the bottom Umpa Lumpa
+
+    cout << "-------- remove Umpa lumpa E --------" << endl;
+    UR.remove(PlayerLineal("Umpa lumpa E", .6));
+    CAutonomousIterator<PlayersRankingLineal> it2(UR);
+    print_classes_lineal(it2);
 }
 
 //-------------------------------------------
@@ -150,15 +198,17 @@ void ranker_test()
 int main()
 {
     string test;
-    cout << "Indicate which library you want to test. (R = Ranker ; UR = Unique Ranker):" << endl;
+    cout << "Indicate which library you want to test. (R = Ranker ; UR = Unique Ranker ; URL = Unique Ranker Lineal):" << endl;
     cin >> test;
 
     if (test == "R")
         ranker_test();
     else if (test == "UR")
         unique_ranker_test();
+    else if (test == "URL")
+        unique_ranker_lineal_test();
     else
-        cout << "Error: you must choose R or UR" << endl;
+        cout << "Error: you must choose R, UR or URL" << endl;
     return 0;
 }
 
