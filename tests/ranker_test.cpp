@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2011 Hugo Arregui, FuDePAN
+    Copyright (C) 2011 Hugo Arregui, Emmanuel Teisaire, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -42,10 +42,7 @@ struct PlayerUnique
 {
     bool operator()(const Player& p1, const Player& p2)
     {
-        if ((p1.name).compare(p2.name) > 0)
-            return true;
-        else
-            return false;
+        return p1.name > p2.name;
     }
 };
 
@@ -60,7 +57,8 @@ struct PlayerRanking
 
 typedef UniqueRanker<Player, PlayerRanking, PlayerUnique> PlayersRanking;
 
-bool isSorted(CAutonomousIterator<PlayersRanking> it)
+template<class T>
+bool isSorted(CAutonomousIterator<T> it)
 {
     bool sorted = true;
     float score = it->score;
@@ -87,14 +85,14 @@ TEST(UniqueRankerTest, test)
     ASSERT_TRUE(UR.insert(Player("Umpa lumpa F", .8)));
 
     CAutonomousIterator<PlayersRanking> it(UR);
-    ASSERT_TRUE(isSorted(it));
+    ASSERT_TRUE(isSorted<PlayersRanking>(it));
 
     ASSERT_EQ("Umpa lumpa F", UR.top().name);
     ASSERT_EQ("Umpa lumpa C", UR.bottom().name);
 
     UR.remove(Player("Umpa lumpa E", .6));
     CAutonomousIterator<PlayersRanking> it2(UR);
-    ASSERT_TRUE(isSorted(it2));
+    ASSERT_TRUE(isSorted<PlayersRanking>(it2));
 }
 
 typedef Ranker<int, AddBeforeEqual> Ranking;
@@ -142,4 +140,42 @@ TEST(RankerTest, test)
 
     R.clear();
     ASSERT_EQ(0, R.size());
+}
+
+//RankerLineal
+struct PlayerLineal : Player
+{
+    PlayerLineal(const string& name, float score): Player(name, score)
+    {}
+
+    bool operator == (const Player& aPlayer) const
+    {
+        return name == aPlayer.name;
+    }
+};
+
+typedef UniqueRankerLineal<PlayerLineal, PlayerRanking> PlayersRankingLineal;
+
+TEST(UniqueRankerLinealTest, test)
+{
+    PlayersRankingLineal UR(5);
+
+    ASSERT_TRUE(UR.insert(PlayerLineal("Umpa lumpa A", .1)));
+    ASSERT_TRUE(UR.insert(PlayerLineal("Umpa lumpa B", .3)));
+    ASSERT_TRUE(UR.insert(PlayerLineal("Umpa lumpa C", .3)));
+    ASSERT_FALSE(UR.insert(PlayerLineal("Umpa lumpa B", .2)));
+    ASSERT_TRUE(UR.insert(PlayerLineal("Umpa lumpa D", .5)));
+    ASSERT_TRUE(UR.insert(PlayerLineal("Umpa lumpa E", .6)));
+    ASSERT_TRUE(UR.insert(PlayerLineal("Umpa lumpa B", .5)));
+    ASSERT_TRUE(UR.insert(PlayerLineal("Umpa lumpa F", .8)));
+
+    CAutonomousIterator<PlayersRankingLineal> it(UR);
+    ASSERT_TRUE(isSorted<PlayersRankingLineal>(it));
+    
+    ASSERT_EQ("Umpa lumpa F", UR.top().name);
+    ASSERT_EQ("Umpa lumpa C", UR.bottom().name);
+    
+    UR.remove(PlayerLineal("Umpa lumpa E", .6));
+    CAutonomousIterator<PlayersRankingLineal> it2(UR);
+    ASSERT_TRUE(isSorted<PlayersRankingLineal>(it2));
 }
