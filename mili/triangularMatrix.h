@@ -40,7 +40,7 @@ class TriangularMatrix
 private:
     Item* matrix;
     const size_t sideLength;
-    inline size_t getIndex(const size_t firstCoord, const size_t secondCoord);
+    inline size_t getIndex(const size_t firstCoord, const size_t secondCoord)const;
     inline size_t gaussNumber(const size_t n)
     {
         return (n * (n + 1)) / 2;
@@ -62,7 +62,7 @@ TriangularMatrix<Item>::TriangularMatrix(const size_t sideLength)
 }
 
 template<class Item>
-inline size_t TriangularMatrix<Item>::getIndex(const size_t firstCoord, const size_t secondCoord)
+inline size_t TriangularMatrix<Item>::getIndex(const size_t firstCoord, const size_t secondCoord) const
 {
     size_t row;
     size_t column;
