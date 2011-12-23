@@ -24,11 +24,11 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #define MILI_H
 
 #ifdef MILI_NAMESPACE
-#define NAMESPACE_BEGIN namespace mili {
-#define NAMESPACE_END }
+#   define NAMESPACE_BEGIN namespace mili {
+#   define NAMESPACE_END }
 #else
-#define NAMESPACE_BEGIN
-#define NAMESPACE_END
+#   define NAMESPACE_BEGIN
+#   define NAMESPACE_END
 #endif
 
 #ifndef NO_BITWISE_ENUMS
@@ -129,6 +129,10 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 
 #ifndef NO_METAPROGRAMMING_UTILS
 #   include "metaprogramming_utils.h"
+#endif
+
+#ifndef NO_TRIANGULAR_MATRIX
+#   include "triangularMatrix.h"
 #endif
 
 #ifndef NO_NON_COPYABLE
