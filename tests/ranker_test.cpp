@@ -64,9 +64,9 @@ bool isSorted(CAutonomousIterator<T> it)
     float score = it->score;
     while (!it.end() && sorted)
     {
-        ++it;
-        sorted = score >= it->score;
+        sorted = (score >= it->score);
         score = it->score;
+        ++it;
     }
     return sorted;
 }
@@ -103,9 +103,9 @@ bool isSorted(CAutonomousIterator<Ranking> it)
     int score = *it;
     while (!it.end() && sorted)
     {
-        ++it;
-        sorted = score >= *it;
+        sorted = (score >= *it);
         score = *it;
+        ++it;
     }
     return sorted;
 }
@@ -145,10 +145,11 @@ TEST(RankerTest, test)
 //RankerLineal
 struct PlayerLineal : Player
 {
-    PlayerLineal(const string& name, float score): Player(name, score)
+    PlayerLineal(const string& name, float score) : 
+        Player(name, score)
     {}
 
-    bool operator == (const Player& aPlayer) const
+    bool operator==(const Player& aPlayer) const
     {
         return name == aPlayer.name;
     }

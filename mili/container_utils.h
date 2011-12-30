@@ -277,10 +277,16 @@ inline bool remove_all_from(std::map<Key, T, Comp, Alloc>& m, const ElementType&
     {
         if (it->second == element)
         {
+            typename std::map<Key, T, Comp, Alloc>::iterator it_temp(it);
+            ++it_temp;
             m.erase(it);
+            it = it_temp;
             result = true;
         }
-        ++it;
+        else
+        {
+            ++it;
+        }
     }
     return result;
 }
