@@ -60,3 +60,10 @@ TEST(ArithUtilsTest, implies)
     ASSERT_TRUE(implies(false, true));
     ASSERT_TRUE(implies(false, false));
 }
+
+TEST(ArithUtilsTest, is_lossless_sum)
+{
+    ASSERT_FALSE(is_lossless_sum_bigsmall(1e80, 0.0001));
+    ASSERT_FALSE(is_lossless_sum(1e80, 0.0001));
+    ASSERT_FALSE(is_lossless_sum(0.0001, 1e80));
+}
