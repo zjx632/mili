@@ -22,6 +22,8 @@ arith_utils.h: A minimal library with arithmetic utilities.
 #define ARITH_UTILS_H
 
 #include <cmath>
+#include "compile_assert.h"
+
 NAMESPACE_BEGIN
 
 declare_type_mapper(ToFloatMapper);
@@ -205,20 +207,24 @@ inline T minimize(T& t, T value)
     return t;
 }
 
+declare_static_assert(floating_point_allowed);
+
 /** Returns true iff adding x and y doesn't loose information. Assumes x > y and neither x nor y are 0. */
 template <class T>
 inline bool is_lossless_sum_bigsmall(T x, T y)
 {
+    template_compile_assert(template_info<T>::is_floating_point, floating_point_allowed);
     return (x + y != x);
 }
+
 
 /** Returns true iff adding x and y doesn't loose information (due to floating point representation). */
 template <class T>
 inline bool is_lossless_sum(T x, T y)
 {
+    template_compile_assert(template_info<T>::is_floating_point, floating_point_allowed);
     return x == T(0) || y == T(0) || (x + y > std::max(x, y));
 }
-
 
 template <class T>
 //TODO[C++0x]: use decltype

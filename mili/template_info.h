@@ -116,6 +116,16 @@ struct template_is_native
     };
 };
 
+template <class E>
+struct template_is_floating_point
+{
+    typedef typename Unconst<E>::type T;
+    enum
+    {
+        value = type_equal<T, float>::value || type_equal<T, double>::value
+    };
+};
+
 template<class T>
 struct template_is_basic_string
 {
@@ -171,14 +181,15 @@ struct template_is_const
 template <class T>
 struct template_info
 {
-    enum { is_pointer      = template_is_pointer<T>::value };
-    enum { is_reference    = template_is_reference<T>::value };
-    enum { is_const        = template_is_const<T>::value };
-    enum { is_volatile     = template_is_volatile<T>::value };
-    enum { is_integral     = template_is_integral<T>::value };
-    enum { is_native       = template_is_native<T>::value };
-    enum { is_container    = template_is_container<T>::value };
-    enum { is_basic_string = template_is_basic_string<T>::value };
+    enum { is_pointer        = template_is_pointer<T>::value };
+    enum { is_reference      = template_is_reference<T>::value };
+    enum { is_const          = template_is_const<T>::value };
+    enum { is_volatile       = template_is_volatile<T>::value };
+    enum { is_integral       = template_is_integral<T>::value };
+    enum { is_floating_point = template_is_floating_point<T>::value };
+    enum { is_native         = template_is_native<T>::value };
+    enum { is_container      = template_is_container<T>::value };
+    enum { is_basic_string   = template_is_basic_string<T>::value };
     enum { size = sizeof(T) };
 
     template <class T2>
