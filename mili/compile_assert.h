@@ -26,6 +26,13 @@ compile_assert: A minimal library supporting compile time (static) assertions,
 
 #ifndef __GXX_EXPERIMENTAL_CXX0X__  // replace this by __cplusplus > 199711L when available
 
+
+#ifdef COMPILE_ASSERT_TEST
+    #define fail_value() typedef float CompileTimeAssertion;
+#else
+    #define fail_value() ;
+#endif
+
 #define declare_static_assert(name)     \
 template <bool Condition>               \
 struct name                             \
@@ -34,7 +41,9 @@ struct name                             \
 };                                      \
 template <>                             \
 struct name<false>                      \
-{}
+{                                       \
+    fail_value()                        \
+}
 
 #define compile_assert(condition, name) \
     typedef name<condition >::CompileTimeAssertion name##__
