@@ -41,6 +41,13 @@ TEST(TemplateInfoTest, is_integral)
     ASSERT_TRUE(bool(template_info<int>::is_integral));
 }
 
+TEST(TemplateInfoTest, is_floating_point)
+{
+    ASSERT_FALSE(bool(template_info<int>::is_floating_point));
+    ASSERT_TRUE(bool(template_info<float>::is_floating_point));
+    ASSERT_TRUE(bool(template_info<double>::is_floating_point));
+}
+
 TEST(TemplateInfoTest, is_pointer)
 {
     ASSERT_TRUE(bool(template_info<int*>::is_pointer));
