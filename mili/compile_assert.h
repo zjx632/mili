@@ -28,9 +28,9 @@ compile_assert: A minimal library supporting compile time (static) assertions,
 
 
 #ifdef COMPILE_ASSERT_TEST
-    #define fail_value() typedef float CompileTimeAssertion;
+#define fail_value() typedef float CompileTimeAssertion;
 #else
-    #define fail_value() ;
+#define fail_value() ;
 #endif
 
 #define declare_static_assert(name)     \
