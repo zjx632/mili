@@ -69,7 +69,7 @@ class Restrict
     const T value;
 public:
     template <class U>
-    Restrict(U u) : 
+    Restrict(U u) :
         value(u)
     {
         typedef ConversionRules<T, U> ConversionType;
