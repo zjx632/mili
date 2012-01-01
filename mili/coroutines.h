@@ -28,7 +28,9 @@ class Coroutine
 protected:
     int yield_point;
 public:
-    Coroutine() : yield_point(0) {}
+    Coroutine() :
+        yield_point(0)
+    {}
 };
 
 #define BEGIN_COROUTINE     \

@@ -1,7 +1,8 @@
 /*
-promotion_disable.h: A minimalistic library to disable undesired
+    promotion_disable.h: A minimalistic library to disable undesired
     type promotions in C++.
     Copyright (C) 2009, Daniel Gutson, FuDePAN
+                  2012, Hugo Arregui, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
