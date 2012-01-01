@@ -22,18 +22,20 @@ promotion_disable.h: A minimalistic library to disable undesired
 #ifndef PROMOTION_DISABLE_H
 #define PROMOTION_DISABLE_H
 
+#include "compile_assert.h"
+#include "template_info.h"
+
 NAMESPACE_BEGIN
 
-struct AllowConversion
+/* RulesCondition<cond> will only allow conversion when cond==true */
+template <bool C>
+struct RulesCondition
 {
-    typedef int Type;
+    enum { value = C };
 };
 
 /* StrictRules disables any conversion; only T --> T allowed */
-template <class T, class U> struct StrictRules
-{};
-
-template <class T> struct StrictRules<T, T> : AllowConversion
+template <class T, class U> struct StrictRules : RulesCondition<type_equal<T, U>::value>
 {};
 
 /* FloatingPoints allows T-->T, plus Double to Float */
@@ -42,33 +44,24 @@ struct FloatingPoints : StrictRules<T, U>
 {};
 
 template <>
-struct FloatingPoints<float, double>: AllowConversion
-{};
+struct FloatingPoints<float, double>
+{
+    enum { value = true };
+};
 
-/* RulesCondition<cond> will only allow conversion when cond==true */
-template<bool C>
-struct RulesCondition
-{};
-
-template<>
-struct RulesCondition<true> : AllowConversion
-{};
-
-/* disable conversion depending on size */
-
+//[> disable conversion depending on size <]
 template <class T, class U>
 struct NotNarrowing : RulesCondition < sizeof(T) <= sizeof(U) >
 {};
 
-/* now allow same types */
-template <class T>
-struct NotNarrowing<T, T> : AllowConversion
-{};
-
-/* disable conversion from int to float, if they have the same size */
+//[> disable conversion from int to float, if they have the same size <]
 template <>
 struct NotNarrowing<float, int>
-{};
+{
+    enum { value = false };
+};
+
+declare_static_assert(invalid_conversion);
 
 template < class T, template <class X, class Y> class ConversionRules = StrictRules >
 class Restrict
@@ -76,10 +69,11 @@ class Restrict
     const T value;
 public:
     template <class U>
-    Restrict(U u)
-        : value(u)
+    Restrict(U u) : 
+        value(u)
     {
-        typedef typename ConversionRules<T, U>::Type dummy;
+        typedef ConversionRules<T, U> ConversionType;
+        template_compile_assert(ConversionType::value, invalid_conversion);
     }
 
     operator T() const
