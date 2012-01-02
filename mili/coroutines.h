@@ -1,5 +1,5 @@
 /*
-coroutines: A minimal library that implements coroutines.
+    coroutines: A minimal library that implements coroutines.
     Copyright (C) 2010  Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
