@@ -201,8 +201,8 @@ inline bool UniqueRanker<T, Comp, CompEq, DisposalPolicy>::insert(const T& eleme
     {
         if (Comp()(element, (aux.first)->first))              // The new one is better
         {
-            unique.erase(aux.first);                          // Remove the old one
             ranking.erase((aux.first)->second);
+            unique.erase(aux.first);                          // Remove the old one
             unique.insert(std::pair<T, iterator>(element, rankPos));
         }
         else                                                  // The old one is better
