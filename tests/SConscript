@@ -3,7 +3,7 @@ Import ('env')
 name = 'mili'
 inc = env.Dir('.')
 src = env.Glob('*.cpp')
-deps = ['mili','gmock','gtest_main']
+deps = ['mili','gmock','gtest_main', 'gtest']
 CXXFLAGS = ['-Wall', '-Wextra', '-Wno-sign-compare']
 
 env.Replace(CXXFLAGS=CXXFLAGS, CFLAGS=CXXFLAGS)
