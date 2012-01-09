@@ -24,7 +24,6 @@
 #include <gmock/gmock.h>
 #include "mili/mili.h"
 
-using namespace std;
 using namespace mili;
 
 struct MockObject
@@ -40,7 +39,7 @@ struct MockObject
 
 TEST(DeleteContainerTest, delete_container)
 {
-    vector<MockObject*> vec1;
+    std::vector<MockObject*> vec1;
 
     MockObject* o1 = new MockObject;
     MockObject* o2 = new MockObject;
