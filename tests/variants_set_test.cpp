@@ -19,12 +19,11 @@
     This is a test file.
 */
 
+#include <string>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "mili/mili.h"
 
-#include <iostream>
-using namespace std;
 using namespace mili;
 
 TEST(VariantsSetTest, test)
@@ -41,11 +40,11 @@ TEST(VariantsSetTest, test)
     variantSet.get_element("number", ie);
     ASSERT_EQ(3, ie);
 
-    string is;
+    std::string is;
     variantSet.get_element(str, is);
     ASSERT_EQ("hello", is);
 
-    ASSERT_EQ("hello", variantSet.get_element<string>(str));
+    ASSERT_EQ("hello", variantSet.get_element<std::string>(str));
 
     float f;
     ASSERT_THROW(variantSet.get_element("float", f), BadElementName);

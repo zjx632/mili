@@ -23,7 +23,7 @@
 #include <gmock/gmock.h>
 #include "mili/mili.h"
 
-using namespace std;
+using std::string;
 using namespace mili;
 
 struct Player
