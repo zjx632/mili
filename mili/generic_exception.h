@@ -48,7 +48,7 @@ public:
     }
 };
 
-#ifdef MILI_NAMESPACE
+#ifndef NO_MILI_NAMESPACE
 #    define EXCEPTION_NAMESPACE mili
 #else
 #    define EXCEPTION_NAMESPACE
