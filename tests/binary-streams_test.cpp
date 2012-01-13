@@ -1,30 +1,31 @@
 /*
-Copyright (C) 2011 Hugo Arregui FuDePAN
+    Copyright (C) 2012 Lucas Paradisi FuDePAN
 
-This file is part of the MiLi Minimalistic Library.
+    This file is part of the MiLi Minimalistic Library.
 
-MiLi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+    MiLi is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-MiLi is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+    MiLi is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General Public License
+    along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
 
-This is a test file.
+    This is a test file.
 */
 
+#include <vector>
+#include <set>
+#include <list>
+#include <string>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "mili/mili.h" 
-#include <vector>
-#include <set>
-#include <string>
 #define BSTREAMS_DEBUG 
 
 using namespace mili;
@@ -46,7 +47,7 @@ struct A
     long double a;
     
     A()
-        :id(0), name(""), a(0)
+        :id(0), name(), a(0)
     {}
     
     A(unsigned int Id, const std::string& Name, long double A)
@@ -67,49 +68,8 @@ struct A
 
 };
 
-struct B : public A
-{
-    std::string surname;
-    long int room;
-    char sex;
-    
-    B()
-        :A(), surname(""), room(0), sex('M')
-    {}
-    
-    B(const std::string& Surname, long int Room, char Sex)
-        :A(), surname(Surname), room(Room), sex(Sex)
-    {}
-    
-    unsigned int get_id() const
-    {
-        return A::id;
-    }
-    std::string get_name() const
-    {
-        return A::name;
-    }
-    long double get_a() const
-    {
-        return A::a;
-    }
-    
-    
-    friend bostream& operator<<(bostream& out, const B& o)
-    {
-        out << static_cast<const A&>(o) << o.surname << o.room << o.sex;
-        return out;
-    }
-    
-    friend bistream& operator>>(bistream& in, B& o)
-    {
-        in >> static_cast<A&>(o) >> o.surname >> o.room >> o.sex;
-        return in;
-    }
-    
-};
 
-TEST(BinaryStream, BSTREAMS_DEBUG_basicTypes)
+TEST(BinaryStream, BSTREAMS_DEBUG_identifier_test)
 {
     bostream bos;
     
@@ -139,61 +99,67 @@ TEST(BinaryStream, BSTREAMS_DEBUG_basicTypes)
 
     bos << std::string("FuDePAN");
     ASSERT_EQ(typeid(uint32_t).name(), get_TypeId(bos.str()));
-    bos.clear();
-    
+    bos.clear();  
 }
 
-TEST(BinaryStream, BSTREAMS_DEBUG_chained)
+TEST(BinaryStream, BSTREAMS_DEBUG_chainedValues_test)
 {
     bostream bos;
+    A a(3,"pepe",43);
+    A z;
+    
+    bos << 1.2f << 3 << double(0.89) << a << true;
+
+    bistream bis(bos.str());
     float f;
     int i;
-    double d;   
-    A a(3,"pepe",43);
-    A z(0,"",0);
-    B x("asd", 3, 'u');
-    B y("", 0, '0');
-    
-    bos << 1.2f << 3 << double(0.89) << a << x;
-        
-    bistream bis(bos.str());
-    
-    bis >> f >> i >> d >> z >> y;
+    double d;
+    bool b;
+    bis >> f >> i >> d >> z >> b; 
     
     ASSERT_EQ(3, z.id);
     ASSERT_EQ("pepe", z.name);
     ASSERT_EQ(43, z.a);
-    
-    ASSERT_EQ(0, y.get_id());
-    ASSERT_EQ("", y.get_name());
-    ASSERT_EQ(0, y.get_a());
-    ASSERT_EQ("asd", y.surname);
-    ASSERT_EQ(3, y.room);
-    ASSERT_EQ('u', y.sex);
-    
+    ASSERT_TRUE(b);            
 }
 
-TEST(BinaryStream, BSTREAMS_DEBUG_contaniers)
+TEST(BinaryStream, BSTREAMS_DEBUG_contaniers_test)
 {
     bostream bos;
     std::vector<int> integers(16, -4), integers2;
     std::set<unsigned> set1, set2;
-    double numbers[] = {1, 2, 3, 4, 5, 4, 3, 2, 1}, numbers2[9];
-    bool boolean = true, boolean2;
+    std::list<char> list1(4, 't'), list2;
+    double numbers[] = {1, 2, 3, 4, 5, 6, 7, 8, 9}, numbers2[9];
 
     set1.insert(1000);
     set1.insert(100);
     set1.insert(10);
     set1.insert(1);
-        
-    bos << integers << set1 << numbers << boolean;
+    
+    bos << integers << set1 << list1 << numbers;
     
     bistream bis(bos.str());
+    bis >> integers2 >> set2 >> list2 >> numbers2;
     
-    bis >> integers2 >> set2 >> numbers2 >> boolean2;
+    for (int i = 0; i < 16; ++i)
+    {
+        ASSERT_EQ(-4, integers2[i]);
+    }    
     
-    ASSERT_EQ(-4, integers2[2]);
-    ASSERT_EQ(1, *(set2.begin()));
-    ASSERT_EQ(5, numbers2[4]);
-    ASSERT_TRUE(boolean2);    
+    std::set<unsigned>::iterator it = set2.begin();
+    ASSERT_EQ(1, *it++);
+    ASSERT_EQ(10, *it++);
+    ASSERT_EQ(100, *it++);
+    ASSERT_EQ(1000, *it);
+    
+    
+    for (std::list<char>::iterator it1 = list2.begin(); it1 != list2.end(); ++it1)
+    {
+        ASSERT_EQ('t', *it1);
+    }
+    
+    for (int i = 0; i < 9; ++i)
+    {
+        ASSERT_EQ(i+1, numbers2[i]);
+    }
 }
