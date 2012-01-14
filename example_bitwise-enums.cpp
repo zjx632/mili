@@ -1,6 +1,7 @@
 /*
 bitwise_enums: A minimal library for doing type-safe bitwise operations.
     Copyright (C) 2008, 2009  Daniel Gutson, FuDePAN
+                  2011 Adrian Remonda FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -21,9 +22,10 @@ bitwise_enums: A minimal library for doing type-safe bitwise operations.
 */
 
 #include <iostream>
-using std::cout;
-
 #include "mili/mili.h"
+
+using namespace mili;
+using std::cout;
 
 enum MasksSet1
 {
@@ -32,6 +34,13 @@ enum MasksSet1
     kTwo    = 2,
     kThree  = 4,
     kFour   = 8
+};
+BITWISE_ENUM_ENABLE(MasksSet1)
+
+enum MasksSet2
+{
+    kEight   = 8,
+    kSixteen = 16,
 };
 
 typedef bitwise_enum<MasksSet1> M1;
@@ -42,12 +51,33 @@ void show_bits(M1 b)
     if (b.has_bits(kOne))   cout << "kOne   turned on\n";
     if (b.has_bits(kTwo))   cout << "kTwo   turned on\n";
     if (b.has_bits(kThree)) cout << "kThree turned on\n";
-    if (b.has_bits(kFour))  cout << "kFour  turned on\n";
+    if (b.has_bits(kFour))  cout << "kFour  turned on\n";   
+    cout << std::endl;
 }
 
 int main()
-{
-    show_bits(kOne | kFour);
+{   
+    //with bitwise nums
+    bitwise_enum<MasksSet1>  myEnum(kOne | kTwo | kFour);
+
+    show_bits(myEnum);
+
+    //enum with bitwise enum
+    myEnum = kOne & myEnum;
+    show_bits(myEnum);
+
+    // 2 enums
+    show_bits(kOne | kThree);
+
+    // << operator
+    cout << "<< Operator test: 0x" << std::hex << (myEnum << 2) << std::endl;
+
+    //without bitwise nums (built-in types)
+    int normalEnum = kEight | kSixteen;
+    cout << "Normal Enum: 0x" << std::hex << normalEnum << std::endl;
+
+    normalEnum = kEight << 2;
+    cout << "Normal Enum: 0x" << std::hex << normalEnum << std::endl;
 
     return 0;
 }
