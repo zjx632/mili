@@ -23,6 +23,8 @@ example_random: A minimal library for generating random numbers.
 #include <iostream>
 #include "mili/mili.h"
 
+using namespace mili;
+
 int main()
 {
     Randomizer<float> rnd(10.0f, 11.0f);

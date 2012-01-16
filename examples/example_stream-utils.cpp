@@ -26,6 +26,7 @@ stream_utils: A minimal library that provides CSV and other file/stream
 #include <fstream>
 #include "mili/mili.h"
 
+using namespace mili;
 using namespace std;
 
 static void generate_file(const char* name)

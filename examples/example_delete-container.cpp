@@ -23,6 +23,8 @@ delete_container: A minimal library for deleting the objects of a container of p
 #include <vector>
 #include "mili/mili.h"
 
+using namespace mili;
+
 struct AnObject
 {
     int i;

@@ -26,6 +26,8 @@ binary_streams: A minimal library supporting encoding of different data
 #include <vector>
 #include "mili/mili.h"
 
+using namespace mili;
+
 int main()
 {
     std::vector<int> v(5, 3); //all 3's

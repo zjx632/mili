@@ -23,6 +23,8 @@ arith_utils: A minimal library with arithmetic utilities.
 #include <iostream>
 #include "mili/mili.h"
 
+using namespace mili;
+
 int main()
 {
     if (bchain(1) < 2 < 3)
