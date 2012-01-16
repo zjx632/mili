@@ -170,18 +170,18 @@ struct BitwiseEnumMapper
 {
     typedef int ReturnType;
     static int operationOr(Enum e1, Enum e2)
-    { 
-        return int(e1) | int(e2); 
+    {
+        return int(e1) | int(e2);
     }
 
     static int operationAnd(Enum e1, Enum e2)
-    { 
-        return int(e1) & int(e2); 
+    {
+        return int(e1) & int(e2);
     }
 
     static int operationXor(Enum e1, Enum e2)
-    { 
-        return int(e1) ^ int(e2); 
+    {
+        return int(e1) ^ int(e2);
     }
 };
 
@@ -192,22 +192,22 @@ struct BitwiseEnumMapper<Enum, true>
     typedef bitwise_enum<Enum> ReturnType;
 
     static bitwise_enum<Enum> operationOrConst(Enum value, const bitwise_enum<Enum>& e)
-    { 
+    {
         return bitwise_enum<Enum>(value) | e;
     }
 
     static bitwise_enum<Enum> operationAndConst(Enum value, const bitwise_enum<Enum>& e)
-    { 
+    {
         return bitwise_enum<Enum>(value) & e;
     }
 
     static bitwise_enum<Enum> operationXorConst(Enum value, const bitwise_enum<Enum>& e)
-    { 
+    {
         return bitwise_enum<Enum>(value) ^ e;
     }
 
     static bitwise_enum<Enum> operationOr(Enum a, Enum b)
-    { 
+    {
         return bitwise_enum<Enum>(a) | bitwise_enum<Enum>(b);
     }
 
@@ -240,11 +240,11 @@ inline typename BitwiseEnumMapper<Enum, BitwiseEnumEnabler<Enum>::EnabledConvers
 
 #define IMPLEMENT_BITWISE_OPERATOR(mili_bitwise_symbol, mili_bitwise_text)          \
     IMPLEMENT_BITWISE_OPERATOR_CONST( mili_bitwise_symbol, mili_bitwise_text);      \
-    IMPLEMENT_BITWISE_OPERATOR_NONCONST( mili_bitwise_symbol, mili_bitwise_text); 
+    IMPLEMENT_BITWISE_OPERATOR_NONCONST( mili_bitwise_symbol, mili_bitwise_text);
 
-IMPLEMENT_BITWISE_OPERATOR(|,Or);
-IMPLEMENT_BITWISE_OPERATOR(&,And);
-IMPLEMENT_BITWISE_OPERATOR(^,Xor);
+IMPLEMENT_BITWISE_OPERATOR( | , Or);
+IMPLEMENT_BITWISE_OPERATOR(&, And);
+IMPLEMENT_BITWISE_OPERATOR( ^ , Xor);
 
 #define BITWISE_ENUM_ENABLE(enumtype)   \
 template <>                             \
@@ -252,5 +252,5 @@ struct BitwiseEnumEnabler<enumtype>     \
 {                                       \
     enum { EnabledConversion = true };  \
 };                                      \
-
+ 
 #endif
