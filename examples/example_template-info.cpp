@@ -22,9 +22,11 @@ template_info: A minimal library to obtain type information of a template
 */
 
 #include <iostream>
-#include "mili/mili.h"
 #include <vector>
 #include <set>
+#include "mili/mili.h"
+
+using namespace mili;
 
 struct S {};
 

@@ -23,6 +23,7 @@ invariants: A minimal library for checking invariants.
 #include <iostream>
 #include "mili/mili.h"
 
+using namespace mili;
 using std::cout;
 
 invariant::NeverNull<const char> get_message(invariant::InRange < int, -1, 1 > number)

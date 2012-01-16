@@ -23,6 +23,8 @@ promotion_disable.h: A minimalistic library to disable undesired
 
 #include "mili/mili.h"
 
+using namespace mili;
+
 float f(Restrict<float> rf)
 {
     return rf + 1.0f;
