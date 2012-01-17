@@ -1,6 +1,6 @@
 /*
-factory: A minimal library for a generic factory.
-    Copyright (C) 2009  Daniel Gutson and Marcelo Caro, FuDePAN
+loop_unrolling: A minimal library for TMP loop unrolling.
+    Copyright (C) 2009  Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -20,46 +20,40 @@ factory: A minimal library for a generic factory.
     This is an example file.
 */
 
-#include <string>
 #include <iostream>
 #include "mili/mili.h"
 
-using std::string;
+using namespace mili;
 using std::cout;
 
-struct Shape
+template <class T>
+struct BitCounter
 {
-    virtual void print_shape() const = 0;
-    virtual ~Shape() {}
-};
+    T value;
+    size_t ret;
+    BitCounter(T value) : value(value), ret(0) {}
 
-class Circle : public Shape
-{
-    virtual void print_shape() const
+    void operator()()
     {
-        cout << "a circle\n";
+        ret += value & 1;
+        value >>= 1;
     }
 };
 
-class Rectangle : public Shape
+template <class T>
+inline size_t CountBits(T x)
 {
-    virtual void print_shape() const
-    {
-        cout << "a rectangle\n";
-    }
-};
+    BitCounter<T> bc(x);
+    FOR<sizeof(T) * 8, BitCounter<T> >::iterate(bc);
+    return bc.ret;
+}
 
 int main()
 {
-    Factory<string, Shape> shapes_factory;
-
-    shapes_factory.register_factory<Circle>("circle");
-    shapes_factory.register_factory<Rectangle>("rectangle");
-    Shape* s = shapes_factory.new_class("circle");
-
-    s->print_shape();
-
-    delete s;
-
+    int i;
+    i = -1;
+    std::cout << CountBits(i) << std::endl;
     return 0;
 }
+
+

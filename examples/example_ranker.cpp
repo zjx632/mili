@@ -23,6 +23,7 @@ example_ranker: An example that uses MiLi's Ranker.
 #include <iostream>
 #include "mili/mili.h"
 
+using namespace mili;
 using namespace std;
 
 template <class T>
@@ -44,7 +45,7 @@ struct Player
     Player(string name, float score): name(name), score(score)
     {}
 
-    void print () const
+    void print() const
     {
         cout << name << " - " << score << endl;
     }
@@ -70,7 +71,7 @@ struct PlayerRanking
 
 typedef UniqueRanker<Player, PlayerRanking, PlayerUnique> PlayersRanking;
 
-void print_classes (CAutonomousIterator<PlayersRanking> it)
+void print_classes(CAutonomousIterator<PlayersRanking> it)
 {
     while (!it.end())
     {
@@ -112,7 +113,7 @@ struct PlayerLineal : Player
 {
     PlayerLineal(const string& name, float score): Player(name, score)
     {}
-    
+
     bool operator == (const Player& aPlayer) const
     {
         return name == aPlayer.name;
@@ -121,7 +122,7 @@ struct PlayerLineal : Player
 
 typedef UniqueRankerLineal<PlayerLineal, PlayerRanking> PlayersRankingLineal;
 
-void print_classes_lineal (CAutonomousIterator<PlayersRankingLineal> it)
+void print_classes_lineal(CAutonomousIterator<PlayersRankingLineal> it)
 {
     while (!it.end())
     {

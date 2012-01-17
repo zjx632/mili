@@ -24,6 +24,7 @@ example_coroutines: An example that uses coroutines.
 #include <set>
 #include "mili/mili.h"
 
+using namespace mili;
 using namespace std;
 
 // Example1: yielding within nested FOR loops.

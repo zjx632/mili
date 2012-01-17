@@ -1,7 +1,6 @@
 /*
-compile_assert: A minimal library supporting compile time (static) assertions,
-    a la C++0x.
-    Copyright (C) 2009  Daniel Gutson, FuDePAN
+raii.h: A minimal library for generic RAII implementation
+    Copyright (C) 2011 Lucas Besso & Raul Striglio, UNRC
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -17,27 +16,38 @@ compile_assert: A minimal library supporting compile time (static) assertions,
 
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
-
-    This is an example file.
 */
 
+
+#include <iostream>
+#include <cstdio>
 #include "mili/mili.h"
 
-generic_assert(sizeof(int) == 4);
+using namespace mili;
 
-declare_static_assert(this_assertion_will_always_fail);
-declare_static_assert(pointers_not_allowed_assert);
-
-template <class T> struct MyType
+class file
 {
-    template_compile_assert(!template_is_pointer<T>::value, pointers_not_allowed_assert);
+
+public:
+    file(std::string path): _file(std::fopen(path.c_str(), "w")) {}
+    void close()
+    {
+        fclose(_file);
+    }
+    void write(std::string str)
+    {
+        std::fputs(str.c_str(), _file);
+    }
+
+private:
+    std::FILE* _file;
 };
 
 int main()
 {
-    compile_assert(sizeof(char) == 2, this_assertion_will_always_fail); // fails
+    file fi("file");
+    RAII<file, &file::close> rs(fi);
+    fi.write("new line in the file");
 
-    MyType<char*> mt1;  // fails
-    MyType<char>  mt2;  // OK
     return 0;
 }

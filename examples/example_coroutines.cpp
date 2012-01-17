@@ -23,6 +23,7 @@ example_coroutines: An example that uses coroutines.
 #include <iostream>
 #include "mili/mili.h"
 
+using namespace mili;
 using namespace std;
 
 class CoRo1 : public Coroutine

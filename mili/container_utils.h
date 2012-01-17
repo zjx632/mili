@@ -27,12 +27,12 @@ container_utils: A minimal library with generic STL container utilities..
 #include <vector>
 #include <list>
 #include <set>
-#include "ranker.h"
 #include <new>
 #include <queue>
 
 #include <algorithm>
 #include <exception>
+#include "ranker.h"
 //#include <iterator>
 
 NAMESPACE_BEGIN

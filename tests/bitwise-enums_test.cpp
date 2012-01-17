@@ -42,7 +42,7 @@ BITWISE_ENUM_ENABLE(MasksSet1)
 enum MasksSet2
 {
     kEight   = 8,
-    kSixteen = 16,
+    kSixteen = 16
 };
 
 typedef bitwise_enum<MasksSet1> M1;
