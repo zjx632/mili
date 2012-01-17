@@ -1,6 +1,6 @@
-
 /*
-    Copyright (C) 2011 Hugo Arregui, FuDePAN
+invariants: A minimal library for checking invariants.
+    Copyright (C) 2009  Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -23,11 +23,41 @@
 #include <iostream>
 #include "mili/mili.h"
 
-int main()
+using namespace mili;
+using std::cout;
+
+invariant::NeverNull<const char> get_message(invariant::InRange < int, -1, 1 > number)
 {
-    Select<true, int, float>::result n = 1;
-    std::cout << n << std::endl;
-    return 0;
+    return "Hello World\n";
 }
 
+struct AClass
+{
+    int x;
+    int y;
+    void setxy(int newx, int newy)
+    {
+        x = newx;
+        y = newy;
+    }
+};
 
+bool AClassInvariant(const AClass& aclass)
+{
+    return aclass.x + aclass.y > 0;
+};
+
+typedef InvariantClass<AClass, AClassInvariant> AClass_inv;
+
+int main()
+{
+    const char* msg = get_message(-1);
+    cout << msg;
+
+    AClass aclass;
+    AClass_inv inv(aclass);
+    inv->setxy(3, 4);
+    cout << inv->x << std::endl;
+
+    return 0;
+}

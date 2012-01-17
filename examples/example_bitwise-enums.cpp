@@ -51,12 +51,12 @@ void show_bits(M1 b)
     if (b.has_bits(kOne))   cout << "kOne   turned on\n";
     if (b.has_bits(kTwo))   cout << "kTwo   turned on\n";
     if (b.has_bits(kThree)) cout << "kThree turned on\n";
-    if (b.has_bits(kFour))  cout << "kFour  turned on\n";   
+    if (b.has_bits(kFour))  cout << "kFour  turned on\n";
     cout << std::endl;
 }
 
 int main()
-{   
+{
     //with bitwise nums
     bitwise_enum<MasksSet1>  myEnum(kOne | kTwo | kFour);
 

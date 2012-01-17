@@ -1,6 +1,7 @@
 /*
-example_random: A minimal library for generating random numbers.
-    Copyright (C) 2010  Daniel Gutson, FuDePAN
+template_info: A minimal library to obtain type information of a template
+    parameter.
+    Copyright (C) 2009  Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -21,14 +22,20 @@ example_random: A minimal library for generating random numbers.
 */
 
 #include <iostream>
+#include <vector>
+#include <set>
 #include "mili/mili.h"
+
+using namespace mili;
+
+struct S {};
 
 int main()
 {
-    Randomizer<float> rnd(10.0f, 11.0f);
-
-    std::cout << rnd.get() << std::endl;
-
+    std::cout << bool(template_info<S>::is_native) << std::endl;
+    std::cout << bool(template_info<char>::is_native) << std::endl;
+    std::cout << bool(template_info<int>::is_same_size<long int>::value) << std::endl;
+    std::cout << bool(template_info<std::vector<int> >::is_container) << std::endl;
+    std::cout << bool(template_info<std::set<int> >::is_container) << std::endl;
     return 0;
 }
-

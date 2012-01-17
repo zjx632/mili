@@ -1,6 +1,5 @@
 /*
-template_info: A minimal library to obtain type information of a template
-    parameter.
+arith_utils: A minimal library with arithmetic utilities.
     Copyright (C) 2009  Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
@@ -23,17 +22,42 @@ template_info: A minimal library to obtain type information of a template
 
 #include <iostream>
 #include "mili/mili.h"
-#include <vector>
-#include <set>
 
-struct S {};
+using namespace mili;
 
 int main()
 {
-    std::cout << bool(template_info<S>::is_native) << std::endl;
-    std::cout << bool(template_info<char>::is_native) << std::endl;
-    std::cout << bool(template_info<int>::is_same_size<long int>::value) << std::endl;
-    std::cout << bool(template_info<std::vector<int> >::is_container) << std::endl;
-    std::cout << bool(template_info<std::set<int> >::is_container) << std::endl;
-    return 0;
+    if (bchain(1) < 2 < 3)
+        std::cout << "1 < 2 < 3 -> TRUE" << std::endl;
+
+    int x(10);
+    if ((5 >= bchain(4) < 10) == x)
+        std::cout << "5 >= 4 < 10 == x -> TRUE" << std::endl;
+
+    float r = power<2>(2);
+    std::cout << "2^2 == " << r << std::endl;
+    if (r != 4)
+    {
+        return EXIT_FAILURE;
+    }
+
+    r = power<-2>(2);
+    std::cout << "2^(-2) == " << r << std::endl;
+    if (r != .25)
+    {
+        return EXIT_FAILURE;
+    }
+
+    r = cubic_root(27);
+    std::cout << "27^(1/3) == " << r << std::endl;
+    if (r != 3)
+    {
+        return EXIT_FAILURE;
+    }
+
+    if (in_range(3.141692f, 10.0f, 11.0f))
+        return EXIT_FAILURE;
+    else
+        return EXIT_SUCCESS;
 }
+

@@ -1,6 +1,6 @@
 /*
-arith_utils: A minimal library with arithmetic utilities.
-    Copyright (C) 2009  Daniel Gutson, FuDePAN
+factory: A minimal library for a generic factory.
+    Copyright (C) 2009  Daniel Gutson and Marcelo Caro, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -20,42 +20,48 @@ arith_utils: A minimal library with arithmetic utilities.
     This is an example file.
 */
 
+#include <string>
 #include <iostream>
 #include "mili/mili.h"
 
+using namespace mili;
+
+using std::string;
+using std::cout;
+
+struct Shape
+{
+    virtual void print_shape() const = 0;
+    virtual ~Shape() {}
+};
+
+class Circle : public Shape
+{
+    virtual void print_shape() const
+    {
+        cout << "a circle\n";
+    }
+};
+
+class Rectangle : public Shape
+{
+    virtual void print_shape() const
+    {
+        cout << "a rectangle\n";
+    }
+};
+
 int main()
 {
-    if (bchain(1) < 2 < 3)
-        std::cout << "1 < 2 < 3 -> TRUE" << std::endl;
+    Factory<string, Shape> shapes_factory;
 
-    int x(10);
-    if ((5 >= bchain(4) < 10) == x)
-        std::cout << "5 >= 4 < 10 == x -> TRUE" << std::endl;
+    shapes_factory.register_factory<Circle>("circle");
+    shapes_factory.register_factory<Rectangle>("rectangle");
+    Shape* s = shapes_factory.new_class("circle");
 
-    float r = power<2>(2);
-    std::cout << "2^2 == " << r << std::endl;
-    if (r != 4)
-    {
-        return EXIT_FAILURE;
-    }
+    s->print_shape();
 
-    r = power<-2>(2);
-    std::cout << "2^(-2) == " << r << std::endl;
-    if (r != .25)
-    {
-        return EXIT_FAILURE;
-    }
+    delete s;
 
-    r = cubic_root(27);
-    std::cout << "27^(1/3) == " << r << std::endl;
-    if (r != 3)
-    {
-        return EXIT_FAILURE;
-    }
-
-    if (in_range(3.141692f, 10.0f, 11.0f))
-        return EXIT_FAILURE;
-    else
-        return EXIT_SUCCESS;
+    return 0;
 }
-

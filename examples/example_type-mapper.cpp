@@ -23,6 +23,8 @@ type_mapper: A minimal library that implements type mappers.
 #include <vector>
 #include "mili/mili.h"
 
+using namespace mili;
+
 declare_type_mapper(TypeMapper);
 add_mapping(TypeMapper, char, int);
 add_mapping(TypeMapper, unsigned int, int);

@@ -1,6 +1,7 @@
 /*
-raii.h: A minimal library for generic RAII implementation
-    Copyright (C) 2011 Lucas Besso & Raul Striglio, UNRC
+promotion_disable.h: A minimalistic library to disable undesired
+    type promotions in C++.
+    Copyright (C) 2009, Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -15,31 +16,36 @@ raii.h: A minimal library for generic RAII implementation
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+    C++ Example.
 */
 
-
 #include "mili/mili.h"
-#include <iostream>
-#include <cstdio>
 
-class file
+using namespace mili;
+
+float f(Restrict<float> rf)
 {
+    return rf + 1.0f;
+}
 
-public:
-    file (std::string path): _file(std::fopen(path.c_str(),"w")){} 
-    void close(){fclose(_file);}
-    void write(std::string str) {std::fputs(str.c_str(), _file);}
- 
-private:
-    std::FILE* _file;
-};
+float g(Restrict<float, FloatingPoints> fp)
+{
+    return fp + 1.0f;
+}
+
+float h(Restrict<double, NotNarrowing> nn)
+{
+    return nn + 1.2;
+}
 
 int main()
 {
-    file fi("file");
-    RAII<file, &file::close> rs(fi);
-    fi.write("new line in the file");   
+    f(1.0f);
+    // f(1); error
+    g(1.0);
+    h(2.0);
 
     return 0;
 }

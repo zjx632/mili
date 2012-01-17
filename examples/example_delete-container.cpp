@@ -1,5 +1,5 @@
 /*
-loop_unrolling: A minimal library for TMP loop unrolling.
+delete_container: A minimal library for deleting the objects of a container of pointers.
     Copyright (C) 2009  Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
@@ -17,42 +17,35 @@ loop_unrolling: A minimal library for TMP loop unrolling.
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
 
-    This is an example file.
+    This is an example program.
 */
 
-#include <iostream>
+#include <vector>
 #include "mili/mili.h"
 
-using std::cout;
+using namespace mili;
 
-template <class T>
-struct BitCounter
+struct AnObject
 {
-    T value;
-    size_t ret;
-    BitCounter(T value) : value(value), ret(0) {}
-
-    void operator()()
-    {
-        ret += value & 1;
-        value >>= 1;
-    }
+    int i;
+    float f;
 };
-
-template <class T>
-inline size_t CountBits(T x)
-{
-    BitCounter<T> bc(x);
-    FOR<sizeof(T) * 8, BitCounter<T> >::iterate(bc);
-    return bc.ret;
-}
 
 int main()
 {
-    int i;
-    i = -1;
-    std::cout << CountBits(i) << std::endl;
+    std::vector<AnObject*> vec1;
+    auto_vector_delete_container<std::vector<char*> > vec2;
+
+    vec1.push_back(new AnObject);
+    vec1.push_back(new AnObject);
+    vec1.push_back(new AnObject);
+
+    vec2.push_back(new char[10]);
+    vec2.push_back(new char[10]);
+    vec2.push_back(new char[10]);
+
+    delete_container(vec1);
+    // vector_delete_container(vec2) is called when exiting
+
     return 0;
 }
-
-
