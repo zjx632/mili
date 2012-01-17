@@ -239,12 +239,12 @@ inline typename BitwiseEnumMapper<Enum, BitwiseEnumEnabler<Enum>::EnabledConvers
 }
 
 #define IMPLEMENT_BITWISE_OPERATOR(mili_bitwise_symbol, mili_bitwise_text)          \
-    IMPLEMENT_BITWISE_OPERATOR_CONST( mili_bitwise_symbol, mili_bitwise_text);      \
-    IMPLEMENT_BITWISE_OPERATOR_NONCONST( mili_bitwise_symbol, mili_bitwise_text);
+    IMPLEMENT_BITWISE_OPERATOR_CONST( mili_bitwise_symbol, mili_bitwise_text)       \
+    IMPLEMENT_BITWISE_OPERATOR_NONCONST( mili_bitwise_symbol, mili_bitwise_text) 
 
-IMPLEMENT_BITWISE_OPERATOR( | , Or);
-IMPLEMENT_BITWISE_OPERATOR(&, And);
-IMPLEMENT_BITWISE_OPERATOR( ^ , Xor);
+IMPLEMENT_BITWISE_OPERATOR( | , Or)
+IMPLEMENT_BITWISE_OPERATOR(&, And)
+IMPLEMENT_BITWISE_OPERATOR( ^ , Xor)
 
 #define BITWISE_ENUM_ENABLE(enumtype)   \
 template <>                             \
