@@ -79,31 +79,13 @@ struct A
         in >> o.id >> o.name >> o.a;
         return in;
     }
-};
 
-struct Z : public A
-{
-    float asd;
-    char d;
-
-    Z()
-        : A(), asd(0), d('0')
-    {}
-
-    Z(float Asd, char D)
-        : A(), asd(Asd), d(D)
-    {}
-
-    friend bostream& operator<<(bostream& out, const Z& o)
+    bool operator==(const A& o) const
     {
-        out << static_cast<const A&>(o)  << o.asd << o.d;
-        return out;
-    }
-
-    friend bistream& operator>>(bistream& in, Z& o)
-    {
-        in >> static_cast<A&>(o) >> o.asd >> o.d;
-        return in;
+        bool result(false);
+        if (id == o.id && name == o.name && a == o.a)
+            result = true;
+        return result;
     }
 };
 
@@ -143,29 +125,30 @@ TEST(BinaryStream, BSTREAMS_DEBUG_identifier_test)
 TEST(BinaryStream, BSTREAMS_DEBUG_typemismatch_test)
 {
     bostream bos;
-    A a;
-    Z z;
-
-    bos << a;
-    bistream bis(bos.str());
-
-    ASSERT_THROW(bis >> z, type_mismatch);
+    const int int_loaded = 3;
+    const char char_loaded[] = {'e', '4', 'f', 'r', 'y'};
 
     float float_loaded;
-    bos << 3;
-    bis.str(bos.str());
+    unsigned char uchar_loaded[5];
 
+    bos << int_loaded;
+    bistream bis(bos.str());
     ASSERT_THROW(bis >> float_loaded, type_mismatch);
+
+    bos.clear();
+    bos << char_loaded;
+    bis.str(bos.str());
+    ASSERT_THROW(bis >> uchar_loaded, type_mismatch);
 }
 
 TEST(BinaryStream, chainedValues_test)
 {
     bostream bos;
-    float f_original = 1.2;
-    int i_original = 3;
-    double d_original = 0.89;
-    A a_original(3, "pepe", 43);
-    bool b_original = true;
+    const float f_original = 1.2;
+    const int i_original = 3;
+    const double d_original = 0.89;
+    const A a_original(3, "pepe", 43);
+    const bool b_original = true;
 
     bos << f_original << i_original << d_original << a_original << b_original;
 
@@ -180,9 +163,7 @@ TEST(BinaryStream, chainedValues_test)
     ASSERT_EQ(f_original, f_loaded);
     ASSERT_EQ(i_original, i_loaded);
     ASSERT_EQ(d_original, d_loaded);
-    ASSERT_EQ(a_original.id, a_loaded.id);
-    ASSERT_EQ(a_original.name, a_loaded.name);
-    ASSERT_EQ(a_original.a, a_loaded.a);
+    ASSERT_EQ(a_original, a_loaded);
     ASSERT_EQ(b_original, b_loaded);
 }
 
@@ -191,8 +172,8 @@ TEST(BinaryStream, contaniers_test)
     bostream bos;
     std::vector<int> integers_original;
     std::set<float> set_original;
-    std::list<char> list_original();
-    double numbers_original[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    std::list<char> list_original;
+    const double numbers_original[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
     insert_into(integers_original, 6);
     insert_into(integers_original, 7);
