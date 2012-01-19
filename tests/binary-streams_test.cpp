@@ -32,6 +32,18 @@
 
 using namespace mili;
 
+template <typename T>
+void assertArrayEquals(const T& a1, const T& a2, unsigned int size)
+{
+    bool equals = true;
+    int i = 0;
+    while (i < size && equals)
+    {
+        equals = (a1[i] == a2[i]);
+        ++i;
+    }
+    ASSERT_TRUE(equals) << "Arrays not equals";
+}
 
 std::string get_TypeId(const std::string& s)
 {
@@ -67,9 +79,33 @@ struct A
         in >> o.id >> o.name >> o.a;
         return in;
     }
-
 };
 
+struct Z : public A
+{
+    float asd;
+    char d;
+
+    Z()
+        : A(), asd(0), d('0')
+    {}
+
+    Z(float Asd, char D)
+        : A(), asd(Asd), d(D)
+    {}
+
+    friend bostream& operator<<(bostream& out, const Z& o)
+    {
+        out << static_cast<const A&>(o)  << o.asd << o.d;
+        return out;
+    }
+
+    friend bistream& operator>>(bistream& in, Z& o)
+    {
+        in >> static_cast<A&>(o) >> o.asd >> o.d;
+        return in;
+    }
+};
 
 TEST(BinaryStream, BSTREAMS_DEBUG_identifier_test)
 {
@@ -104,12 +140,34 @@ TEST(BinaryStream, BSTREAMS_DEBUG_identifier_test)
     bos.clear();
 }
 
-TEST(BinaryStream, BSTREAMS_DEBUG_chainedValues_test)
+TEST(BinaryStream, BSTREAMS_DEBUG_typemismatch_test)
 {
     bostream bos;
-    A a_original(3, "pepe", 43);
+    A a;
+    Z z;
 
-    bos << 1.2f << 3 << double(0.89) << a_original << true;
+    bos << a;
+    bistream bis(bos.str());
+
+    ASSERT_THROW(bis >> z, type_mismatch);
+
+    float float_loaded;
+    bos << 3;
+    bis.str(bos.str());
+
+    ASSERT_THROW(bis >> float_loaded, type_mismatch);
+}
+
+TEST(BinaryStream, chainedValues_test)
+{
+    bostream bos;
+    float f_original = 1.2;
+    int i_original = 3;
+    double d_original = 0.89;
+    A a_original(3, "pepe", 43);
+    bool b_original = true;
+
+    bos << f_original << i_original << d_original << a_original << b_original;
 
     bistream bis(bos.str());
     float f_loaded;
@@ -119,55 +177,53 @@ TEST(BinaryStream, BSTREAMS_DEBUG_chainedValues_test)
     bool b_loaded;
     bis >> f_loaded >> i_loaded >> d_loaded >> a_loaded >> b_loaded;
 
-    ASSERT_EQ(1.2f, f_loaded);
-    ASSERT_EQ(3, i_loaded);
-    ASSERT_EQ(double(0.89), d_loaded);
-    ASSERT_EQ(3, a_loaded.id);
-    ASSERT_EQ("pepe", a_loaded.name);
-    ASSERT_EQ(43, a_loaded.a);
-    ASSERT_TRUE(b_loaded);
+    ASSERT_EQ(f_original, f_loaded);
+    ASSERT_EQ(i_original, i_loaded);
+    ASSERT_EQ(d_original, d_loaded);
+    ASSERT_EQ(a_original.id, a_loaded.id);
+    ASSERT_EQ(a_original.name, a_loaded.name);
+    ASSERT_EQ(a_original.a, a_loaded.a);
+    ASSERT_EQ(b_original, b_loaded);
 }
 
-TEST(BinaryStream, BSTREAMS_DEBUG_contaniers_test)
+TEST(BinaryStream, contaniers_test)
 {
     bostream bos;
-    std::vector<int> integers_original(16, -4);
-    std::set<unsigned> set_original;
-    std::list<char> list_original(4, 't');
+    std::vector<int> integers_original;
+    std::set<float> set_original;
+    std::list<char> list_original();
     double numbers_original[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-    set_original.insert(1000);
-    set_original.insert(100);
-    set_original.insert(10);
-    set_original.insert(1);
+    insert_into(integers_original, 6);
+    insert_into(integers_original, 7);
+    insert_into(integers_original, 8);
+    insert_into(integers_original, 9);
+    insert_into(integers_original, 0);
+    insert_into(integers_original, 1);
+    insert_into(set_original, 0.1f);
+    insert_into(set_original, 1.1f);
+    insert_into(set_original, 2.1f);
+    insert_into(set_original, 3.1f);
+    insert_into(set_original, 4.1f);
+    insert_into(list_original, 't');
+    insert_into(list_original, 'y');
+    insert_into(list_original, 'w');
+    insert_into(list_original, 'A');
 
     bos << integers_original << set_original << list_original << numbers_original;
 
     std::vector<int> integers_loaded;
-    std::set<unsigned> set_loaded;
+    std::set<float> set_loaded;
     std::list<char> list_loaded;
     double numbers_loaded[9];
     bistream bis(bos.str());
     bis >> integers_loaded >> set_loaded >> list_loaded >> numbers_loaded;
 
-    for (int i = 0; i < 16; ++i)
-    {
-        ASSERT_EQ(-4, integers_loaded[i]);
-    }
+    ASSERT_EQ(integers_original, integers_loaded);
 
-    std::set<unsigned>::iterator it = set_loaded.begin();
-    ASSERT_EQ(1, *it++);
-    ASSERT_EQ(10, *it++);
-    ASSERT_EQ(100, *it++);
-    ASSERT_EQ(1000, *it);
+    ASSERT_EQ(set_original, set_loaded);
 
-    for (std::list<char>::iterator it1 = list_loaded.begin(); it1 != list_loaded.end(); ++it1)
-    {
-        ASSERT_EQ('t', *it1);
-    }
+    ASSERT_EQ(list_original, list_loaded);
 
-    for (int i = 0; i < 9; ++i)
-    {
-        ASSERT_EQ(i + 1, numbers_loaded[i]);
-    }
+    assertArrayEquals(numbers_original, numbers_loaded, 9);
 }
