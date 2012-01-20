@@ -23,7 +23,6 @@ example_fast-list: An example that uses MiLi's fast lists.
 #include <iostream>
 #include "mili/mili.h"
 
-using namespace mili;
 using namespace std;
 
 typedef FastList<int, OptimizedShrinkOnRequestPolicy> IntList;

@@ -25,12 +25,13 @@
 #include <gmock/gmock.h>
 #include "mili/mili.h"
 
+using namespace std;
 using namespace mili;
 
 static void generate_file(const char* name)
 {
-    std::ofstream f(name);
-    std::set<float> v;
+    ofstream f(name);
+    set<float> v;
 
     for (int i = 0; i < 10; i++)
     {
@@ -39,14 +40,14 @@ static void generate_file(const char* name)
             insert_into(v, static_cast<float>(j));
 
         f << v; /* PROVIDED BY MiLi */
-        f << std::endl;
+        f << endl;
     }
 }
 
 static void load_file(const char* name)
 {
-    std::ifstream f(name);
-    std::vector<float> v;
+    ifstream f(name);
+    vector<float> v;
 
     unsigned int i = 0;
     while (f >> v)  /* PROVIDED BY MiLi */

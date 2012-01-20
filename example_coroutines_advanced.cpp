@@ -24,7 +24,6 @@ example_coroutines_advanced: An advanced example that uses coroutines.
 #include <set>
 #include "mili/mili.h"
 
-using namespace mili;
 using namespace std;
 
 // Example2: implementing an iterator for a tree walker.

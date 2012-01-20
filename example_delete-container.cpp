@@ -1,6 +1,5 @@
 /*
-compile_assert: A minimal library supporting compile time (static) assertions,
-    a la C++0x.
+delete_container: A minimal library for deleting the objects of a container of pointers.
     Copyright (C) 2009  Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
@@ -18,28 +17,33 @@ compile_assert: A minimal library supporting compile time (static) assertions,
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
 
-    This is an example file.
+    This is an example program.
 */
 
+#include <vector>
 #include "mili/mili.h"
 
-using namespace mili;
-
-generic_assert(sizeof(int) == 4);
-
-declare_static_assert(this_assertion_will_always_fail);
-declare_static_assert(pointers_not_allowed_assert);
-
-template <class T> struct MyType
+struct AnObject
 {
-    template_compile_assert(!template_is_pointer<T>::value, pointers_not_allowed_assert);
+    int i;
+    float f;
 };
 
 int main()
 {
-    compile_assert(sizeof(char) == 2, this_assertion_will_always_fail); // fails
+    std::vector<AnObject*> vec1;
+    auto_vector_delete_container<std::vector<char*> > vec2;
 
-    MyType<char*> mt1;  // fails
-    MyType<char>  mt2;  // OK
+    vec1.push_back(new AnObject);
+    vec1.push_back(new AnObject);
+    vec1.push_back(new AnObject);
+
+    vec2.push_back(new char[10]);
+    vec2.push_back(new char[10]);
+    vec2.push_back(new char[10]);
+
+    delete_container(vec1);
+    // vector_delete_container(vec2) is called when exiting
+
     return 0;
 }

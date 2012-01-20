@@ -19,15 +19,16 @@
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <string>
+#include <cstdio>
 #include "mili/mili.h"
 
 using namespace mili;
+using namespace std;
 
 class file
 {
 public:
-    void write(std::string /*str*/)
+    void write(string /*str*/)
     {}
     MOCK_METHOD0(close, void());
 };

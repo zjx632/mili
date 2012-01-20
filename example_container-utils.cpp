@@ -30,7 +30,6 @@ find_utils: A minimal library with generic find functions with exceptions.
 #include "mili/mili.h"
 
 using namespace std;
-using namespace mili;
 
 static void test_autonomous_iterators();
 template<class T>

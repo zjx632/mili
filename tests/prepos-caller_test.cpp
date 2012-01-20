@@ -22,6 +22,7 @@
 #include "mili/prepos_printer.h"
 #include "mili/prepos_mutex.h"
 
+using namespace std;
 using namespace mili;
 
 class PrePosMock
