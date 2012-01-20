@@ -6,8 +6,6 @@
 
 #include "mili/mili.h"
 
-using namespace mili;
-
 const unsigned long GOAL = 1e9; //find 1000 million cases
 
 class Time

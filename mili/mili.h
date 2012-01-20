@@ -23,8 +23,7 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #ifndef MILI_H
 #define MILI_H
 
-//deprecated: will desapear in next version
-#ifndef NO_MILI_NAMESPACE
+#ifdef MILI_NAMESPACE
 #define NAMESPACE_BEGIN namespace mili {
 #define NAMESPACE_END }
 #else

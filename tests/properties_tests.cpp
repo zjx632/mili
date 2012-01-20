@@ -25,7 +25,7 @@
 
 using namespace mili;
 
-class Mock
+class Mock 
 {
 public:
     MOCK_METHOD1(mocked_set_celcius, void(float));

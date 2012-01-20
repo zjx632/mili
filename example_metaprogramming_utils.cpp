@@ -1,7 +1,6 @@
+
 /*
-promotion_disable.h: A minimalistic library to disable undesired
-    type promotions in C++.
-    Copyright (C) 2009, Daniel Gutson, FuDePAN
+    Copyright (C) 2011 Hugo Arregui, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -16,36 +15,19 @@ promotion_disable.h: A minimalistic library to disable undesired
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
 
-    C++ Example.
+    This is an example file.
 */
 
+#include <iostream>
 #include "mili/mili.h"
-
-using namespace mili;
-
-float f(Restrict<float> rf)
-{
-    return rf + 1.0f;
-}
-
-float g(Restrict<float, FloatingPoints> fp)
-{
-    return fp + 1.0f;
-}
-
-float h(Restrict<double, NotNarrowing> nn)
-{
-    return nn + 1.2;
-}
 
 int main()
 {
-    f(1.0f);
-    // f(1); error
-    g(1.0);
-    h(2.0);
-
+    Select<true, int, float>::result n = 1;
+    std::cout << n << std::endl;
     return 0;
 }
+
+

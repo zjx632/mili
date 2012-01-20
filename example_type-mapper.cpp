@@ -1,6 +1,6 @@
 /*
-example_random: A minimal library for generating random numbers.
-    Copyright (C) 2010  Daniel Gutson, FuDePAN
+type_mapper: A minimal library that implements type mappers.
+    Copyright (C) 2009  Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -20,17 +20,26 @@ example_random: A minimal library for generating random numbers.
     This is an example file.
 */
 
-#include <iostream>
+#include <vector>
 #include "mili/mili.h"
 
-using namespace mili;
+declare_type_mapper(TypeMapper);
+add_mapping(TypeMapper, char, int);
+add_mapping(TypeMapper, unsigned int, int);
+add_mapping(TypeMapper, short int, int);
+add_mapping_for_pointers(TypeMapper, int);
+
+template <class T>
+class MyVector : public std::vector<map_type(TypeMapper, T)>
+{};
 
 int main()
 {
-    Randomizer<float> rnd(10.0f, 11.0f);
+    MyVector<short int> v1;
+    MyVector<float> v2;
 
-    std::cout << rnd.get() << std::endl;
+    v1.push_back(1);
+    v2.push_back(1.0f);
 
     return 0;
 }
-

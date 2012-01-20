@@ -1,6 +1,6 @@
 /*
-raii.h: A minimal library for generic RAII implementation
-    Copyright (C) 2011 Lucas Besso & Raul Striglio, UNRC
+invariants: A minimal library for checking invariants.
+    Copyright (C) 2009  Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -16,38 +16,47 @@ raii.h: A minimal library for generic RAII implementation
 
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
+
+    This is an example file.
 */
 
-
 #include <iostream>
-#include <cstdio>
 #include "mili/mili.h"
 
-using namespace mili;
+using std::cout;
 
-class file
+invariant::NeverNull<const char> get_message(invariant::InRange < int, -1, 1 > number)
 {
+    return "Hello World\n";
+}
 
-public:
-    file(std::string path): _file(std::fopen(path.c_str(), "w")) {}
-    void close()
+struct AClass
+{
+    int x;
+    int y;
+    void setxy(int newx, int newy)
     {
-        fclose(_file);
+        x = newx;
+        y = newy;
     }
-    void write(std::string str)
-    {
-        std::fputs(str.c_str(), _file);
-    }
-
-private:
-    std::FILE* _file;
 };
+
+bool AClassInvariant(const AClass& aclass)
+{
+    return aclass.x + aclass.y > 0;
+};
+
+typedef InvariantClass<AClass, AClassInvariant> AClass_inv;
 
 int main()
 {
-    file fi("file");
-    RAII<file, &file::close> rs(fi);
-    fi.write("new line in the file");
+    const char* msg = get_message(-1);
+    cout << msg;
+
+    AClass aclass;
+    AClass_inv inv(aclass);
+    inv->setxy(3, 4);
+    cout << inv->x << std::endl;
 
     return 0;
 }

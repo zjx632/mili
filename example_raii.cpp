@@ -1,7 +1,6 @@
 /*
-template_info: A minimal library to obtain type information of a template
-    parameter.
-    Copyright (C) 2009  Daniel Gutson, FuDePAN
+raii.h: A minimal library for generic RAII implementation
+    Copyright (C) 2011 Lucas Besso & Raul Striglio, UNRC
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -17,25 +16,30 @@ template_info: A minimal library to obtain type information of a template
 
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
-
-    This is an example file.
 */
 
-#include <iostream>
-#include <vector>
-#include <set>
+
 #include "mili/mili.h"
+#include <iostream>
+#include <cstdio>
 
-using namespace mili;
+class file
+{
 
-struct S {};
+public:
+    file (std::string path): _file(std::fopen(path.c_str(),"w")){} 
+    void close(){fclose(_file);}
+    void write(std::string str) {std::fputs(str.c_str(), _file);}
+ 
+private:
+    std::FILE* _file;
+};
 
 int main()
 {
-    std::cout << bool(template_info<S>::is_native) << std::endl;
-    std::cout << bool(template_info<char>::is_native) << std::endl;
-    std::cout << bool(template_info<int>::is_same_size<long int>::value) << std::endl;
-    std::cout << bool(template_info<std::vector<int> >::is_container) << std::endl;
-    std::cout << bool(template_info<std::set<int> >::is_container) << std::endl;
+    file fi("file");
+    RAII<file, &file::close> rs(fi);
+    fi.write("new line in the file");   
+
     return 0;
 }

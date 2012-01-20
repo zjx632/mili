@@ -1,6 +1,5 @@
 /*
     Copyright (C) 2011 Hugo Arregui FuDePAN
-                  2011 Adrian Remonda FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -20,10 +19,8 @@
     This is a test file.
 */
 
-#include <iostream>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-
 #include "mili/mili.h"
 
 using namespace mili;
@@ -37,13 +34,6 @@ enum MasksSet1
     kThree  = 4,
     kFour   = 8
 };
-BITWISE_ENUM_ENABLE(MasksSet1)
-
-enum MasksSet2
-{
-    kEight   = 8,
-    kSixteen = 16
-};
 
 typedef bitwise_enum<MasksSet1> M1;
 
@@ -56,9 +46,4 @@ TEST(BitwiseEnumsTest, test)
     ASSERT_FALSE(b.has_bits(kTwo));
     ASSERT_FALSE(b.has_bits(kThree));
     ASSERT_TRUE(b.has_bits(kFour));
-
-    ASSERT_TRUE(kFour | kEight);
-    ASSERT_TRUE(kSixteen | kEight);
-
-    ASSERT_EQ(0x24u, b << 2);
 }

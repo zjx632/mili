@@ -22,7 +22,6 @@
 #ifndef TEMPLATE_INFO_H
 #define TEMPLATE_INFO_H
 
-#include <string>
 #include <vector>
 #include <list>
 #include <set>
