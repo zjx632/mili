@@ -22,11 +22,9 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <map>
-#include <iostream>
 #include "mili/mili.h"
 
 using namespace mili;
-using namespace std;
 
 TEST(StringUtilsTest, lstring_test)
 {
@@ -36,7 +34,7 @@ TEST(StringUtilsTest, lstring_test)
     ASSERT_TRUE(ls[2] == 'L');
     ASSERT_TRUE(ls == "HELLO");
 
-    map<lstring, int> m;
+    std::map<lstring, int> m;
     m["Hello"] = 3;
     m["Goodbye"] = 5;
     ASSERT_EQ(3, m["hELLo"]);

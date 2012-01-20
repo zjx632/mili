@@ -38,6 +38,8 @@ Version 17  UNRELEASED
     * Added NonCopyable
     * Fixed Generic Exceptions bug when MILI_NAMESPACE is used
     * Adapted UniqueRanker to support incomparable elements 
+    * Removing MILI_NAMESPACE flag, adding NO_MILI_NAMESPACE (deprecated)
+    * Fixed the overloading an operator with templates in global namespace topic
 
 Version 16
 ============

@@ -1,6 +1,6 @@
 /*
-invariants: A minimal library for checking invariants.
-    Copyright (C) 2009  Daniel Gutson, FuDePAN
+raii.h: A minimal library for generic RAII implementation
+    Copyright (C) 2011 Lucas Besso & Raul Striglio, UNRC
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -16,47 +16,38 @@ invariants: A minimal library for checking invariants.
 
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
-
-    This is an example file.
 */
 
+
 #include <iostream>
+#include <cstdio>
 #include "mili/mili.h"
 
-using std::cout;
+using namespace mili;
 
-invariant::NeverNull<const char> get_message(invariant::InRange < int, -1, 1 > number)
+class file
 {
-    return "Hello World\n";
-}
 
-struct AClass
-{
-    int x;
-    int y;
-    void setxy(int newx, int newy)
+public:
+    file(std::string path): _file(std::fopen(path.c_str(), "w")) {}
+    void close()
     {
-        x = newx;
-        y = newy;
+        fclose(_file);
     }
-};
+    void write(std::string str)
+    {
+        std::fputs(str.c_str(), _file);
+    }
 
-bool AClassInvariant(const AClass& aclass)
-{
-    return aclass.x + aclass.y > 0;
+private:
+    std::FILE* _file;
 };
-
-typedef InvariantClass<AClass, AClassInvariant> AClass_inv;
 
 int main()
 {
-    const char* msg = get_message(-1);
-    cout << msg;
-
-    AClass aclass;
-    AClass_inv inv(aclass);
-    inv->setxy(3, 4);
-    cout << inv->x << std::endl;
+    file fi("file");
+    RAII<file, &file::close> rs(fi);
+    fi.write("new line in the file");
 
     return 0;
 }

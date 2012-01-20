@@ -22,18 +22,15 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <string>
-#include <iostream>
 #include <vector>
-#include <string>
 #include <queue>
 #include "mili/mili.h"
 
-using namespace std;
 using namespace mili;
 
 TEST(ContainerUtilsTest, vector)
 {
-    vector<int> v;
+    std::vector<int> v;
     v.push_back(1);
     ASSERT_EQ(1, find(v, 1));
     ASSERT_FALSE(contains(v, 2));
@@ -49,7 +46,7 @@ struct MapTest: public ::testing::Test
         m["hola"] = "adios";
         m["buenas"] = "adios";
     }
-    map<string, string> m;
+    std::map<std::string, std::string> m;
 };
 
 TEST_F(MapTest, contains)
@@ -79,7 +76,7 @@ TEST_F(MapTest, not_found)
 
 TEST(ContainerUtilsTest, queue)
 {
-    queue<int> myqueue;
+    std::queue<int> myqueue;
     insert_into(myqueue, 100);
     insert_into(myqueue, 100);
 }
