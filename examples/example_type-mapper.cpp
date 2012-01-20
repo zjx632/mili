@@ -1,5 +1,5 @@
 /*
-arith_utils: A minimal library with arithmetic utilities.
+type_mapper: A minimal library that implements type mappers.
     Copyright (C) 2009  Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
@@ -20,42 +20,28 @@ arith_utils: A minimal library with arithmetic utilities.
     This is an example file.
 */
 
-#include <iostream>
+#include <vector>
 #include "mili/mili.h"
+
+using namespace mili;
+
+declare_type_mapper(TypeMapper);
+add_mapping(TypeMapper, char, int);
+add_mapping(TypeMapper, unsigned int, int);
+add_mapping(TypeMapper, short int, int);
+add_mapping_for_pointers(TypeMapper, int);
+
+template <class T>
+class MyVector : public std::vector<map_type(TypeMapper, T)>
+{};
 
 int main()
 {
-    if (bchain(1) < 2 < 3)
-        std::cout << "1 < 2 < 3 -> TRUE" << std::endl;
+    MyVector<short int> v1;
+    MyVector<float> v2;
 
-    int x(10);
-    if ((5 >= bchain(4) < 10) == x)
-        std::cout << "5 >= 4 < 10 == x -> TRUE" << std::endl;
+    v1.push_back(1);
+    v2.push_back(1.0f);
 
-    float r = power<2>(2);
-    std::cout << "2^2 == " << r << std::endl;
-    if (r != 4)
-    {
-        return EXIT_FAILURE;
-    }
-
-    r = power<-2>(2);
-    std::cout << "2^(-2) == " << r << std::endl;
-    if (r != .25)
-    {
-        return EXIT_FAILURE;
-    }
-
-    r = cubic_root(27);
-    std::cout << "27^(1/3) == " << r << std::endl;
-    if (r != 3)
-    {
-        return EXIT_FAILURE;
-    }
-
-    if (in_range(3.141692f, 10.0f, 11.0f))
-        return EXIT_FAILURE;
-    else
-        return EXIT_SUCCESS;
+    return 0;
 }
-

@@ -20,9 +20,11 @@ properties: A minimal library that implements object properties.
     This is an example file.
 */
 
-#include "mili/mili.h"
-#include <iostream>
 
+#include <iostream>
+#include "mili/mili.h"
+
+using namespace mili;
 using namespace std;
 
 class TemperatureSensor

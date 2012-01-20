@@ -1,6 +1,7 @@
 /*
 bitwise_enums: A minimal library for doing type-safe bitwise operations.
     Copyright (C) 2008, 2009  Daniel Gutson, FuDePAN
+                  2011 Adrian Remonda FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -20,8 +21,6 @@ bitwise_enums: A minimal library for doing type-safe bitwise operations.
 
 #ifndef BITWISE_ENUMS_H
 #define BITWISE_ENUMS_H
-
-NAMESPACE_BEGIN
 
 template <class Enum>
 class bitwise_enum
@@ -158,45 +157,100 @@ public:
     }
 };
 
-
-//Nonmember operators:
+// Bitwise Enum Enabler
 template <class Enum>
-inline bitwise_enum<Enum> operator | (Enum value, const bitwise_enum<Enum>& e)
+struct BitwiseEnumEnabler
 {
-    return e | value;
+    enum { EnabledConversion = false };
+};
+
+// Mapper for built-in types
+template <class Enum, bool EnabledConversion>
+struct BitwiseEnumMapper
+{
+    typedef int ReturnType;
+    static int operationOr(Enum e1, Enum e2)
+    {
+        return int(e1) | int(e2);
+    }
+
+    static int operationAnd(Enum e1, Enum e2)
+    {
+        return int(e1) & int(e2);
+    }
+
+    static int operationXor(Enum e1, Enum e2)
+    {
+        return int(e1) ^ int(e2);
+    }
+};
+
+// Mapper for bitwise enums
+template <class Enum>
+struct BitwiseEnumMapper<Enum, true>
+{
+    typedef bitwise_enum<Enum> ReturnType;
+
+    static bitwise_enum<Enum> operationOrConst(Enum value, const bitwise_enum<Enum>& e)
+    {
+        return bitwise_enum<Enum>(value) | e;
+    }
+
+    static bitwise_enum<Enum> operationAndConst(Enum value, const bitwise_enum<Enum>& e)
+    {
+        return bitwise_enum<Enum>(value) & e;
+    }
+
+    static bitwise_enum<Enum> operationXorConst(Enum value, const bitwise_enum<Enum>& e)
+    {
+        return bitwise_enum<Enum>(value) ^ e;
+    }
+
+    static bitwise_enum<Enum> operationOr(Enum a, Enum b)
+    {
+        return bitwise_enum<Enum>(a) | bitwise_enum<Enum>(b);
+    }
+
+    static bitwise_enum<Enum> operationAnd(Enum a, Enum b)
+    {
+        return bitwise_enum<Enum>(a) & bitwise_enum<Enum>(b);
+    }
+
+    static bitwise_enum<Enum> operationXor(Enum a, Enum b)
+    {
+        return bitwise_enum<Enum>(a) ^ bitwise_enum<Enum>(b);
+    }
+};
+
+#define IMPLEMENT_BITWISE_OPERATOR_CONST(mili_bitwise_symbol, mili_bitwise_text)                                                \
+template <class Enum>                                                                                                           \
+inline typename BitwiseEnumMapper<Enum, BitwiseEnumEnabler<Enum>::EnabledConversion>::ReturnType operator mili_bitwise_symbol   \
+            (Enum value, const bitwise_enum<Enum>& e)                                                                           \
+{                                                                                                                               \
+    return BitwiseEnumMapper<Enum, BitwiseEnumEnabler<Enum>::EnabledConversion>::operation##mili_bitwise_text##Const(value, e); \
 }
 
-template <class Enum>
-inline bitwise_enum<Enum> operator & (Enum value, const bitwise_enum<Enum>& e)
-{
-    return e & value;
+#define IMPLEMENT_BITWISE_OPERATOR_NONCONST(mili_bitwise_symbol, mili_bitwise_text)                                             \
+template <class Enum>                                                                                                           \
+inline typename BitwiseEnumMapper<Enum, BitwiseEnumEnabler<Enum>::EnabledConversion>::ReturnType operator mili_bitwise_symbol   \
+            (Enum a, Enum b)                                                                                                    \
+{                                                                                                                               \
+    return BitwiseEnumMapper<Enum, BitwiseEnumEnabler<Enum>::EnabledConversion>::operation##mili_bitwise_text (a, b);           \
 }
 
-template <class Enum>
-inline bitwise_enum<Enum> operator ^(Enum value, const bitwise_enum<Enum>& e)
-{
-    return e ^ value;
-}
+#define IMPLEMENT_BITWISE_OPERATOR(mili_bitwise_symbol, mili_bitwise_text)          \
+    IMPLEMENT_BITWISE_OPERATOR_CONST( mili_bitwise_symbol, mili_bitwise_text)       \
+    IMPLEMENT_BITWISE_OPERATOR_NONCONST( mili_bitwise_symbol, mili_bitwise_text) 
 
+IMPLEMENT_BITWISE_OPERATOR( | , Or)
+IMPLEMENT_BITWISE_OPERATOR(&, And)
+IMPLEMENT_BITWISE_OPERATOR( ^ , Xor)
 
-template <class Enum>
-inline bitwise_enum<Enum> operator | (Enum a, Enum b)
-{
-    return bitwise_enum<Enum>(a) | bitwise_enum<Enum>(b);
-}
-
-template <class Enum>
-inline bitwise_enum<Enum> operator & (Enum a, Enum b)
-{
-    return bitwise_enum<Enum>(a) & bitwise_enum<Enum>(b);
-}
-
-template <class Enum>
-inline bitwise_enum<Enum> operator ^(Enum a, Enum b)
-{
-    return bitwise_enum<Enum>(a) ^ bitwise_enum<Enum>(b);
-}
-
-NAMESPACE_END
-
+#define BITWISE_ENUM_ENABLE(enumtype)   \
+template <>                             \
+struct BitwiseEnumEnabler<enumtype>     \
+{                                       \
+    enum { EnabledConversion = true };  \
+};                                      \
+ 
 #endif

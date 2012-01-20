@@ -1,6 +1,6 @@
 /*
-bitwise_enums: A minimal library for doing type-safe bitwise operations.
-    Copyright (C) 2008, 2009  Daniel Gutson, FuDePAN
+invariants: A minimal library for checking invariants.
+    Copyright (C) 2009  Daniel Gutson, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -17,39 +17,47 @@ bitwise_enums: A minimal library for doing type-safe bitwise operations.
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
 
-    Example source file.
+    This is an example file.
 */
 
 #include <iostream>
-using std::cout;
-
 #include "mili/mili.h"
 
-enum MasksSet1
+using namespace mili;
+using std::cout;
+
+invariant::NeverNull<const char> get_message(invariant::InRange < int, -1, 1 > number)
 {
-    kZero   = 0,
-    kOne    = 1,
-    kTwo    = 2,
-    kThree  = 4,
-    kFour   = 8
+    return "Hello World\n";
+}
+
+struct AClass
+{
+    int x;
+    int y;
+    void setxy(int newx, int newy)
+    {
+        x = newx;
+        y = newy;
+    }
 };
 
-typedef bitwise_enum<MasksSet1> M1;
-
-void show_bits(M1 b)
+bool AClassInvariant(const AClass& aclass)
 {
-    if (b.has_bits(kZero))  cout << "kZero  turned on\n";
-    if (b.has_bits(kOne))   cout << "kOne   turned on\n";
-    if (b.has_bits(kTwo))   cout << "kTwo   turned on\n";
-    if (b.has_bits(kThree)) cout << "kThree turned on\n";
-    if (b.has_bits(kFour))  cout << "kFour  turned on\n";
-}
+    return aclass.x + aclass.y > 0;
+};
+
+typedef InvariantClass<AClass, AClassInvariant> AClass_inv;
 
 int main()
 {
-    show_bits(kOne | kFour);
+    const char* msg = get_message(-1);
+    cout << msg;
+
+    AClass aclass;
+    AClass_inv inv(aclass);
+    inv->setxy(3, 4);
+    cout << inv->x << std::endl;
 
     return 0;
 }
-
-

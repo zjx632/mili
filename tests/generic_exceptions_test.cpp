@@ -1,7 +1,5 @@
 /*
-compile_assert: A minimal library supporting compile time (static) assertions,
-    a la C++0x.
-    Copyright (C) 2009  Daniel Gutson, FuDePAN
+    Copyright (C) 2012 Hugo Arregui, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -18,26 +16,22 @@ compile_assert: A minimal library supporting compile time (static) assertions,
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
 
-    This is an example file.
+    This is a test file.
 */
 
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include "mili/mili.h"
 
-generic_assert(sizeof(int) == 4);
+class LocationExceptionHierarchy {};
 
-declare_static_assert(this_assertion_will_always_fail);
-declare_static_assert(pointers_not_allowed_assert);
+typedef mili::GenericException<LocationExceptionHierarchy> LocationException;
 
-template <class T> struct MyType
+DEFINE_SPECIFIC_EXCEPTION_TEXT(InvalidLocation, LocationExceptionHierarchy, "The location is not defined");
+
+TEST(GenericException, test)
 {
-    template_compile_assert(!template_is_pointer<T>::value, pointers_not_allowed_assert);
-};
-
-int main()
-{
-    compile_assert(sizeof(char) == 2, this_assertion_will_always_fail); // fails
-
-    MyType<char*> mt1;  // fails
-    MyType<char>  mt2;  // OK
-    return 0;
+    InvalidLocation l;
+    ASSERT_EQ(std::string("The location is not defined"), std::string(l.what()));
 }
+

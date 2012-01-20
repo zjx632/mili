@@ -1,6 +1,6 @@
 /*
-example_random: A minimal library for generating random numbers.
-    Copyright (C) 2010  Daniel Gutson, FuDePAN
+factory: A minimal library for a generic factory.
+    Copyright (C) 2009  Daniel Gutson and Marcelo Caro, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -20,15 +20,48 @@ example_random: A minimal library for generating random numbers.
     This is an example file.
 */
 
+#include <string>
 #include <iostream>
 #include "mili/mili.h"
 
+using namespace mili;
+
+using std::string;
+using std::cout;
+
+struct Shape
+{
+    virtual void print_shape() const = 0;
+    virtual ~Shape() {}
+};
+
+class Circle : public Shape
+{
+    virtual void print_shape() const
+    {
+        cout << "a circle\n";
+    }
+};
+
+class Rectangle : public Shape
+{
+    virtual void print_shape() const
+    {
+        cout << "a rectangle\n";
+    }
+};
+
 int main()
 {
-    Randomizer<float> rnd(10.0f, 11.0f);
+    Factory<string, Shape> shapes_factory;
 
-    std::cout << rnd.get() << std::endl;
+    shapes_factory.register_factory<Circle>("circle");
+    shapes_factory.register_factory<Rectangle>("rectangle");
+    Shape* s = shapes_factory.new_class("circle");
+
+    s->print_shape();
+
+    delete s;
 
     return 0;
 }
-

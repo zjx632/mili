@@ -22,7 +22,6 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <vector>
-#include <iostream>
 #include "mili/mili.h"
 
 using namespace mili;

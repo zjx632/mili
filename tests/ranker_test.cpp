@@ -23,7 +23,7 @@
 #include <gmock/gmock.h>
 #include "mili/mili.h"
 
-using namespace std;
+using std::string;
 using namespace mili;
 
 struct Player
@@ -31,9 +31,9 @@ struct Player
     string name;
     float  score;
 
-    Player(string name, float score) : 
-        name(name), 
-        score(score)
+    Player(string name, float score)
+        : name(name),
+          score(score)
     {}
 };
 
@@ -145,8 +145,8 @@ TEST(RankerTest, test)
 //RankerLineal
 struct PlayerLineal : Player
 {
-    PlayerLineal(const string& name, float score) : 
-        Player(name, score)
+    PlayerLineal(const string& name, float score)
+        : Player(name, score)
     {}
 
     bool operator==(const Player& aPlayer) const
@@ -172,10 +172,10 @@ TEST(UniqueRankerLinealTest, test)
 
     CAutonomousIterator<PlayersRankingLineal> it(UR);
     ASSERT_TRUE(isSorted<PlayersRankingLineal>(it));
-    
+
     ASSERT_EQ("Umpa lumpa F", UR.top().name);
     ASSERT_EQ("Umpa lumpa C", UR.bottom().name);
-    
+
     UR.remove(PlayerLineal("Umpa lumpa E", .6));
     CAutonomousIterator<PlayersRankingLineal> it2(UR);
     ASSERT_TRUE(isSorted<PlayersRankingLineal>(it2));
