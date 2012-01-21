@@ -23,7 +23,6 @@
 #include <iostream>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-
 #include "mili/mili.h"
 
 using namespace mili;

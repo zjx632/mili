@@ -22,6 +22,8 @@ bitwise_enums: A minimal library for doing type-safe bitwise operations.
 #ifndef BITWISE_ENUMS_H
 #define BITWISE_ENUMS_H
 
+NAMESPACE_BEGIN
+
 template <class Enum>
 class bitwise_enum
 {
@@ -247,10 +249,14 @@ IMPLEMENT_BITWISE_OPERATOR(&, And)
 IMPLEMENT_BITWISE_OPERATOR( ^ , Xor)
 
 #define BITWISE_ENUM_ENABLE(enumtype)   \
+namespace mili{                         \
 template <>                             \
 struct BitwiseEnumEnabler<enumtype>     \
 {                                       \
     enum { EnabledConversion = true };  \
 };                                      \
- 
+}                                       \
+
+NAMESPACE_END
+
 #endif
