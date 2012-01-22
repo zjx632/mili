@@ -249,13 +249,11 @@ IMPLEMENT_BITWISE_OPERATOR(&, And)
 IMPLEMENT_BITWISE_OPERATOR( ^ , Xor)
 
 #define BITWISE_ENUM_ENABLE(enumtype)   \
-namespace mili{                         \
 template <>                             \
 struct BitwiseEnumEnabler<enumtype>     \
 {                                       \
     enum { EnabledConversion = true };  \
 };                                      \
-}                                       \
 
 NAMESPACE_END
 
