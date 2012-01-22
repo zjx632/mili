@@ -67,7 +67,11 @@ DEFINE_SPECIFIC_EXCEPTION_TEXT(skip_excess,
 DEFINE_SPECIFIC_EXCEPTION_TEXT(type_too_large,
                                BstreamExceptionHierarchy,
                                "The string can't be read from the stream.");
-
+                               
+DEFINE_SPECIFIC_EXCEPTION_TEXT(type_mismatch,
+                               BstreamExceptionHierarchy,
+                               "Types of input and output streams mismatch.");
+                                                              
 /**
  * Output stream serialization. This class provides stream functionality to serialize
  * objects in a way similar to that of std::cout or std::ostringstream.
@@ -220,8 +224,10 @@ public:
         std::string name  = _s.substr(_pos, sz);
         _pos += sz;
         if (s != name)
+        {
             std::cerr << s << " | " << name << std::endl;
-        assert(s == name);
+            throw type_mismatch();
+        }
 #endif
 
         _extract_helper<T, template_info<T>::is_container >::call(this, x);
