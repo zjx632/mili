@@ -73,7 +73,7 @@ static void generate_file_with_separator(const char* name, char sep)
     std::ofstream f(name);
     std::set<float> v;
 
-    _Separator< std::set<float> > s = Separator(v, sep);
+    _Separator< std::set<float> > s(v,sep);
 
     for (int i = 0; i < 10; i++)
     {
