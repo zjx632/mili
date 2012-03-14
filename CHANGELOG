@@ -40,6 +40,7 @@ Version 17  UNRELEASED
     * Adapted UniqueRanker to support incomparable elements 
     * Removing MILI_NAMESPACE flag, adding NO_MILI_NAMESPACE (deprecated)
     * Fixed the overloading an operator with templates in global namespace topic
+    * Removed BSTREAMS_DEBUG guard and added policies classes
 
 Version 16
 ============
