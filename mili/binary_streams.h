@@ -1,7 +1,8 @@
 /*
 binary_streams: A minimal library supporting encoding of different data
                 types in a single binary stream.
-    Copyright (C) 2009, 2010  Guillermo Biset, FuDePAN
+    Copyright (C) 2009, 2010  Guillermo Biset,
+                  2012 Matias Tripode, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -22,21 +23,19 @@ binary_streams: A minimal library supporting encoding of different data
 #ifndef BINARY_STREAMS_H
 #define BINARY_STREAMS_H
 
-// #define BSTREAMS_DEBUG //to enable type checking.
 
 #include <string>
 #include <assert.h>
 #include <stdint.h>
 #include <stdexcept>
+#include <typeinfo>
 
 #include "compile_assert.h"
 #include "generic_exception.h"
 #include "template_info.h"
 #include "container_utils.h"
 
-#ifdef BSTREAMS_DEBUG
-#   include <typeinfo>
-#endif
+
 
 NAMESPACE_BEGIN
 
@@ -67,11 +66,75 @@ DEFINE_SPECIFIC_EXCEPTION_TEXT(skip_excess,
 DEFINE_SPECIFIC_EXCEPTION_TEXT(type_too_large,
                                BstreamExceptionHierarchy,
                                "The string can't be read from the stream.");
-                               
+
 DEFINE_SPECIFIC_EXCEPTION_TEXT(type_mismatch,
                                BstreamExceptionHierarchy,
                                "Types of input and output streams mismatch.");
-                                                              
+
+
+/*******************************************************************************
+ * DEBUGGING POLICY.
+ ******************************************************************************/
+
+/**
+ * DebugPolicyBostream enables debugging info for bostream
+ * @param T : Type of the object/value to be written into bostream
+ */
+template <typename T>
+struct DebugPolicyBostream
+{
+    static void on_debug(std::string& _s)
+    {
+        const std::string s(typeid(T).name());
+        const uint32_t sz(s.size());
+        _s.append(reinterpret_cast<const char*>(&sz), sizeof(uint32_t));
+        _s += s;
+    }
+};
+
+/**
+ * DebugPolicyBistream enables debugging info for bistream
+ * @param T : Type of the object/value to be read from bistream
+ */
+template <typename T>
+struct DebugPolicyBistream
+{
+    static void on_debug(uint32_t& _pos, std::string& _s)
+    {
+        std::string s(typeid(T).name());
+        uint32_t sz;
+        _pos += _s.copy(reinterpret_cast<char*>(&sz), sizeof(uint32_t), _pos);
+        std::string name  = _s.substr(_pos, sz);
+        _pos += sz;
+        if (s != name)
+        {
+            std::cerr << s << " | " << name << std::endl;
+            throw type_mismatch();
+        }
+    }
+};
+
+
+/**
+ * NoDebugPolicyBostream makes not debugging info for bostream
+ * @param T : Type of the object/value to be written to bostream
+ */
+template <typename T>
+struct NoDebugPolicyBostream
+{
+    static void on_debug(std::string&) {}
+};
+
+/**
+ * NoDebugPolicyBistream makes not debugging info for bistream
+ * @param T : Type of the object/value to be read from bistream
+ */
+template <typename T>
+struct NoDebugPolicyBistream
+{
+    static void on_debug(uint32_t&, std::string&){}
+};
+
 /**
  * Output stream serialization. This class provides stream functionality to serialize
  * objects in a way similar to that of std::cout or std::ostringstream.
@@ -79,12 +142,41 @@ DEFINE_SPECIFIC_EXCEPTION_TEXT(type_mismatch,
  * An extensive example of its usage can be seen in:
  *    http://code.google.com/p/mili/source/browse/trunk/example_binary-streams.cpp
  */
+
+/**
+* @param DebuggingPolicy : Policy for debugging, by default no debugging policy is set
+*/
+template < template <class> class DebuggingPolicy = NoDebugPolicyBostream >
 class bostream
 {
-    template<class T, bool IsContainer> struct _inserter_helper;
+    template<class T,  bool IsContainer> struct _inserter_helper;
 
-    template<class T, bool IsContainer> friend struct _inserter_helper;
+    template<class T,  bool IsContainer> friend struct _inserter_helper;
 
+
+    template <class T>
+    struct _inserter_helper<T, false>
+    {
+        static void call(bostream* bos, const T& x)
+        {
+            bos->_s.append(reinterpret_cast<const char*>(&x), sizeof(T));
+        }
+    };
+
+    template <class T>
+    struct _inserter_helper<T, true>
+    {
+        static void call(bostream* bos, const T& cont)
+        {
+            const uint32_t size(cont.size());
+            (*bos) << size;
+
+            typename T::const_iterator it;
+
+            for (it = cont.begin(); it != cont.end(); ++it)
+                (*bos) << *it;
+        }
+    };
 public:
     /**
      * Standard constructor.
@@ -105,12 +197,7 @@ public:
         // Disallow pointers in binary streams.
         template_compile_assert(!template_info<T>::is_pointer, pointers_not_allowed);
 
-#ifdef BSTREAMS_DEBUG
-        const std::string s(typeid(T).name());
-        const size_t sz(s.size());
-        _s.append(reinterpret_cast<const char*>(&sz), sizeof(size_t));
-        _s += s;
-#endif
+        DebuggingPolicy<T>::on_debug(_s);
 
         _inserter_helper<T, template_info<T>::is_container >::call(this, x);
         return *this;
@@ -165,14 +252,53 @@ private:
  * An extensive example of its usage can be seen in:
  *    http://code.google.com/p/mili/source/browse/trunk/example_binary-streams.cpp
  */
+
+/**
+ * @param DebuggingPolicy : Policy for debugging, by default no debugging policy is set
+ */
+template < template <class> class DebuggingPolicy = NoDebugPolicyBistream >
 class bistream
 {
-    template<class T> friend class container_reader;
 
     template<class T, bool IsContainer> struct _extract_helper;
 
     template<class T, bool IsContainer> friend struct _extract_helper;
 
+    template<class T>
+    struct _extract_helper<T, false>
+    {
+        static void call(bistream* bis, T& x)
+        {
+            if (bis->_s.size() < bis->_pos + sizeof(x))
+                throw type_too_large();
+
+            bis->_pos += bis->_s.copy(reinterpret_cast<char*>(&x), sizeof(x), bis->_pos);
+        }
+    };
+
+    template<class T>
+    struct _extract_helper<T, true>
+    {
+        static void call(bistream* bis, T& cont)
+        {
+            uint32_t size;
+            (*bis) >> size;
+
+            // If the elements of the container are not containers themselves (or strings),
+            // then check there is enough rooom.
+            if ((! template_info< typename T::value_type >::is_container) &&
+                    (! template_info< typename T::value_type >::is_basic_string))
+                if (bis->_s.size() < ((size * sizeof(typename T::value_type)) + bis->_pos))
+                    throw stream_too_small();
+
+            for (uint32_t i(0); i < size; i++)
+            {
+                typename T::value_type elem;
+                (*bis) >> elem;
+                insert_into(cont, elem);
+            }
+        }
+    };
 public:
     /**
      * Construct a new input stream object using a string representing a binary stream
@@ -217,18 +343,7 @@ public:
         // Disallow pointers in binary streams.
         template_compile_assert(!template_info<T>::is_pointer, pointers_not_allowed);
 
-#ifdef BSTREAMS_DEBUG
-        std::string s(typeid(T).name());
-        size_t sz;
-        _pos += _s.copy(reinterpret_cast<char*>(&sz), sizeof(size_t), _pos);
-        std::string name  = _s.substr(_pos, sz);
-        _pos += sz;
-        if (s != name)
-        {
-            std::cerr << s << " | " << name << std::endl;
-            throw type_mismatch();
-        }
-#endif
+        DebuggingPolicy<T>::on_debug(_pos, _s);
 
         _extract_helper<T, template_info<T>::is_container >::call(this, x);
 
@@ -269,7 +384,7 @@ private:
     std::string _s;
 
     /** The position the stream is reading from.  */
-    std::size_t _pos;
+    uint32_t _pos;
 };
 
 /**
@@ -279,9 +394,10 @@ private:
  *
  * @param T : The type of the elements in the container.
  */
-template<class T>
+template<class T, template <class> class DebuggingPolicy>
 class container_writer
 {
+
 public:
     /**
      * Default constructor.
@@ -290,7 +406,7 @@ public:
      * @param bos : A reference to the output stream where you will create the
      *              container.
      */
-    container_writer(size_t size, bostream& bos) :
+    container_writer(uint32_t size, bostream<DebuggingPolicy>& bos) :
         _elements_left(size),
         _bos(bos)
     {
@@ -325,10 +441,11 @@ public:
     }
 private:
     /** The amount of elements you have yet to insert. */
-    size_t    _elements_left;
+    uint32_t    _elements_left;
+
 
     /** A reference to the output stream. */
-    bostream& _bos;
+    bostream<DebuggingPolicy>& _bos;
 };
 
 /**
@@ -338,7 +455,7 @@ private:
  *
  * @param T : The type of the elements in the container.
  */
-template<class T>
+template<class T, template <class> class DebuggingPolicy>
 class container_reader
 {
 public:
@@ -347,7 +464,7 @@ public:
      *
      * @param bis : The input stream holding the data.
      */
-    container_reader(bistream& bis) :
+    container_reader(bistream<DebuggingPolicy>& bis) :
         _elements_left(0),
         _bis(bis)
     {
@@ -381,7 +498,7 @@ public:
      *
      * @pre : At least the amount of elements you want to skip remain.
      */
-    void skip(size_t elements = 1)
+    void skip(uint32_t elements = 1)
     {
         if (elements > _elements_left)
             throw skip_excess();
@@ -412,71 +529,15 @@ public:
 
 private:
     /** The amount of elements that still haven't been read from the container. */
-    size_t    _elements_left;
+    uint32_t    _elements_left;
 
     /** A reference to the input stream. */
-    bistream& _bis;
+    bistream<DebuggingPolicy>& _bis;
 };
 
-template<class T>
-struct bostream::_inserter_helper<T, false>
-{
-    static void call(bostream* bos, const T& x)
-    {
-        bos->_s.append(reinterpret_cast<const char*>(&x), sizeof(T));
-    }
-};
 
-template<class T>
-struct bostream::_inserter_helper<T, true>
-{
-    static void call(bostream* bos, const T& cont)
-    {
-        const uint32_t size(cont.size());
-        (*bos) << size;
 
-        typename T::const_iterator it(cont.begin());
 
-        for (; it != cont.end(); ++it)
-            (*bos) << *it;
-    }
-};
-
-template<class T>
-struct bistream::_extract_helper<T, false>
-{
-    static void call(bistream* bis, T& x)
-    {
-        if (bis->_s.size() < bis->_pos + sizeof(x))
-            throw type_too_large();
-
-        bis->_pos += bis->_s.copy(reinterpret_cast<char*>(&x), sizeof(x), bis->_pos);
-    }
-};
-
-template<class T>
-struct bistream::_extract_helper<T, true>
-{
-    static void call(bistream* bis, T& cont)
-    {
-        uint32_t size;
-        (*bis) >> size;
-
-        // If the elements of the container are not containers themselves (or strings),
-        // then check there is enough rooom.
-        if ((! template_info< typename T::value_type >::is_container) &&
-                (! template_info< typename T::value_type >::is_basic_string))
-            if (bis->_s.size() < ((size * sizeof(typename T::value_type)) + bis->_pos))
-                throw stream_too_small();
-
-        for (size_t i(0); i < size; i++)
-        {
-            typename T::value_type elem;
-            (*bis) >> elem;
-            insert_into(cont, elem);
-        }
-    }
-};
 
 NAMESPACE_END
 
