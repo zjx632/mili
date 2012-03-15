@@ -71,6 +71,151 @@ DEFINE_SPECIFIC_EXCEPTION_TEXT(type_mismatch,
                                BstreamExceptionHierarchy,
                                "Types of input and output streams mismatch.");
 
+DEFINE_SPECIFIC_EXCEPTION_TEXT(type_size_mismatch,
+                               BstreamExceptionHierarchy,
+                               "Size of types of input and output streams mismatch.");
+/**
+* TEMPLATE CLASSES HELPER THAT DESCRIBES THE TYPE
+*/
+template <typename T>
+struct TypeDescriber
+{
+    //Encodes type information
+    //appends on _s typeName, typeNameSize, typeSize
+    // e.g:   for      int,    3           , 4 (32bits architecture)
+    static void encode(std::string& _s)
+    {
+        const std::string typeName(typeid(T).name());
+        const uint32_t nameSize(typeName.size());
+        const uint32_t typeSize(sizeof(T));
+
+        _s.append(reinterpret_cast<const char*>(&nameSize), sizeof(nameSize));
+        _s += typeName;
+
+        _s.append(reinterpret_cast<const char*>(&typeSize), sizeof(typeSize));
+    }
+    static void decode(uint32_t& _pos, std::string& _s, int& currentPlatformTypeSize,
+                       int& originalTypeSize, std::string& currentPlatformType,  std::string& originalType)
+    {
+        currentPlatformType = typeid(T).name();
+        uint32_t nameSize;
+        originalTypeSize = -1;
+        currentPlatformTypeSize  = sizeof(T);
+
+        //Get name from bistream
+        _pos += _s.copy(reinterpret_cast<char*>(&nameSize), sizeof(size_t), _pos);
+        originalType = _s.substr(_pos, nameSize);
+        _pos += nameSize;
+
+        //Get size from bistream
+        _pos += _s.copy(reinterpret_cast<char*>(&originalTypeSize), sizeof(size_t), _pos);
+
+    }
+
+};
+
+
+
+// here the specifics: int, string, etc.
+template <>
+struct TypeDescriber<int>
+{
+    static void encode(std::string& _s)
+    {
+        const std::string typeName(typeid(int).name());
+        const uint32_t nameSize(typeName.size());
+        const uint32_t typeSize(sizeof(int));
+
+        _s.append(reinterpret_cast<const char*>(&nameSize), sizeof(nameSize));
+        _s += typeName;
+
+        _s.append(reinterpret_cast<const char*>(&typeSize), sizeof(typeSize));
+    }
+    static void decode(uint32_t& _pos, std::string& _s, int& currentPlatformTypeSize,
+                       int& originalTypeSize, std::string& currentPlatformType,  std::string& originalType)
+    {
+        currentPlatformType = typeid(int).name();
+        uint32_t nameSize;
+        originalTypeSize = -1;
+        currentPlatformTypeSize  = sizeof(int);
+
+        //Get name from bistream
+        _pos += _s.copy(reinterpret_cast<char*>(&nameSize), sizeof(size_t), _pos);
+        originalType = _s.substr(_pos, nameSize);
+        _pos += nameSize;
+
+        //Get size from bistream
+        _pos += _s.copy(reinterpret_cast<char*>(&originalTypeSize), sizeof(size_t), _pos);
+
+    }
+
+};
+
+template <>
+struct TypeDescriber<float>
+{
+    static void encode(std::string& _s)
+    {
+        const std::string typeName(typeid(float).name());
+        const uint32_t nameSize(typeName.size());
+        const uint32_t typeSize(sizeof(float));
+
+        _s.append(reinterpret_cast<const char*>(&nameSize), sizeof(nameSize));
+        _s += typeName;
+
+        _s.append(reinterpret_cast<const char*>(&typeSize), sizeof(typeSize));
+    }
+    static void decode(uint32_t& _pos, std::string& _s, int& currentPlatformTypeSize,
+                       int& originalTypeSize, std::string& currentPlatformType,  std::string& originalType)
+    {
+        currentPlatformType = typeid(float).name();
+        uint32_t nameSize;
+        originalTypeSize = -1;
+        currentPlatformTypeSize  = sizeof(float);
+
+        //Get name from bistream
+        _pos += _s.copy(reinterpret_cast<char*>(&nameSize), sizeof(size_t), _pos);
+        originalType = _s.substr(_pos, nameSize);
+        _pos += nameSize;
+
+        //Get size from bistream
+        _pos += _s.copy(reinterpret_cast<char*>(&originalTypeSize), sizeof(size_t), _pos);
+
+    }
+
+};
+template <>
+struct TypeDescriber<std::string>
+{
+    static void encode(std::string& _s)
+    {
+        const std::string typeName(typeid(std::string).name());
+        const uint32_t nameSize(typeName.size());
+        const uint32_t typeSize(sizeof(std::string));
+
+        _s.append(reinterpret_cast<const char*>(&nameSize), sizeof(nameSize));
+        _s += typeName;
+
+        _s.append(reinterpret_cast<const char*>(&typeSize), sizeof(typeSize));
+    }
+    static void decode(uint32_t& _pos, std::string& _s, int& currentPlatformTypeSize,
+                       int& originalTypeSize, std::string& currentPlatformType,  std::string& originalType)
+    {
+        currentPlatformType = typeid(std::string).name();
+        uint32_t nameSize;
+        originalTypeSize = -1;
+        currentPlatformTypeSize = sizeof(std::string);
+
+        //Get name from bistream
+        _pos += _s.copy(reinterpret_cast<char*>(&nameSize), sizeof(size_t), _pos);
+        originalType = _s.substr(_pos, nameSize);
+        _pos += nameSize;
+
+        //Get size from bistream
+        _pos += _s.copy(reinterpret_cast<char*>(&originalTypeSize), sizeof(size_t), _pos);
+
+    }
+};
 
 /*******************************************************************************
  * DEBUGGING POLICY.
@@ -85,10 +230,7 @@ struct DebugPolicyBostream
 {
     static void on_debug(std::string& _s)
     {
-        const std::string s(typeid(T).name());
-        const uint32_t sz(s.size());
-        _s.append(reinterpret_cast<const char*>(&sz), sizeof(uint32_t));
-        _s += s;
+        TypeDescriber<T>::encode(_s);
     }
 };
 
@@ -101,15 +243,22 @@ struct DebugPolicyBistream
 {
     static void on_debug(uint32_t& _pos, std::string& _s)
     {
-        std::string s(typeid(T).name());
-        uint32_t sz;
-        _pos += _s.copy(reinterpret_cast<char*>(&sz), sizeof(uint32_t), _pos);
-        std::string name  = _s.substr(_pos, sz);
-        _pos += sz;
-        if (s != name)
+        std::string originalType;
+        std::string currentPlatformType;
+        int originalTypeSize = -1;
+        int currentPlatformTypeSize = -1;
+
+        TypeDescriber<T>::decode(_pos, _s, currentPlatformTypeSize, originalTypeSize, currentPlatformType, originalType);
+
+        if (currentPlatformType != originalType)
         {
-            std::cerr << s << " | " << name << std::endl;
+            std::cerr << currentPlatformType << " | " << originalType << std::endl;
             throw type_mismatch();
+        }
+        else if (originalTypeSize != currentPlatformTypeSize)
+        {
+            std::cerr << "Platform size:" << currentPlatformTypeSize <<  " read size " << originalTypeSize << std::endl;
+            throw type_size_mismatch();
         }
     }
 };
