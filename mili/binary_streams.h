@@ -71,19 +71,32 @@ DEFINE_SPECIFIC_EXCEPTION_TEXT(type_mismatch,
                                BstreamExceptionHierarchy,
                                "Types of input and output streams mismatch.");
 
-DEFINE_SPECIFIC_EXCEPTION_TEXT(type_size_mismatch,
-                               BstreamExceptionHierarchy,
-                               "Size of types of input and output streams mismatch.");
 /**
 * TEMPLATE CLASSES HELPER THAT DESCRIBES THE TYPE
 */
+typedef std::string encodingtype;
+
+/*Holds encode/decode information usefull for report/error checking */
+typedef struct DecodeStruct
+{
+    //size of the type in the current platform
+    int currentPlatformTypeSize;
+    //data type in the current platform
+    std::string currentPlatformType;
+    //size of the type in the previous platform
+    int originalTypeSize;
+    //data type in the previous platform
+    std::string originalType;
+
+} DecodeType;
+
 template <typename T>
 struct TypeDescriber
 {
     //Encodes type information
     //appends on _s typeName, typeNameSize, typeSize
     // e.g:   for      int,    3           , 4 (32bits architecture)
-    static void encode(std::string& _s)
+    static void encode(encodingtype& _s)
     {
         const std::string typeName(typeid(T).name());
         const uint32_t nameSize(typeName.size());
@@ -94,127 +107,22 @@ struct TypeDescriber
 
         _s.append(reinterpret_cast<const char*>(&typeSize), sizeof(typeSize));
     }
-    static void decode(uint32_t& _pos, std::string& _s, int& currentPlatformTypeSize,
-                       int& originalTypeSize, std::string& currentPlatformType,  std::string& originalType)
+    static void decode (uint32_t& _pos, encodingtype& _s, DecodeType& decodeData)
     {
-        currentPlatformType = typeid(T).name();
+        decodeData.currentPlatformType = typeid(T).name();
         uint32_t nameSize;
-        originalTypeSize = -1;
-        currentPlatformTypeSize  = sizeof(T);
+        decodeData.originalTypeSize = -1;
+        decodeData.currentPlatformTypeSize  = sizeof(T);
 
         //Get name from bistream
         _pos += _s.copy(reinterpret_cast<char*>(&nameSize), sizeof(size_t), _pos);
-        originalType = _s.substr(_pos, nameSize);
+        decodeData.originalType = _s.substr(_pos, nameSize);
         _pos += nameSize;
 
         //Get size from bistream
-        _pos += _s.copy(reinterpret_cast<char*>(&originalTypeSize), sizeof(size_t), _pos);
-
+        _pos += _s.copy(reinterpret_cast<char*>(&decodeData.originalTypeSize), sizeof(size_t), _pos);
     }
 
-};
-
-
-
-// here the specifics: int, string, etc.
-template <>
-struct TypeDescriber<int>
-{
-    static void encode(std::string& _s)
-    {
-        const std::string typeName(typeid(int).name());
-        const uint32_t nameSize(typeName.size());
-        const uint32_t typeSize(sizeof(int));
-
-        _s.append(reinterpret_cast<const char*>(&nameSize), sizeof(nameSize));
-        _s += typeName;
-
-        _s.append(reinterpret_cast<const char*>(&typeSize), sizeof(typeSize));
-    }
-    static void decode(uint32_t& _pos, std::string& _s, int& currentPlatformTypeSize,
-                       int& originalTypeSize, std::string& currentPlatformType,  std::string& originalType)
-    {
-        currentPlatformType = typeid(int).name();
-        uint32_t nameSize;
-        originalTypeSize = -1;
-        currentPlatformTypeSize  = sizeof(int);
-
-        //Get name from bistream
-        _pos += _s.copy(reinterpret_cast<char*>(&nameSize), sizeof(size_t), _pos);
-        originalType = _s.substr(_pos, nameSize);
-        _pos += nameSize;
-
-        //Get size from bistream
-        _pos += _s.copy(reinterpret_cast<char*>(&originalTypeSize), sizeof(size_t), _pos);
-
-    }
-
-};
-
-template <>
-struct TypeDescriber<float>
-{
-    static void encode(std::string& _s)
-    {
-        const std::string typeName(typeid(float).name());
-        const uint32_t nameSize(typeName.size());
-        const uint32_t typeSize(sizeof(float));
-
-        _s.append(reinterpret_cast<const char*>(&nameSize), sizeof(nameSize));
-        _s += typeName;
-
-        _s.append(reinterpret_cast<const char*>(&typeSize), sizeof(typeSize));
-    }
-    static void decode(uint32_t& _pos, std::string& _s, int& currentPlatformTypeSize,
-                       int& originalTypeSize, std::string& currentPlatformType,  std::string& originalType)
-    {
-        currentPlatformType = typeid(float).name();
-        uint32_t nameSize;
-        originalTypeSize = -1;
-        currentPlatformTypeSize  = sizeof(float);
-
-        //Get name from bistream
-        _pos += _s.copy(reinterpret_cast<char*>(&nameSize), sizeof(size_t), _pos);
-        originalType = _s.substr(_pos, nameSize);
-        _pos += nameSize;
-
-        //Get size from bistream
-        _pos += _s.copy(reinterpret_cast<char*>(&originalTypeSize), sizeof(size_t), _pos);
-
-    }
-
-};
-template <>
-struct TypeDescriber<std::string>
-{
-    static void encode(std::string& _s)
-    {
-        const std::string typeName(typeid(std::string).name());
-        const uint32_t nameSize(typeName.size());
-        const uint32_t typeSize(sizeof(std::string));
-
-        _s.append(reinterpret_cast<const char*>(&nameSize), sizeof(nameSize));
-        _s += typeName;
-
-        _s.append(reinterpret_cast<const char*>(&typeSize), sizeof(typeSize));
-    }
-    static void decode(uint32_t& _pos, std::string& _s, int& currentPlatformTypeSize,
-                       int& originalTypeSize, std::string& currentPlatformType,  std::string& originalType)
-    {
-        currentPlatformType = typeid(std::string).name();
-        uint32_t nameSize;
-        originalTypeSize = -1;
-        currentPlatformTypeSize = sizeof(std::string);
-
-        //Get name from bistream
-        _pos += _s.copy(reinterpret_cast<char*>(&nameSize), sizeof(size_t), _pos);
-        originalType = _s.substr(_pos, nameSize);
-        _pos += nameSize;
-
-        //Get size from bistream
-        _pos += _s.copy(reinterpret_cast<char*>(&originalTypeSize), sizeof(size_t), _pos);
-
-    }
 };
 
 /*******************************************************************************
@@ -228,7 +136,7 @@ struct TypeDescriber<std::string>
 template <typename T>
 struct DebugPolicyBostream
 {
-    static void on_debug(std::string& _s)
+    static void on_debug(encodingtype& _s)
     {
         TypeDescriber<T>::encode(_s);
     }
@@ -241,25 +149,9 @@ struct DebugPolicyBostream
 template <typename T>
 struct DebugPolicyBistream
 {
-    static void on_debug(uint32_t& _pos, std::string& _s)
+    static void on_debug(uint32_t& _pos, encodingtype& _s, DecodeType &decodeInfo)
     {
-        std::string originalType;
-        std::string currentPlatformType;
-        int originalTypeSize = -1;
-        int currentPlatformTypeSize = -1;
-
-        TypeDescriber<T>::decode(_pos, _s, currentPlatformTypeSize, originalTypeSize, currentPlatformType, originalType);
-
-        if (currentPlatformType != originalType)
-        {
-            std::cerr << currentPlatformType << " | " << originalType << std::endl;
-            throw type_mismatch();
-        }
-        else if (originalTypeSize != currentPlatformTypeSize)
-        {
-            std::cerr << "Platform size:" << currentPlatformTypeSize <<  " read size " << originalTypeSize << std::endl;
-            throw type_size_mismatch();
-        }
+        TypeDescriber<T>::decode(_pos, _s, decodeInfo);
     }
 };
 
@@ -271,7 +163,7 @@ struct DebugPolicyBistream
 template <typename T>
 struct NoDebugPolicyBostream
 {
-    static void on_debug(std::string&) {}
+    static void on_debug(encodingtype&) {}
 };
 
 /**
@@ -281,7 +173,7 @@ struct NoDebugPolicyBostream
 template <typename T>
 struct NoDebugPolicyBistream
 {
-    static void on_debug(uint32_t&, std::string&){}
+    static void on_debug(uint32_t&, encodingtype&, DecodeType &){}
 };
 
 /**
@@ -448,6 +340,16 @@ class bistream
             }
         }
     };
+
+    /** Clear decoded data.   */
+    void clearDecoded()
+    {
+      _decodedInfo.currentPlatformType.clear();
+      _decodedInfo.originalType.clear();
+      _decodedInfo.currentPlatformTypeSize =-1;
+      _decodedInfo.originalTypeSize =-1;
+
+    }
 public:
     /**
      * Construct a new input stream object using a string representing a binary stream
@@ -477,6 +379,7 @@ public:
     {
         _pos = 0;
         _s = str;
+        clearDecoded();
     }
 
     /**
@@ -492,7 +395,7 @@ public:
         // Disallow pointers in binary streams.
         template_compile_assert(!template_info<T>::is_pointer, pointers_not_allowed);
 
-        DebuggingPolicy<T>::on_debug(_pos, _s);
+        DebuggingPolicy<T>::on_debug(_pos, _s, _decodedInfo);
 
         _extract_helper<T, template_info<T>::is_container >::call(this, x);
 
@@ -521,11 +424,18 @@ public:
         return *this;
     }
 
+    DecodeType& getDecodedInfo()
+    {
+      return _decodedInfo;
+    }
+
     /** Clear the input stream. */
     void clear()
     {
         _s.clear();
         _pos = 0;
+
+        clearDecoded();
     }
 
 private:
@@ -534,6 +444,10 @@ private:
 
     /** The position the stream is reading from.  */
     uint32_t _pos;
+
+    /** The decoded data which can be used for reporting and error checking.  */
+    DecodeType _decodedInfo;
+
 };
 
 /**
