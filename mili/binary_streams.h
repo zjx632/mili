@@ -70,15 +70,14 @@ DEFINE_SPECIFIC_EXCEPTION_TEXT(type_too_large,
 DEFINE_SPECIFIC_EXCEPTION_TEXT(type_mismatch,
                                BstreamExceptionHierarchy,
                                "Types of input and output streams mismatch.");
+DEFINE_SPECIFIC_EXCEPTION_TEXT(type_size_mismatch,
+                               BstreamExceptionHierarchy,
+                               "Types of input and output streams mismatch in size.");
 
 typedef std::string EncodingType;
 
-struct DefaultTypeSize
-{
-    enum { DEFAULT = -1 };
-};
 
-/*Holds encode/decode information usefull for report/error checking */
+/** Holds encode/decode information usefull for report/error checking     */
 struct DecodeInfoType
 {
     //size of the type in the current platform
@@ -92,39 +91,26 @@ struct DecodeInfoType
 
 } ;
 
-/**
-* TEMPLATE STRUCT HELPER TO PERFORM APPEND OPERATIONS
-* appends value toBeAppended to destionation
-*/
+/** appends value toBeAppended to destionation     */
 template <typename T>
-struct Append_Helper
+static inline void append(EncodingType& destination, const T toBeAppended)
 {
-    static void append(EncodingType& destination, T toBeAppended)
-    {
-        destination.append(reinterpret_cast<const char*>(&toBeAppended), sizeof(toBeAppended));
-    }
-};
+    destination.append(reinterpret_cast<const char*>(&toBeAppended), sizeof(toBeAppended));
+}
 
-/**
-* TEMPLATE STRUCT HELPER TO PERFORM COPY OPERATIONS
-* Copies from source to destination
-*/
+/** Copies from source to destination      */
 template <typename T>
-struct Copy_Helper
+static inline uint32_t copy(const EncodingType& source, T& destination, uint32_t& pos)
 {
-    static uint32_t copy(EncodingType& source, T& destination, uint32_t& pos)
-    {
-        return source.copy(reinterpret_cast<char*>(&destination), sizeof(destination), pos);
-    }
-};
-template <>
-struct Copy_Helper <uint32_t>
+    return source.copy(reinterpret_cast<char*>(&destination), sizeof(destination), pos);
+}
+
+template <uint32_t>
+static inline uint32_t copy(const EncodingType& source, uint32_t& destination, uint32_t pos)
 {
-    static uint32_t copy(EncodingType& source, uint32_t& destination, uint32_t pos)
-    {
-        return source.copy(reinterpret_cast<char*>(&destination), sizeof(destination), pos);
-    }
-};
+    return source.copy(reinterpret_cast<char*>(&destination), sizeof(destination), pos);
+}
+
 
 /**
 * TEMPLATE STRUCT HELPER THAT DESCRIBES THE TYPE
@@ -141,28 +127,29 @@ struct TypeDescriber
         const uint32_t nameSize(typeName.size());
         const uint32_t typeSize(sizeof(T));
 
-        Append_Helper<const uint32_t>::append(_s, nameSize);
+        append<const uint32_t>(_s, nameSize);
 
         _s += typeName;
 
-        Append_Helper<const uint32_t>::append(_s, typeSize);
+        append<const uint32_t>(_s, typeSize);
 
     }
     static void decode(uint32_t& _pos, EncodingType& _s, DecodeInfoType& decodeData)
     {
         decodeData.currentPlatformType = typeid(T).name();
         uint32_t nameSize;
-        decodeData.originalTypeSize = DefaultTypeSize::DEFAULT;
+
         decodeData.currentPlatformTypeSize  = sizeof(T);
 
         //Get name from bistream
-        _pos += Copy_Helper<uint32_t>::copy(_s, nameSize, _pos);
+        _pos += copy<uint32_t>(_s, nameSize, _pos);
 
         decodeData.originalType = _s.substr(_pos, nameSize);
         _pos += nameSize;
 
         //Get size from bistream
-        _pos += Copy_Helper<uint32_t>::copy(_s, decodeData.originalTypeSize, _pos);
+        _pos += copy<uint32_t>(_s, decodeData.originalTypeSize, _pos);
+
     }
 
 };
@@ -178,7 +165,7 @@ struct TypeDescriber
 template <typename T>
 struct DebugPolicyBostream
 {
-    static void on_debug(EncodingType& _s)
+    static void debug(EncodingType& _s)
     {
         TypeDescriber<T>::encode(_s);
     }
@@ -191,7 +178,7 @@ struct DebugPolicyBostream
 template <typename T>
 struct DebugPolicyBistream
 {
-    static void on_debug(uint32_t& _pos, EncodingType& _s, DecodeInfoType& decodeInfo)
+    static void debug(uint32_t& _pos, EncodingType& _s, DecodeInfoType& decodeInfo)
     {
         TypeDescriber<T>::decode(_pos, _s, decodeInfo);
     }
@@ -205,7 +192,7 @@ struct DebugPolicyBistream
 template <typename T>
 struct NoDebugPolicyBostream
 {
-    static void on_debug(EncodingType&) {}
+    static void debug(EncodingType&) {}
 };
 
 /**
@@ -215,7 +202,7 @@ struct NoDebugPolicyBostream
 template <typename T>
 struct NoDebugPolicyBistream
 {
-    static void on_debug(uint32_t&, EncodingType&, DecodeInfoType&) {}
+    static void debug(uint32_t&, EncodingType&, DecodeInfoType&) {}
 };
 
 /**
@@ -242,7 +229,7 @@ class bostream
     {
         static void call(bostream* bos, const T& x)
         {
-            Append_Helper<const T&>::append(bos->_s, x);
+            append<const T&>(bos->_s, x);
         }
     };
 
@@ -280,7 +267,7 @@ public:
         // Disallow pointers in binary streams.
         template_compile_assert(!template_info<T>::is_pointer, pointers_not_allowed);
 
-        DebuggingPolicy<T>::on_debug(_s);
+        DebuggingPolicy<T>::debug(_s);
 
         _inserter_helper<T, template_info<T>::is_container >::call(this, x);
         return *this;
@@ -355,7 +342,7 @@ class bistream
             if (bis->_s.size() < bis->_pos + sizeof(x))
                 throw type_too_large();
 
-            bis->_pos += Copy_Helper<T>::copy(bis->_s, x, bis->_pos);
+            bis->_pos += copy<T>(bis->_s, x, bis->_pos);
         }
     };
 
@@ -388,8 +375,27 @@ class bistream
     {
         _decodedInfo.currentPlatformType.clear();
         _decodedInfo.originalType.clear();
-        _decodedInfo.currentPlatformTypeSize = DefaultTypeSize::DEFAULT;
-        _decodedInfo.originalTypeSize = DefaultTypeSize::DEFAULT;
+    }
+    /** Check whether there was some erros during reading data from bistream   */
+    void checkAndThrow(const DecodeInfoType& decodedInfo)
+    {
+
+        if (decodedInfo.currentPlatformType != decodedInfo.originalType)
+        {
+            throw type_mismatch();
+        }
+        if (decodedInfo.currentPlatformTypeSize != decodedInfo.currentPlatformTypeSize)
+        {
+            throw type_size_mismatch();
+        }
+
+        /* Another posibility could be throws specific all info like next:  */
+        /*if((decodedInfo.currentPlatformType != decodedInfo.originalType)       ||
+           (decodedInfo.currentPlatformTypeSize != decodedInfo.originalTypeSize))
+        {
+          throw decodedInfo;
+        }*/
+
 
     }
 public:
@@ -437,7 +443,9 @@ public:
         // Disallow pointers in binary streams.
         template_compile_assert(!template_info<T>::is_pointer, pointers_not_allowed);
 
-        DebuggingPolicy<T>::on_debug(_pos, _s, _decodedInfo);
+        DebuggingPolicy<T>::debug(_pos, _s, _decodedInfo);
+
+        checkAndThrow(_decodedInfo);
 
         _extract_helper<T, template_info<T>::is_container >::call(this, x);
 
@@ -466,10 +474,7 @@ public:
         return *this;
     }
 
-    DecodeInfoType& getDecodedInfo() const
-    {
-        return _decodedInfo;
-    }
+
 
     /** Clear the input stream. */
     void clear()
