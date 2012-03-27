@@ -90,7 +90,7 @@ struct A
 
     bool operator==(const A& o) const
     {
-        return  (id == o.id && name == o.name && a == o.a);
+        return (id == o.id && name == o.name && a == o.a);
     }
 };
 
@@ -257,10 +257,10 @@ TEST(BinaryStream, chainedValues_test)
     const float f_original = 1.2;
     const int i_original = 3;
     const double d_original = 0.89;
-    //const A a_original(3, "pepe", 43);
+    const A a_original(3, "pepe", 43);
     const bool b_original = true;
 
-    bos << f_original << i_original << d_original ;//<< a_original << b_original;
+    bos << f_original << i_original << d_original << a_original << b_original;
 
     bistream bis(bos.str());
     float f_loaded;
@@ -268,13 +268,13 @@ TEST(BinaryStream, chainedValues_test)
     double d_loaded;
     A a_loaded;
     bool b_loaded;
-    bis >> f_loaded >> i_loaded >> d_loaded ;//>> a_loaded >> b_loaded;
+    bis >> f_loaded >> i_loaded >> d_loaded >> a_loaded >> b_loaded;
 
     ASSERT_EQ(f_original, f_loaded);
     ASSERT_EQ(i_original, i_loaded);
     ASSERT_EQ(d_original, d_loaded);
-    //ASSERT_EQ(a_original, a_loaded);
-    //ASSERT_EQ(b_original, b_loaded);
+    ASSERT_EQ(a_original, a_loaded);
+    ASSERT_EQ(b_original, b_loaded);
 }
 
 TEST(BinaryStream, chainedValues_No_Debug_test)
@@ -312,7 +312,7 @@ TEST(BinaryStream, chainedValues_No_Debug_test)
 
 TEST(BinaryStream, contaniers_test)
 {
-/*
+
     typedef class mili::bostream<mili::DebugPolicyBostream> bostream;
     typedef class mili::bistream<mili::DebugPolicyBistream> bistream;
 
@@ -354,12 +354,12 @@ TEST(BinaryStream, contaniers_test)
     ASSERT_EQ(list_original, list_loaded);
 
     assertArrayEquals(numbers_original, numbers_loaded, 9);
-    */
+
 }
 
 TEST(BinaryStream, No_Debug_Contaniers_Test)
 {
-    /*
+
     typedef class mili::bostream<mili::NoDebugPolicyBostream> bostream;
     typedef class mili::bistream<mili::NoDebugPolicyBistream> bistream;
 
@@ -401,5 +401,5 @@ TEST(BinaryStream, No_Debug_Contaniers_Test)
     ASSERT_EQ(list_original, list_loaded);
 
     assertArrayEquals(numbers_original, numbers_loaded, 9);
-    */
+
 }
