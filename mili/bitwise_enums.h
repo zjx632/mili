@@ -242,7 +242,7 @@ inline typename BitwiseEnumMapper<Enum, BitwiseEnumEnabler<Enum>::EnabledConvers
 
 #define IMPLEMENT_BITWISE_OPERATOR(mili_bitwise_symbol, mili_bitwise_text)          \
     IMPLEMENT_BITWISE_OPERATOR_CONST( mili_bitwise_symbol, mili_bitwise_text)       \
-    IMPLEMENT_BITWISE_OPERATOR_NONCONST( mili_bitwise_symbol, mili_bitwise_text)
+    IMPLEMENT_BITWISE_OPERATOR_NONCONST( mili_bitwise_symbol, mili_bitwise_text) 
 
 IMPLEMENT_BITWISE_OPERATOR( | , Or)
 IMPLEMENT_BITWISE_OPERATOR(&, And)
@@ -254,7 +254,7 @@ struct BitwiseEnumEnabler<enumtype>     \
 {                                       \
     enum { EnabledConversion = true };  \
 };                                      \
- 
+
 NAMESPACE_END
 
 #endif

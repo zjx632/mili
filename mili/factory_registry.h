@@ -22,12 +22,11 @@ factory: A minimal library for a generic factory.
 #   error Internal header file, DO NOT include this.
 #endif
 
-
 template <class BaseClass, class Key>
 class FactoryRegistry
 {
 private:
-    mili::Factory<Key, BaseClass> fc;
+    Factory<Key, BaseClass> fc;
     static FactoryRegistry<BaseClass, Key>* instance;
     unsigned int users;
 
@@ -37,9 +36,9 @@ private:
         users++;
         fc.register_factory<DerivedClass>(k);
     }
-    Talker* _new_class(Key& k)
+    BaseClass* _new_class(Key& k)
     {
-        Talker* t;
+        BaseClass* t;
         t = fc.new_class(k);
         return t;
     }
@@ -80,13 +79,13 @@ class Registerer
 public:
     Registerer(const Key& k)
     {
-        FactoryRegistry<BaseClass, Key>::template register_factory<DerivedClass>(k);
+        mili::FactoryRegistry<BaseClass, Key>::template register_factory<DerivedClass>(k);
     }
     ~Registerer()
     {
-        FactoryRegistry<BaseClass, Key>::template deregister_factory();
+        mili::FactoryRegistry<BaseClass, Key>::template deregister_factory();
     }
 };
 
 #define REGISTER_FACTORIZABLE_CLASS(BaseClassName, DerivedClassName, keytype, key) \
-static Registerer<BaseClassName,DerivedClassName,keytype> r##DerivedClassName(key)
+static mili::Registerer<BaseClassName,DerivedClassName,keytype> r##DerivedClassName(key)
