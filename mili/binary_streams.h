@@ -132,7 +132,7 @@ struct NoDebugPolicyBostream
 template <typename T>
 struct NoDebugPolicyBistream
 {
-    static void on_debug(uint32_t&, std::string&){}
+    static void on_debug(uint32_t&, std::string&) {}
 };
 
 /**
