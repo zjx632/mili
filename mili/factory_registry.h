@@ -1,6 +1,6 @@
 /*
-factory: A minimal library for a generic factory.
-    Copyright (C) 2009  Daniel Gutson and Marcelo Caro, FuDePAN
+factory_registry: A simple way to registry derived classes without .h file
+    Copyright (C) 2012  Leandro Ramos, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -30,6 +30,8 @@ private:
     static FactoryRegistry<BaseClass, Key>* instance;
     unsigned int users;
 
+    FactoryRegistry(): users(0) {}
+
     template <class DerivedClass>
     void _register_factory(const Key& k)
     {
@@ -38,9 +40,7 @@ private:
     }
     BaseClass* _new_class(Key& k)
     {
-        BaseClass* t;
-        t = fc.new_class(k);
-        return t;
+        return fc.new_class(k);;
     }
     bool _deregister_factory()
     {
@@ -48,10 +48,6 @@ private:
         return (users == 0);
     }
 public:
-    FactoryRegistry()
-    {
-        users = 0;
-    }
     template<class DerivedClass>
     static void register_factory(const Key& k)
     {
@@ -61,31 +57,34 @@ public:
     }
     static BaseClass* new_class(Key& k)
     {
-        BaseClass* t;
-        t = instance->_new_class(k);
-        return t;
+        return instance->_new_class(k);
     }
     static void deregister_factory()
     {
         if (instance->_deregister_factory())
             delete instance;
+        instance = NULL;
     }
 
 };
+template <class Base, class Key>
+FactoryRegistry<Base, Key>* FactoryRegistry<Base, Key>::instance = NULL;
 
-template<class BaseClass, class DerivedClass, class Key>
+template<class BaseClass, class DerivedClass>
 class Registerer
 {
 public:
+    template <class Key>
     Registerer(const Key& k)
     {
-        mili::FactoryRegistry<BaseClass, Key>::template register_factory<DerivedClass>(k);
+        mili::FactoryRegistry<BaseClass, Key>::register_factory<DerivedClass>(k);
     }
+    template <class Key>
     ~Registerer()
     {
-        mili::FactoryRegistry<BaseClass, Key>::template deregister_factory();
+        mili::FactoryRegistry<BaseClass, Key>::deregister_factory();
     }
 };
 
-#define REGISTER_FACTORIZABLE_CLASS(BaseClassName, DerivedClassName, keytype, key) \
-static mili::Registerer<BaseClassName,DerivedClassName,keytype> r##DerivedClassName(key)
+#define REGISTER_FACTORIZABLE_CLASS(BaseClassName, DerivedClassName, key) \
+static mili::Registerer<BaseClassName,DerivedClassName> r##DerivedClassName(key)
