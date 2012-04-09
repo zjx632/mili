@@ -1,0 +1,7 @@
+Import ('env')
+
+name = 'mili-example_factory_registry'
+deps = ['mili']
+srcs = env.Glob('./*.cpp')
+
+env.CreateProgram(name, env.Dir('.'), srcs, deps)
