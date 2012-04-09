@@ -21,8 +21,9 @@ factory_registry: A simple way to registry derived classes without .h file
 #ifndef FACTORY_REGISTRY_H
 #   error Internal header file, DO NOT include this.
 #endif
+#include<string>
 
-template <class BaseClass, class Key>
+template <class BaseClass, class Key = std::string>
 class FactoryRegistry
 {
 private:
@@ -67,8 +68,7 @@ public:
     }
 
 };
-template <class Base, class Key>
-FactoryRegistry<Base, Key>* FactoryRegistry<Base, Key>::instance = NULL;
+template<class Base, class Key> FactoryRegistry<Base,Key> * FactoryRegistry<Base,Key>::instance = 0;
 
 template<class BaseClass, class DerivedClass>
 class Registerer
@@ -77,14 +77,14 @@ public:
     template <class Key>
     Registerer(const Key& k)
     {
-        mili::FactoryRegistry<BaseClass, Key>::register_factory<DerivedClass>(k);
+        mili::FactoryRegistry<BaseClass, Key>::template register_factory<DerivedClass>(k);
     }
-    template <class Key>
+    template<class Key>
     ~Registerer()
     {
-        mili::FactoryRegistry<BaseClass, Key>::deregister_factory();
+        mili::FactoryRegistry<BaseClass, Key>::template deregister_factory();
     }
 };
 
 #define REGISTER_FACTORIZABLE_CLASS(BaseClassName, DerivedClassName, key) \
-static mili::Registerer<BaseClassName,DerivedClassName> r##DerivedClassName(key)
+static mili::Registerer<BaseClassName,DerivedClassName> r##DerivedClassName(std::string(key))
