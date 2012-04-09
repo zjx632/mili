@@ -13,4 +13,4 @@ void Hello::saySomething()
     std::cout << "Hello" << std::endl;
 }
 
-REGISTER_FACTORIZABLE_CLASS(Speaker,Hello,std::string, std::string("Hello"));
+REGISTER_FACTORIZABLE_CLASS(Speaker, Hello, std::string, std::string("Hello"));

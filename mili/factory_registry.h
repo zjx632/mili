@@ -68,9 +68,9 @@ public:
     }
 
 };
-template<class Base, class Key> FactoryRegistry<Base,Key> * FactoryRegistry<Base,Key>::instance = NULL;
+template<class Base, class Key> FactoryRegistry<Base, Key>* FactoryRegistry<Base, Key>::instance = NULL;
 
-template<class BaseClass, class DerivedClass,class Key>
+template<class BaseClass, class DerivedClass, class Key>
 class Registerer
 {
 public:
@@ -80,7 +80,7 @@ public:
     }
     ~Registerer()
     {
-        mili::FactoryRegistry<BaseClass,Key>::deregister_factory();
+        mili::FactoryRegistry<BaseClass, Key>::deregister_factory();
     }
 };
 
