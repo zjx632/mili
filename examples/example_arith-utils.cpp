@@ -41,7 +41,7 @@ int main()
         return EXIT_FAILURE;
     }
 
-    r = power<-2>(2);
+    r = power < -2 > (2);
     std::cout << "2^(-2) == " << r << std::endl;
     if (r != .25)
     {
