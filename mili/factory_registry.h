@@ -68,23 +68,21 @@ public:
     }
 
 };
-template<class Base, class Key> FactoryRegistry<Base,Key> * FactoryRegistry<Base,Key>::instance = 0;
+template<class Base, class Key> FactoryRegistry<Base,Key> * FactoryRegistry<Base,Key>::instance = NULL;
 
-template<class BaseClass, class DerivedClass>
+template<class BaseClass, class DerivedClass,class Key>
 class Registerer
 {
 public:
-    template <class Key>
     Registerer(const Key& k)
     {
         mili::FactoryRegistry<BaseClass, Key>::template register_factory<DerivedClass>(k);
     }
-    template<class Key>
     ~Registerer()
     {
-        mili::FactoryRegistry<BaseClass, Key>::template deregister_factory();
+        mili::FactoryRegistry<BaseClass,Key>::deregister_factory();
     }
 };
 
-#define REGISTER_FACTORIZABLE_CLASS(BaseClassName, DerivedClassName, key) \
-static mili::Registerer<BaseClassName,DerivedClassName> r##DerivedClassName(std::string(key))
+#define REGISTER_FACTORIZABLE_CLASS(BaseClassName, DerivedClassName, keytype, key) \
+static mili::Registerer<BaseClassName,DerivedClassName,keytype> r##DerivedClassName(key)
