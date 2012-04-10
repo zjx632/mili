@@ -44,7 +44,7 @@ declare_static_assert(must_use_container);
 
 class BstreamExceptionHierarchy {};
 
-typedef GenericException<BstreamExceptionHierarchy> BstreamException;
+typedef GenericException< BstreamExceptionHierarchy> BstreamException;
 
 DEFINE_SPECIFIC_EXCEPTION_TEXT(container_not_finished,
                                BstreamExceptionHierarchy,
@@ -132,7 +132,7 @@ struct NoDebugPolicyBostream
 template <typename T>
 struct NoDebugPolicyBistream
 {
-    static void on_debug(uint32_t&, std::string&){}
+    static void on_debug(uint32_t&, std::string&) {}
 };
 
 /**

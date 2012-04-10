@@ -51,7 +51,7 @@ TEST(TemplateInfoTest, is_floating_point)
 TEST(TemplateInfoTest, is_pointer)
 {
     ASSERT_TRUE(bool(template_info<int*>::is_pointer));
-    ASSERT_TRUE(bool(template_info<int *const>::is_pointer));
+    ASSERT_TRUE(bool(template_info<int* const>::is_pointer));
 }
 
 TEST(TemplateInfoTest, is_reference)
@@ -80,7 +80,7 @@ TEST(TemplateInfoTest, is_container)
 TEST(TemplateInfoTest, is_const)
 {
     ASSERT_TRUE(bool(template_info<const int>::is_const));
-    ASSERT_TRUE(bool(template_info<int *const>::is_const));
+    ASSERT_TRUE(bool(template_info<int* const>::is_const));
     ASSERT_FALSE(bool(template_info<const int*>::is_const));
 }
 

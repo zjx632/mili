@@ -110,6 +110,10 @@ public:
     }
 };
 
+#define FACTORY_REGISTRY_H
+#include "factory_registry.h"
+#undef FACTORY_REGISTRY_H
+
 NAMESPACE_END
 
 #endif
