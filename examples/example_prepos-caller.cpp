@@ -43,7 +43,7 @@ void sample_using_print()
     cout << "Sample using print:\n";
     Test t;
     PrePosPrinter pre("pre"), pos("pos");
-    PrePosCaller<Test * const, PrePosPrinter, PrePosPrinter> ppc(&t, pre, pos);
+    PrePosCaller<Test* const, PrePosPrinter, PrePosPrinter> ppc(&t, pre, pos);
 
     ppc->f();
 }
@@ -58,7 +58,7 @@ void sample_using_mutex()
     PreMutex pre(&mutex);
     PosMutex pos(&mutex);
 
-    PrePosCaller<Test * const, PreMutex, PosMutex> ppc(&t, pre, pos);
+    PrePosCaller<Test* const, PreMutex, PosMutex> ppc(&t, pre, pos);
 
     ppc->f();
 }
@@ -71,7 +71,7 @@ void sample_using_mutex_and_print()
 
     PrePosPrinter pre_print("pre"), pos_print("pos");
 
-    typedef PrePosCaller<Test * const, PrePosPrinter, PrePosPrinter> PPC_Printer;
+    typedef PrePosCaller<Test* const, PrePosPrinter, PrePosPrinter> PPC_Printer;
 
     PPC_Printer ppc_printer(&t, pre_print, pos_print);
 

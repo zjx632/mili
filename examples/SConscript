@@ -20,6 +20,7 @@ env.CreateProgram('mili-example_delete-container', inc, env.File('example_delete
 env.CreateProgram('mili-example_loop-unrolling', inc, env.File('example_loop-unrolling.cpp'), deps)
 env.CreateProgram('mili-example_promotion-disable', inc, env.File('example_promotion-disable.cpp'), deps)
 env.CreateProgram('mili-example_factory', inc, env.File('example_factory.cpp'), deps)
+env.CreateProgram('mili-example_factory_registry', inc, env.File('example_factory_registry.cpp'), deps)
 env.CreateProgram('mili-example_invariants', inc, env.File('example_invariants.cpp'), deps)
 env.CreateProgram('mili-example_bitwise-enums', inc, env.File('example_bitwise-enums.cpp'), deps)
 env.CreateProgram('mili-example_type-mapper', inc, env.File('example_type-mapper.cpp'), deps)
@@ -29,4 +30,5 @@ env.CreateProgram('mili-example_string-utils', inc, env.File('example_string-uti
 env.CreateProgram('mili-example_coroutines_extended', inc, env.File('example_coroutines_extended.cpp'), deps)
 env.CreateProgram('mili-example_coroutines_advanced', inc, env.File('example_coroutines_advanced.cpp'), deps)
 env.CreateProgram('mili-example_random-gen', inc, env.File('example_random-gen.cpp'), deps)
+
 
