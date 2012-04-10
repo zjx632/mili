@@ -49,7 +49,7 @@ void Hello::saySomething()
     std::cout << "Hello" << std::endl;
 }
 
-REGISTER_FACTORIZABLE_CLASS(Speaker, Hello, std::string, std::string("Hello"));
+REGISTER_FACTORIZABLE_CLASS(Speaker, Hello, std::string, "Hello");
 
 //! End of Hello.cpp
 
@@ -66,7 +66,7 @@ void Goodbye::saySomething()
     std::cout << "Goodbye" << std::endl;
 }
 
-REGISTER_FACTORIZABLE_CLASS(Speaker, Goodbye, std::string, std::string("Goodbye"));
+REGISTER_FACTORIZABLE_CLASS(Speaker, Goodbye, std::string, "Goodbye");
 
 //! End of Goodbye.cpp
 

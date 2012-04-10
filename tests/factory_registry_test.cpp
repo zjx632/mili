@@ -41,7 +41,7 @@ class PlusOne: public IntOperation
     }
 };
 
-REGISTER_FACTORIZABLE_CLASS(IntOperation, PlusOne, string, string("PlusOne"));
+REGISTER_FACTORIZABLE_CLASS(IntOperation, PlusOne, string, "PlusOne");
 
 class MinusOne: public IntOperation
 {
@@ -51,7 +51,7 @@ class MinusOne: public IntOperation
     }
 };
 
-REGISTER_FACTORIZABLE_CLASS(IntOperation, MinusOne, string, string("MinusOne"));
+REGISTER_FACTORIZABLE_CLASS(IntOperation, MinusOne, string, "MinusOne");
 
 class TimesFive: public IntOperation
 {
@@ -61,7 +61,7 @@ class TimesFive: public IntOperation
     }
 };
 
-REGISTER_FACTORIZABLE_CLASS(IntOperation, TimesFive, string, string("TimesFive"));
+REGISTER_FACTORIZABLE_CLASS(IntOperation, TimesFive, string, "TimesFive");
 
 TEST(FactoryRegistryTest, ReturnTest)
 {
@@ -74,11 +74,11 @@ TEST(FactoryRegistryTest, ReturnTest)
     IntOperation* timesfive;
     timesfive = FactoryRegistry<IntOperation, string>::new_class("TimesFive");
     ASSERT_NE(static_cast<IntOperation*>(NULL), timesfive);
-    ASSERT_EQ(4, plusone->unaryOperation(3));
+    EXPECT_EQ(4, plusone->unaryOperation(3));
     delete plusone;
-    ASSERT_EQ(3, minusone->unaryOperation(4));
+    EXPECT_EQ(3, minusone->unaryOperation(4));
     delete minusone;
-    ASSERT_EQ(15, timesfive->unaryOperation(3));
+    EXPECT_EQ(15, timesfive->unaryOperation(3));
     delete timesfive;
 }
 

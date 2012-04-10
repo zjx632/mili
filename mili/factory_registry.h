@@ -41,7 +41,7 @@ private:
     }
     BaseClass* _new_class(const Key& k)
     {
-        return fc.new_class(k);;
+        return fc.new_class(k);
     }
     bool _deregister_factory()
     {
