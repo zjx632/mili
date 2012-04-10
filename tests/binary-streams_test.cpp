@@ -90,7 +90,7 @@ struct A
 
     bool operator==(const A& o) const
     {
-        return  (id == o.id && name == o.name && a == o.a);
+        return (id == o.id && name == o.name && a == o.a);
     }
 };
 

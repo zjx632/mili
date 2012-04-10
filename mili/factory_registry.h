@@ -63,10 +63,10 @@ public:
     static void deregister_factory()
     {
         if (instance->_deregister_factory())
-		{
+        {
             delete instance;
-			instance = NULL;
-		}
+            instance = NULL;
+        }
     }
 
 };
