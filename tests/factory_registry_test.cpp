@@ -18,10 +18,9 @@
 
     This is a test file.
 */
-
+#include <string>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <string>
 #include "mili/mili.h"
 
 using namespace mili;
@@ -30,14 +29,16 @@ using std::string;
 
 struct IntOperation
 {
-    virtual void unaryOperation(int& n) = 0;
+    virtual int unaryOperation(int& n) = 0;
+    virtual ~IntOperation() {}
 };
 
 class PlusOne: public IntOperation
 {
-    virtual void unaryOperation(int& n)
+    virtual int unaryOperation(int& n)
     {
         n++;
+        return n;
     }
 };
 
@@ -45,9 +46,10 @@ REGISTER_FACTORIZABLE_CLASS(IntOperation, PlusOne, string, string("PlusOne"));
 
 class MinusOne: public IntOperation
 {
-    virtual void unaryOperation(int& n)
+    virtual int unaryOperation(int& n)
     {
         n--;
+        return n;
     }
 };
 
@@ -55,9 +57,10 @@ REGISTER_FACTORIZABLE_CLASS(IntOperation, MinusOne, string, string("MinusOne"));
 
 class TimesFive: public IntOperation
 {
-    virtual void unaryOperation(int& n)
+    virtual int unaryOperation(int& n)
     {
         n = n * 5;
+        return n;
     }
 };
 
@@ -65,32 +68,27 @@ REGISTER_FACTORIZABLE_CLASS(IntOperation, TimesFive, string, string("TimesFive")
 
 TEST(FactoryRegistryTest, ReturnTest)
 {
-    int n = 3;
     IntOperation* plusone;
+    plusone = FactoryRegistry<IntOperation, string>::new_class("PlusOne");
+    ASSERT_NE(static_cast<IntOperation*>(NULL), plusone);
     IntOperation* minusone;
+    minusone = FactoryRegistry<IntOperation, string>::new_class("MinusOne");
+    ASSERT_NE(static_cast<IntOperation*>(NULL), minusone);
     IntOperation* timesfive;
-
-    plusone = FactoryRegistry<IntOperation, string>::new_class(string("PlusOne"));
-    ASSERT_NE(plusone, static_cast<IntOperation*>(NULL));
-    minusone = FactoryRegistry<IntOperation, string>::new_class(string("MinusOne"));
-    ASSERT_NE(minusone, static_cast<IntOperation*>(NULL));
-    timesfive = FactoryRegistry<IntOperation, string>::new_class(string("TimesFive"));
-    ASSERT_NE(timesfive, static_cast<IntOperation*>(NULL));
-    plusone->unaryOperation(n);
-    ASSERT_EQ(n, 4);
-    minusone->unaryOperation(n);
-    ASSERT_EQ(n, 3);
-    timesfive->unaryOperation(n);
-    ASSERT_EQ(n, 15);
+    timesfive = FactoryRegistry<IntOperation, string>::new_class("TimesFive");
+    ASSERT_NE(static_cast<IntOperation*>(NULL), timesfive);
+    int n = 3;
+    ASSERT_EQ(4, plusone->unaryOperation(n));
     delete plusone;
+    ASSERT_EQ(3, minusone->unaryOperation(n));
     delete minusone;
+    ASSERT_EQ(15, timesfive->unaryOperation(n));
     delete timesfive;
 }
 
 TEST(FactoryRegistryTest, NoRegisteredClassTest)
 {
     IntOperation* anyone;
-
-    anyone = FactoryRegistry<IntOperation, std::string>::new_class(string("TimesSeven"));
-    ASSERT_EQ(anyone, static_cast<IntOperation*>(NULL));
+    anyone = FactoryRegistry<IntOperation, std::string>::new_class("TimesSeven");
+    ASSERT_EQ(static_cast<IntOperation*>(NULL), anyone);
 }
