@@ -36,16 +36,16 @@ private:
     template <class DerivedClass>
     void _register_factory(const Key& k)
     {
-        users++;
+        ++users;
         fc.register_factory<DerivedClass>(k);
     }
-    BaseClass* _new_class(Key& k)
+    BaseClass* _new_class(const Key& k)
     {
         return fc.new_class(k);;
     }
     bool _deregister_factory()
     {
-        users--;
+        --users;
         return (users == 0);
     }
 public:
@@ -56,7 +56,7 @@ public:
             instance = new FactoryRegistry<BaseClass, Key>;
         instance->_register_factory<DerivedClass>(k);
     }
-    static BaseClass* new_class(Key& k)
+    static BaseClass* new_class(const Key& k)
     {
         return instance->_new_class(k);
     }
@@ -86,5 +86,5 @@ public:
     }
 };
 
-#define REGISTER_FACTORIZABLE_CLASS(BaseClassName, DerivedClassName, keytype, key) \
-static mili::Registerer<BaseClassName,DerivedClassName,keytype> r##DerivedClassName(key)
+#define REGISTER_FACTORIZABLE_CLASS(BaseClassName, DerivedClassName, keytype, key)           \
+    static mili::Registerer<BaseClassName,DerivedClassName,keytype>  r##DerivedClassName(key)

@@ -69,16 +69,12 @@ TEST(FactoryRegistryTest, ReturnTest)
     IntOperation* plusone;
     IntOperation* minusone;
     IntOperation* timesfive;
-    string key;
 
-    key = "PlusOne";
-    plusone = FactoryRegistry<IntOperation, string>::new_class(key);
+    plusone = FactoryRegistry<IntOperation, string>::new_class(string("PlusOne"));
     ASSERT_NE(plusone, static_cast<IntOperation*>(NULL));
-    key = "MinusOne";
-    minusone = FactoryRegistry<IntOperation, string>::new_class(key);
+    minusone = FactoryRegistry<IntOperation, string>::new_class(string("MinusOne"));
     ASSERT_NE(minusone, static_cast<IntOperation*>(NULL));
-    key = "TimesFive";
-    timesfive = FactoryRegistry<IntOperation, string>::new_class(key);
+    timesfive = FactoryRegistry<IntOperation, string>::new_class(string("TimesFive"));
     ASSERT_NE(timesfive, static_cast<IntOperation*>(NULL));
     plusone->unaryOperation(n);
     ASSERT_EQ(n, 4);
@@ -94,8 +90,7 @@ TEST(FactoryRegistryTest, ReturnTest)
 TEST(FactoryRegistryTest, NoRegisteredClassTest)
 {
     IntOperation* anyone;
-    string key = "TimesSeven";
 
-    anyone = FactoryRegistry<IntOperation, std::string>::new_class(key);
+    anyone = FactoryRegistry<IntOperation, std::string>::new_class(string("TimesSeven"));
     ASSERT_EQ(anyone, static_cast<IntOperation*>(NULL));
 }
