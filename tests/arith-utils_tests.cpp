@@ -40,7 +40,7 @@ TEST(ArithUtilsTest, power)
 
 TEST(ArithUtilsTest, power_negative_base)
 {
-    ASSERT_EQ(.25, power <-2> (2));
+    ASSERT_EQ(.25, power < -2 > (2));
 }
 
 TEST(ArithUtilsTest, cubic_root)

@@ -45,7 +45,7 @@ TEST(PreposCallerTest, bchain)
 {
     Foo t;
     PrePosMock pre, pos;
-    PrePosCaller<Foo * const, PrePosMock, PrePosMock> ppc(&t, pre, pos);
+    PrePosCaller<Foo* const, PrePosMock, PrePosMock> ppc(&t, pre, pos);
     testing::Expectation pre_expectation = EXPECT_CALL(pre, mocked_operator()).Times(1);
     testing::Expectation f_expectation = EXPECT_CALL(t, f()).Times(1).After(pre_expectation);
     EXPECT_CALL(pos, mocked_operator()).Times(1).After(f_expectation);

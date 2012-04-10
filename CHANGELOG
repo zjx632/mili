@@ -1,5 +1,6 @@
 Version 17  UNRELEASED
-===========    
+===========
+    * Factory Registry: Added an internal file named "factory_registry.h". It Added support to automatic derived classes registry
     * Type mapper: added the map_type_ macro when no 'typename' is required.
     * Changed the interface of Disposal Policy.
     * Initial support for C++0x static_assert in compile_assert.
