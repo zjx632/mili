@@ -29,16 +29,15 @@ using std::string;
 
 struct IntOperation
 {
-    virtual int unaryOperation(int& n) = 0;
+    virtual int unaryOperation(const int n) = 0;
     virtual ~IntOperation() {}
 };
 
 class PlusOne: public IntOperation
 {
-    virtual int unaryOperation(int& n)
+    virtual int unaryOperation(const int n)
     {
-        n++;
-        return n;
+        return n + 1;
     }
 };
 
@@ -46,10 +45,9 @@ REGISTER_FACTORIZABLE_CLASS(IntOperation, PlusOne, string, string("PlusOne"));
 
 class MinusOne: public IntOperation
 {
-    virtual int unaryOperation(int& n)
+    virtual int unaryOperation(const int n)
     {
-        n--;
-        return n;
+        return n - 1;
     }
 };
 
@@ -57,10 +55,9 @@ REGISTER_FACTORIZABLE_CLASS(IntOperation, MinusOne, string, string("MinusOne"));
 
 class TimesFive: public IntOperation
 {
-    virtual int unaryOperation(int& n)
+    virtual int unaryOperation(const int n)
     {
-        n = n * 5;
-        return n;
+        return n * 5;
     }
 };
 
@@ -77,12 +74,11 @@ TEST(FactoryRegistryTest, ReturnTest)
     IntOperation* timesfive;
     timesfive = FactoryRegistry<IntOperation, string>::new_class("TimesFive");
     ASSERT_NE(static_cast<IntOperation*>(NULL), timesfive);
-    int n = 3;
-    ASSERT_EQ(4, plusone->unaryOperation(n));
+    ASSERT_EQ(4, plusone->unaryOperation(3));
     delete plusone;
-    ASSERT_EQ(3, minusone->unaryOperation(n));
+    ASSERT_EQ(3, minusone->unaryOperation(4));
     delete minusone;
-    ASSERT_EQ(15, timesfive->unaryOperation(n));
+    ASSERT_EQ(15, timesfive->unaryOperation(3));
     delete timesfive;
 }
 
