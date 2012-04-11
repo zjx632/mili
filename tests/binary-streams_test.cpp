@@ -208,19 +208,37 @@ TEST(BinaryStream, BSTREAMS_DEBUG_typemismatch_test)
 
     bostream bos;
     const int int_loaded = 3;
-    const char char_loaded[] = {'e', '4', 'f', 'r', 'y'};
-
     float float_loaded;
-    unsigned char uchar_loaded[5];
+
+    long long_loaded = 12345;
+    double doble_loaded;
 
     bos << int_loaded;
     bistream bis(bos.str());
     ASSERT_THROW(bis >> float_loaded, type_mismatch);
 
     bos.clear();
-    bos << char_loaded;
+    bos << long_loaded;
     bis.str(bos.str());
-    ASSERT_THROW(bis >> uchar_loaded, type_mismatch);
+    ASSERT_THROW(bis >> doble_loaded, type_mismatch);
+}
+
+
+TEST(BinaryStream, BSTREAMS_DEBUG_sizetypemismatch_test)
+{
+    typedef class mili::bostream<mili::DebugPolicyBostream> bostream;
+    typedef class mili::bistream<mili::DebugPolicyBistream> bistream;
+
+    bostream bos;
+
+    int int_loaded = 5;
+    short int_readed;
+
+    bos.clear();
+    bos << int_loaded;
+
+    bistream bis(bos.str());
+    ASSERT_THROW(bis >> int_readed, type_size_mismatch);
 }
 TEST(BinaryStream, BSTREAMS_NO_DEBUG_typemismatch_test)
 {
