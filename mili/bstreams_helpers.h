@@ -19,8 +19,11 @@ binary_streams: A minimal library supporting encoding of different data
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef BINARY_STREAMS_HELPERS_H
-#define BINARY_STREAMS_HELPERS_H
+
+#ifndef BSTREAM_HELPERS_H
+#   error Internal header file, DO NOT include this.
+#endif
+
 
 
 #include <string>
@@ -36,6 +39,8 @@ binary_streams: A minimal library supporting encoding of different data
 
 
 NAMESPACE_BEGIN
+
+
 
 
 class BstreamExceptionHierarchy {};
@@ -69,6 +74,10 @@ DEFINE_SPECIFIC_EXCEPTION_TEXT(type_mismatch,
 DEFINE_SPECIFIC_EXCEPTION_TEXT(type_size_mismatch,
                                mili::BstreamExceptionHierarchy,
                                "Types of input and output streams mismatch in size.");
+
+
+
+
 
 
 typedef std::string EncodingType;
@@ -263,4 +272,3 @@ struct NoDebugPolicyBistream
 
 NAMESPACE_END
 
-#endif
