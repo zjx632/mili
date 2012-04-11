@@ -240,6 +240,24 @@ TEST(BinaryStream, BSTREAMS_DEBUG_sizetypemismatch_test)
     bistream bis(bos.str());
     ASSERT_THROW(bis >> int_readed, type_size_mismatch);
 }
+
+TEST(BinaryStream, BSTREAMS_NO_DEBUG_sizetypemismatch_test)
+{
+    typedef class mili::bostream<mili::NoDebugPolicyBostream> bostream;
+    typedef class mili::bistream<mili::NoDebugPolicyBistream> bistream;
+
+    bostream bos;
+
+    int int_loaded = 5;
+    short int_readed;
+
+    bos.clear();
+    bos << int_loaded;
+
+    bistream bis(bos.str());
+    EXPECT_NO_THROW(bis >> int_readed);
+}
+
 TEST(BinaryStream, BSTREAMS_NO_DEBUG_typemismatch_test)
 {
     typedef class mili::bostream<mili::NoDebugPolicyBostream> bostream;
