@@ -161,7 +161,7 @@ static void load_file_without_exception(const char* name)
     std::ifstream f(name);
     std::vector<float> v;
 
-    if(!(f>>v))
+    if (!(f >> v))
     {
         ASSERT_EQ(true, f.fail()); /* fail is true if either badbit or failbit is set*/
         ASSERT_EQ(false, f.good());
@@ -175,7 +175,7 @@ static void write_file_with_exception(const char* name)
     std::ofstream f(name);
     std::vector<float> v;
     std::string message;
-    f.exceptions (std::ifstream::badbit | std::ifstream::failbit);
+    f.exceptions(std::ifstream::badbit | std::ifstream::failbit);
 
     for (int j = 0; j <= 10; j++)
         insert_into(v, static_cast<float>(j));
@@ -185,7 +185,7 @@ static void write_file_with_exception(const char* name)
     {
         f << v; /* PROVIDED BY MiLi */
     }
-    catch(std::exception &e)
+    catch (const std::exception& e)
     {
         message = e.what();
     }
@@ -200,14 +200,14 @@ static void read_file_with_exception(const char* name)
     std::ifstream f(name);
     std::vector<float> v;
     std::string message;
-    f.exceptions (std::ifstream::badbit | std::ifstream::failbit);
+    f.exceptions(std::ifstream::badbit | std::ifstream::failbit);
     f.close(); /* Closing file will produce an expcetion */
 
     try
     {
         f >> v;  /* PROVIDED BY MiLi */
     }
-    catch(std::exception &e)
+    catch (const std::exception& e)
     {
         message = e.what();
     }
