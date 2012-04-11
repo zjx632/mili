@@ -34,16 +34,16 @@ binary_streams: A minimal library supporting encoding of different data
 #include "generic_exception.h"
 #include "template_info.h"
 #include "container_utils.h"
-#include "bstreams_helpers.h"
 
+#define BSTREAM_HELPERS_H
+#include "bstreams_helpers.h"
+#undef BSTREAM_HELPERS_H
 
 NAMESPACE_BEGIN
 
+
 declare_static_assert(pointers_not_allowed);
 declare_static_assert(must_use_container);
-
-
-
 
 
 
