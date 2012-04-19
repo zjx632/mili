@@ -440,7 +440,7 @@ class FastList
             if (ShrinkPolicy::Chunk::NEED_INIT_NODES)
             {
                 for (size_t i = 0; i < CHUNK_SIZE; ++i)
-                    init_node(nodes[i]);
+                    this->init_node(nodes[i]);
             }
 
             if (CHUNK_SIZE > 1)
