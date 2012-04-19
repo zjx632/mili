@@ -163,9 +163,8 @@ static void load_file_without_exception(const char* name)
 
     if (!(f >> v))
     {
-        ASSERT_EQ(true, f.fail()); /* fail is true if either badbit or failbit is set*/
-        ASSERT_EQ(false, f.good());
-
+        ASSERT_TRUE(f.fail()); /* fail is true if either badbit or failbit is set*/
+        ASSERT_FALSE(f.good());
     }
 
 }
