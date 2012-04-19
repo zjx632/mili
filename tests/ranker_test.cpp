@@ -206,9 +206,11 @@ TEST(RankerTest, test_delete_disposal)
 {
     PointerRanking UR(2);
 
-    ASSERT_TRUE(UR.insert(new int(1)));
-    ASSERT_TRUE(UR.insert(new int(3)));
-    ASSERT_FALSE(UR.insert(new int(2)));
+    Randomizer<int> r(0, 1000);
+    for (unsigned int i = 0; i < 10000; ++i)
+    {
+        UR.insert(new int(r.get()));
+    }
 }
 
 //RankerLineal
