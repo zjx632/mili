@@ -19,92 +19,32 @@
     This is a test file.
 */
 
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
-#include "mili/mili.h"
-
-using std::string;
-using namespace mili;
-
-struct Player
-{
-    string name;
-    float  score;
-
-    Player(string name, float score)
-        : name(name),
-          score(score)
-    {}
-};
-
-/* Compare two Players' names */
-struct PlayerUnique
-{
-    bool operator()(const Player& p1, const Player& p2)
-    {
-        return p1.name > p2.name;
-    }
-};
-
-/* Compare two Players' scores */
-struct PlayerRanking
-{
-    bool operator()(const Player& p1, const Player& p2)
-    {
-        return p1.score > p2.score;
-    }
-};
-
-/* Compare two Players' names */
-struct PlayerPointerUnique
-{
-    bool operator()(const Player* const p1, const Player* const p2)
-    {
-        PlayerUnique c;
-        return p1 != NULL && p2 != NULL && c.operator()(*p1, *p2);
-    }
-};
-
-/* Compare two Players' scores */
-struct PlayerPointerRanking
-{
-    bool operator()(const Player* const p1, const Player* const p2)
-    {
-        PlayerRanking c;
-        return p1 != NULL && p2 != NULL && c.operator()(*p1, *p2);
-    }
-};
+#include "ranker_test.h"
 
 typedef UniqueRanker<Player, PlayerRanking, PlayerUnique> PlayersRanking;
-typedef UniqueRanker<Player*, PlayerPointerRanking, PlayerPointerUnique, 
+typedef CAutonomousIterator<PlayersRanking> PlayersRankingIterator;
+
+typedef UniqueRanker < Player*, PlayerPointerAdapter<PlayerRanking>, PlayerPointerAdapter<PlayerUnique>,
         DisposalDeletePolicy<Player*> > PointerPlayersUniqueRanking;
+typedef CAutonomousIterator<PointerPlayersUniqueRanking> PointerPlayersUniqueRankingIterator;
 
-bool isSorted(CAutonomousIterator<PointerPlayersUniqueRanking> it)
+template <>
+struct GetScore<float, PlayersRankingIterator>
 {
-    bool sorted = true;
-    float score = (*it)->score;
-    while (!it.end() && sorted)
+    float operator()(const PlayersRankingIterator& it)
     {
-        sorted = (score >= (*it)->score);
-        score = (*it)->score;
-        ++it;
+        return it->score;
     }
-    return sorted;
-}
+};
 
-template<class T>
-bool isSorted(CAutonomousIterator<T> it)
+template <>
+struct GetScore<float, PointerPlayersUniqueRankingIterator>
 {
-    bool sorted = true;
-    float score = it->score;
-    while (!it.end() && sorted)
+    float operator()(const PointerPlayersUniqueRankingIterator& it)
     {
-        sorted = (score >= it->score);
-        score = it->score;
-        ++it;
+        return (*it)->score;
     }
-    return sorted;
-}
+};
 
 TEST(UniqueRankerTest, test_delete_disposal)
 {
@@ -119,15 +59,16 @@ TEST(UniqueRankerTest, test_delete_disposal)
     ASSERT_TRUE(UR.insert(new Player("Umpa lumpa B", .5)));
     ASSERT_TRUE(UR.insert(new Player("Umpa lumpa F", .8)));
 
-    CAutonomousIterator<PointerPlayersUniqueRanking> it(UR);
-    ASSERT_TRUE(isSorted(it));
+    PointerPlayersUniqueRankingIterator it(UR);
+    ASSERT_TRUE((isSorted<float, PointerPlayersUniqueRankingIterator>(it)));
 
     ASSERT_EQ("Umpa lumpa F", UR.top()->name);
     ASSERT_EQ("Umpa lumpa C", UR.bottom()->name);
 
     UR.remove(new Player("Umpa lumpa E", .6));
-    CAutonomousIterator<PointerPlayersUniqueRanking> it2(UR);
-    ASSERT_TRUE(isSorted(it2));
+    PointerPlayersUniqueRankingIterator it2(UR);
+    ASSERT_TRUE((isSorted<float, PointerPlayersUniqueRankingIterator>(it2)));
+
 }
 
 TEST(UniqueRankerTest, test_pointer)
@@ -143,32 +84,31 @@ TEST(UniqueRankerTest, test_pointer)
     ASSERT_TRUE(UR.insert(Player("Umpa lumpa B", .5)));
     ASSERT_TRUE(UR.insert(Player("Umpa lumpa F", .8)));
 
-    CAutonomousIterator<PlayersRanking> it(UR);
-    ASSERT_TRUE(isSorted<PlayersRanking>(it));
+    PlayersRankingIterator it(UR);
+    ASSERT_TRUE((isSorted<float, PlayersRankingIterator>(it)));
 
     ASSERT_EQ("Umpa lumpa F", UR.top().name);
     ASSERT_EQ("Umpa lumpa C", UR.bottom().name);
 
     UR.remove(Player("Umpa lumpa E", .6));
-    CAutonomousIterator<PlayersRanking> it2(UR);
-    ASSERT_TRUE(isSorted<PlayersRanking>(it2));
+    PlayersRankingIterator it2(UR);
+    ASSERT_TRUE((isSorted<float, PlayersRankingIterator>(it2)));
 }
 
 typedef Ranker<int, AddBeforeEqual> Ranking;
-typedef Ranker<int*, AddBeforeEqual, std::less<int*>, DisposalNullPolicy<int*> > PointerRanking;
+typedef CAutonomousIterator<Ranking> RankingIterator;
 
-bool isSorted(CAutonomousIterator<Ranking> it)
+typedef Ranker<int*, AddBeforeEqual, std::less<int*>, DisposalNullPolicy<int*> > PointerRanking;
+typedef CAutonomousIterator<PointerRanking> PointerRankingIterator;
+
+template<>
+struct GetScore<int, RankingIterator>
 {
-    bool sorted = true;
-    int score = *it;
-    while (!it.end() && sorted)
+    int operator()(const RankingIterator& it)
     {
-        sorted = (score >= *it);
-        score = *it;
-        ++it;
+        return *it;
     }
-    return sorted;
-}
+};
 
 TEST(RankerTest, test)
 {
@@ -182,17 +122,17 @@ TEST(RankerTest, test)
     R.insert(20);
     R.insert(I);
 
-    CAutonomousIterator<Ranking> it(R);
-    isSorted(it);
+    RankingIterator it(R);
+    isSorted<int, RankingIterator>(it);
 
     R.insert(0);
     R.insert(50);
-    CAutonomousIterator<Ranking> it1(R);
-    isSorted(it1);
+    RankingIterator it1(R);
+    isSorted<int, RankingIterator>(it1);
 
     R.remove_all(I);
-    CAutonomousIterator<Ranking> it2(R);
-    isSorted(it2);
+    RankingIterator it2(R);
+    isSorted<int, RankingIterator>(it2);
 
     ASSERT_EQ(3, R.size());
     ASSERT_EQ(0, R.top());
@@ -213,41 +153,38 @@ TEST(RankerTest, test_delete_disposal)
     }
 }
 
-//RankerLineal
-struct PlayerLineal : Player
-{
-    PlayerLineal(const string& name, float score)
-        : Player(name, score)
-    {}
+typedef UniqueRankerLineal<Player, PlayerRanking> PlayersRankingLineal;
+typedef CAutonomousIterator<PlayersRankingLineal> PlayersRankingLinealIterator;
 
-    bool operator==(const Player& aPlayer) const
+template<>
+struct GetScore<float, PlayersRankingLinealIterator>
+{
+    float operator()(const PlayersRankingLinealIterator& it)
     {
-        return name == aPlayer.name;
+        return it->score;
     }
 };
-
-typedef UniqueRankerLineal<PlayerLineal, PlayerRanking> PlayersRankingLineal;
 
 TEST(UniqueRankerLinealTest, test)
 {
     PlayersRankingLineal UR(5);
 
-    ASSERT_TRUE(UR.insert(PlayerLineal("Umpa lumpa A", .1)));
-    ASSERT_TRUE(UR.insert(PlayerLineal("Umpa lumpa B", .3)));
-    ASSERT_TRUE(UR.insert(PlayerLineal("Umpa lumpa C", .3)));
-    ASSERT_FALSE(UR.insert(PlayerLineal("Umpa lumpa B", .2)));
-    ASSERT_TRUE(UR.insert(PlayerLineal("Umpa lumpa D", .5)));
-    ASSERT_TRUE(UR.insert(PlayerLineal("Umpa lumpa E", .6)));
-    ASSERT_TRUE(UR.insert(PlayerLineal("Umpa lumpa B", .5)));
-    ASSERT_TRUE(UR.insert(PlayerLineal("Umpa lumpa F", .8)));
+    ASSERT_TRUE(UR.insert(Player("Umpa lumpa A", .1)));
+    ASSERT_TRUE(UR.insert(Player("Umpa lumpa B", .3)));
+    ASSERT_TRUE(UR.insert(Player("Umpa lumpa C", .3)));
+    ASSERT_FALSE(UR.insert(Player("Umpa lumpa B", .2)));
+    ASSERT_TRUE(UR.insert(Player("Umpa lumpa D", .5)));
+    ASSERT_TRUE(UR.insert(Player("Umpa lumpa E", .6)));
+    ASSERT_TRUE(UR.insert(Player("Umpa lumpa B", .5)));
+    ASSERT_TRUE(UR.insert(Player("Umpa lumpa F", .8)));
 
     CAutonomousIterator<PlayersRankingLineal> it(UR);
-    ASSERT_TRUE(isSorted<PlayersRankingLineal>(it));
+    ASSERT_TRUE((isSorted<float, PlayersRankingLinealIterator>(it)));
 
     ASSERT_EQ("Umpa lumpa F", UR.top().name);
     ASSERT_EQ("Umpa lumpa C", UR.bottom().name);
 
-    UR.remove(PlayerLineal("Umpa lumpa E", .6));
+    UR.remove(Player("Umpa lumpa E", .6));
     CAutonomousIterator<PlayersRankingLineal> it2(UR);
-    ASSERT_TRUE(isSorted<PlayersRankingLineal>(it2));
+    ASSERT_TRUE((isSorted<float, PlayersRankingLinealIterator>(it2)));
 }
