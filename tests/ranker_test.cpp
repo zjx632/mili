@@ -206,7 +206,7 @@ TEST(RankerTest, test_delete_disposal)
 {
     PointerRanking UR(2);
 
-    Randomizer<int> r(0, 1000);
+    Randomizer<int> r(0, 1000, 0);
     for (unsigned int i = 0; i < 10000; ++i)
     {
         UR.insert(new int(r.get()));
