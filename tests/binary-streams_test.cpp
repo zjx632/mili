@@ -26,10 +26,7 @@
 #include <string>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-
 #include "mili/mili.h"
-
-
 
 using namespace mili;
 
@@ -48,7 +45,7 @@ void assertArrayEquals(const T& a1, const T& a2, unsigned int size)
 
 std::string get_TypeId(const std::string& s)
 {
-    uint32_t a;
+    uint32_t a = 0;
 
     s.copy(reinterpret_cast<char*>(&a), sizeof(uint32_t), 0);
 
@@ -60,7 +57,6 @@ std::string get_TypeId(const std::string& s)
 
 struct A
 {
-
     typedef class mili::bostream<mili::DebugPolicyBostream> bostream;
     typedef class mili::bistream<mili::DebugPolicyBistream> bistream;
 
