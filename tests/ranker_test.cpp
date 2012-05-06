@@ -65,10 +65,11 @@ TEST(UniqueRankerTest, test_delete_disposal)
     ASSERT_EQ("Umpa lumpa F", UR.top()->name);
     ASSERT_EQ("Umpa lumpa C", UR.bottom()->name);
 
-    UR.remove(new Player("Umpa lumpa E", .6));
+    Player* p = new Player("Umpa lumpa E", .6);
+    UR.remove(p);
+    delete p;
     PointerPlayersUniqueRankingIterator it2(UR);
     ASSERT_TRUE((isSorted<float, PointerPlayersUniqueRankingIterator>(it2)));
-
 }
 
 TEST(UniqueRankerTest, test_pointer)
@@ -98,7 +99,7 @@ TEST(UniqueRankerTest, test_pointer)
 typedef Ranker<int, AddBeforeEqual> Ranking;
 typedef CAutonomousIterator<Ranking> RankingIterator;
 
-typedef Ranker<int*, AddBeforeEqual, std::less<int*>, DisposalNullPolicy<int*> > PointerRanking;
+typedef Ranker<int*, AddBeforeEqual, std::less<int*>, DisposalDeletePolicy<int*> > PointerRanking;
 typedef CAutonomousIterator<PointerRanking> PointerRankingIterator;
 
 template<>
