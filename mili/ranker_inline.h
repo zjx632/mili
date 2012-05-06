@@ -192,22 +192,27 @@ inline bool UniqueRanker<T, Comp, CompEq, DisposalPolicy>::insert(const T& eleme
     {
         if (ranking.size() > TOP)
         {
+            const T bottom = *bottom_element;
             unique.erase(*bottom_element);                 // Remove the last one
             ranking.erase(bottom_element);
             success = (rankPos != bottom_element);
+            DisposalPolicy::destroy(bottom);
         }
     }
     else                                                      // Already exist
     {
         if (Comp()(element, (aux.first)->first))              // The new one is better
         {
+            const T old = *((aux.first)->second);
             ranking.erase((aux.first)->second);
             unique.erase(aux.first);                          // Remove the old one
             unique.insert(std::pair<T, iterator>(element, rankPos));
+            DisposalPolicy::destroy(old);
         }
         else                                                  // The old one is better
         {
             ranking.erase(rankPos);
+            DisposalPolicy::destroy(element);
             success = false;
         }
     }

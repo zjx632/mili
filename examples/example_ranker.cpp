@@ -56,7 +56,7 @@ struct PlayerUnique
 {
     bool operator()(const Player& p1, const Player& p2)
     {
-        return p1.name == p2.name;
+        return p1.name < p2.name;
     }
 };
 
