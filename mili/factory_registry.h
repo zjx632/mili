@@ -1,6 +1,5 @@
 /*
 factory_registry: A simple way to registry derived classes without .h file
-    WARNING FactoryRegistry should NOT be used within static libraries
     Copyright (C) 2012  Leandro Ramos, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
@@ -19,6 +18,7 @@ factory_registry: A simple way to registry derived classes without .h file
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//WARNING FactoryRegistry should NOT be used within static libraries
 #ifndef FACTORY_REGISTRY_H
 #   error Internal header file, DO NOT include this.
 #endif
