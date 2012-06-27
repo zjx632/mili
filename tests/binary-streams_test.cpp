@@ -204,7 +204,7 @@ TEST(BinaryStream, BSTREAMS_DEBUG_typemismatch_test)
 
     bostream bos;
     const int int_loaded = 3;
-    const char char_loaded[] = {'e', '4', 'f', 'r', 'y'};
+    const char char_loaded[] = "e4fry";
 
     float float_loaded;
     unsigned char uchar_loaded[5];
@@ -225,7 +225,7 @@ TEST(BinaryStream, BSTREAMS_NO_DEBUG_typemismatch_test)
 
     bostream bos;
     const int int_loaded = 3;
-    const char char_loaded[] = {'e', '4', 'f', 'r', 'y'};
+    const char char_loaded[] = "e4fry";
 
     float float_loaded;
     unsigned char uchar_loaded[5];
