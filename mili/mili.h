@@ -32,6 +32,10 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #define NAMESPACE_END
 #endif
 
+#ifndef NO_PLATFORM_DETECTION
+#    include "platform_detection.h"
+#endif
+
 #ifndef NO_BITWISE_ENUMS
 #   include "bitwise_enums.h"
 #endif

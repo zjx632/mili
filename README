@@ -8,6 +8,7 @@ Basic usage:
     * just include "mili.h"
     * if you want to enclose the MiLi classes into the mili namespace, #define MILI_NAMESPACE
     * each library has it's own define to disable its inclusion:
+    * platform_detection:   NO_PLATFORM_DETECTION
     * bitwise_enums:        NO_BITWISE_ENUMS
     * promotion_disable:    NO_PROMOTION_DISABLE
     * prepos_caller:        NO_PREPOS_CALLER
