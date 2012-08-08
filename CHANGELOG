@@ -42,6 +42,7 @@ Version 17  UNRELEASED
     * Removing MILI_NAMESPACE flag, adding NO_MILI_NAMESPACE (deprecated)
     * Fixed the overloading an operator with templates in global namespace topic
     * Removed BSTREAMS_DEBUG guard and added policies classes
+    * Added PlatformDetection library.
 
 Version 16
 ============

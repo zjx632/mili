@@ -30,5 +30,6 @@ env.CreateProgram('mili-example_string-utils', inc, env.File('example_string-uti
 env.CreateProgram('mili-example_coroutines_extended', inc, env.File('example_coroutines_extended.cpp'), deps)
 env.CreateProgram('mili-example_coroutines_advanced', inc, env.File('example_coroutines_advanced.cpp'), deps)
 env.CreateProgram('mili-example_random-gen', inc, env.File('example_random-gen.cpp'), deps)
+env.CreateProgram('mili-example_platform-detection', inc, env.File('example_platform-detection.cpp'), deps)
 
 
