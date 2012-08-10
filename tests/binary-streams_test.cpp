@@ -349,7 +349,10 @@ TEST(BinaryStream, contaniers_test)
 
     ASSERT_EQ(list_original, list_loaded);
 
-    assertArrayEquals(numbers_original, numbers_loaded, 9);
+    /* VC2010 can't resolve automatically the template parameter since
+    it could be "const double[9]" (like numbers_original) or 
+    "double[9]" (like numbers_loaded). */
+    assertArrayEquals<const double[9]>(numbers_original, numbers_loaded, 9);
 }
 
 TEST(BinaryStream, No_Debug_Contaniers_Test)
@@ -394,5 +397,8 @@ TEST(BinaryStream, No_Debug_Contaniers_Test)
 
     ASSERT_EQ(list_original, list_loaded);
 
-    assertArrayEquals(numbers_original, numbers_loaded, 9);
+    /* VC2010 can't resolve automatically the template parameter since
+    it could be "const double[9]" (like numbers_original) or 
+    "double[9]" (like numbers_loaded). */
+    assertArrayEquals<const double[9]>(numbers_original, numbers_loaded, 9);
 }

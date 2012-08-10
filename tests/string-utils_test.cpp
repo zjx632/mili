@@ -70,7 +70,7 @@ TEST(StringUtilsTest, ensure_found)
 
 TEST(StringUtilsTest, substr)
 {
-    ASSERT_EQ("llo Wo", substr("Hello World", _Pos(2), _Count(6)));
-    ASSERT_EQ("llo W", substr("Hello World", _Pos(2), _Pos(6)));
+    ASSERT_EQ("llo Wo", substr("Hello World", Pos_(2), Count_(6)));
+    ASSERT_EQ("llo W", substr("Hello World", Pos_(2), Pos_(6)));
 }
 
