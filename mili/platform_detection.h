@@ -27,7 +27,7 @@
 */
 #define MILI_OS_LINUX   	1
 #define MILI_OS_WINDOWS 	2
-/*#define MILI_OS_MAC     	3*/
+#define MILI_OS_MAC     	3
 #define MILI_OS_UNKNOWN 	4
 
 /* Windows */
@@ -65,7 +65,7 @@
 */
 #define MILI_COMPILER_VS		1
 #define MILI_COMPILER_GCC		2
-/*#define MILI_COMPILER_ICC		3*/
+#define MILI_COMPILER_ICC		3
 #define MILI_COMPILER_UNKNOWN		4
 
 /* Microsoft Visual C++ */
