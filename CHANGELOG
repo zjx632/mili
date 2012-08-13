@@ -43,6 +43,7 @@ Version 17  UNRELEASED
     * Fixed the overloading an operator with templates in global namespace topic
     * Removed BSTREAMS_DEBUG guard and added policies classes
     * Added PlatformDetection library.
+	* Changed '_Pos' by 'Pos_' and '_Count' by 'Count_' in file 'mili/string_utils.h' (and its example and tests), breaking backward compatibility.
 
 Version 16
 ============
