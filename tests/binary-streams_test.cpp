@@ -47,7 +47,11 @@ std::string get_TypeId(const std::string& s)
 {
     uint32_t a = 0;
 
+#if (MILI_COMPILER == MILI_COMPILER_VS)
+    s._Copy_s(reinterpret_cast<char*>(&a),sizeof(a),sizeof(a),0);
+#else
     s.copy(reinterpret_cast<char*>(&a), sizeof(uint32_t), 0);
+#endif
 
     if ((sizeof(uint32_t) + sizeof(char) * a) <= s.length()) //To avoid exception when non-debug info
         return s.substr(sizeof(uint32_t), sizeof(char) * a);
@@ -250,7 +254,7 @@ TEST(BinaryStream, chainedValues_test)
 
     bostream bos;
 
-    const float f_original = 1.2;
+    const float f_original = 1.2f;
     const int i_original = 3;
     const double d_original = 0.89;
     const A a_original(3, "pepe", 43);
@@ -281,7 +285,7 @@ TEST(BinaryStream, chainedValues_No_Debug_test)
 
     bostream bos;
 
-    const float f_original = 1.2;
+    const float f_original = 1.2f;
     const int i_original = 3;
     const double d_original = 0.89;
     const B b_original(3, "pepe", 43);
