@@ -28,8 +28,8 @@
 #        define OS_STRING "Linux"
 #    elif MILI_OS == MILI_OS_WINDOWS
 #        define OS_STRING "Windows"
-/*#    elif MILI_OS == MILI_OS_MAC
-#        define OS_STRING "Mac"*/
+#    elif MILI_OS == MILI_OS_MAC
+#        define OS_STRING "Mac"
 #    elif MILI_OS == MILI_OS_UNKNOWN
 #        define OS_STRING "Unknown"
 #    else
@@ -47,8 +47,8 @@
 #        define COMPILER_STRING "Visual C++"
 #    elif MILI_COMPILER == MILI_COMPILER_GCC
 #        define COMPILER_STRING "GNU-GCC"
-/*#    elif MILI_COMPILER == MILI_COMPILER_ICC
-#        define COMPILER_STRING "Intel C/C++"*/
+#    elif MILI_COMPILER == MILI_COMPILER_ICC
+#        define COMPILER_STRING "Intel C/C++"
 #    elif MILI_COMPILER == MILI_COMPILER_UNKNOWN
 #        define COMPILER_STRING "Unknown"
 #    else
@@ -75,9 +75,9 @@ int main()
         case MILI_OS_WINDOWS:
             std::cout<<"Windows";
             break;
-        /*case MILI_OS_MAC:
+        case MILI_OS_MAC:
             std::cout<<"Mac";
-            break;*/
+            break;
         case MILI_OS_UNKNOWN:
             std::cout<<"Unknown";
             break;
@@ -97,9 +97,9 @@ int main()
         case MILI_COMPILER_GCC:
             std::cout<<"GNU-GCC";
             break;
-       /* case MILI_COMPILER_ICC:
+        case MILI_COMPILER_ICC:
             std::cout<<"Intel C/C++";
-            break;*/
+            break;
         case MILI_COMPILER_UNKNOWN:
             std::cout<<"Unknown";
             break;
