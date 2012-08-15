@@ -341,9 +341,9 @@ inline std::string::size_type ensure_found(std::string::size_type found, std::st
         return default_value;
 }
 
-struct _Count
+struct Count_
 {
-    explicit _Count(size_t count) :
+    explicit Count_(size_t count) :
         _count(count)
     {
     }
@@ -351,9 +351,9 @@ struct _Count
     const size_t _count;
 };
 
-struct _Pos
+struct Pos_
 {
-    explicit _Pos(size_t pos) :
+    explicit Pos_(size_t pos) :
         _pos(pos)
     {
     }
@@ -361,12 +361,12 @@ struct _Pos
     const size_t _pos;
 };
 
-inline std::string substr(const std::string& str, const _Pos& start, const _Count& count)
+inline std::string substr(const std::string& str, const Pos_& start, const Count_& count)
 {
     return str.substr(start._pos, count._count);
 }
 
-inline std::string substr(const std::string& str, const _Pos& start, const _Pos& end)
+inline std::string substr(const std::string& str, const Pos_& start, const Pos_& end)
 {
     return str.substr(start._pos, end._pos - start._pos + 1);
 }

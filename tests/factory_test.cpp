@@ -54,7 +54,13 @@ TEST(FactoryTest, test)
 {
     Factory<string, Shape> shapes_factory;
     shapes_factory.register_factory<Circle>("circle");
-    shapes_factory.register_factory<Rectangle>("rectangle");
+
+	/* When compiling for Windows the Rectangle template argument in
+    the following line is considered to be the function
+    __gdi_entry WINGDIAPI BOOL WINAPI Rectangle(__in HDC hdc, __in int left, __in int top, __in int right, __in int bottom);
+    defined in WinGDI.h. So I must ad the class keyword to discriminate. */
+    shapes_factory.register_factory<class Rectangle>("rectangle");
+    
     Shape* s = shapes_factory.new_class("circle");
 
     ASSERT_EQ("circle", s->shape_name());
