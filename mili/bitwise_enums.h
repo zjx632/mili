@@ -248,12 +248,24 @@ IMPLEMENT_BITWISE_OPERATOR( | , Or)
 IMPLEMENT_BITWISE_OPERATOR(&, And)
 IMPLEMENT_BITWISE_OPERATOR( ^ , Xor)
 
+/* this NAMESPACE stuff will be deprecated soon */
+#ifdef NO_MILI_NAMESPACE
 #define BITWISE_ENUM_ENABLE(enumtype)   \
 template <>                             \
 struct BitwiseEnumEnabler<enumtype>     \
 {                                       \
     enum { EnabledConversion = true };  \
+};
+#else                
+#define BITWISE_ENUM_ENABLE(enumtype)   \
+namespace mili {                        \
+template <>                             \
+struct BitwiseEnumEnabler<enumtype>     \
+{                                       \
+    enum { EnabledConversion = true };  \
 };                                      \
+}
+#endif
  
 NAMESPACE_END
 

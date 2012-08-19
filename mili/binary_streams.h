@@ -379,6 +379,30 @@ public:
         _pos = 0;
     }
 
+    /**
+     * Returns the available chars left to read.
+     */
+    uint32_t remainingChars() const
+    {
+        assert( _pos <= _s.size() );
+        return _s.size() - _pos;
+    }
+
+    /**
+     * Skip a given amount of chars.
+     *
+     * Examples:
+     *    - skip(10);
+     *
+     * @param chars : The amount of chars to skip.
+     *
+     * @pre : This number should be less than or equal to remainingChars().
+     */
+    void skip(uint32_t chars)
+    {
+        assert( _pos + chars <= _s.size() );
+        _pos += chars;
+    }
 private:
     /** The string representing the input stream. */
     std::string _s;
@@ -394,7 +418,7 @@ private:
  *
  * @param T : The type of the elements in the container.
  */
-template<class T, template <class> class DebuggingPolicy>
+template<class T, template <class> class DebuggingPolicy = NoDebugPolicyBostream >
 class container_writer
 {
 
@@ -455,7 +479,7 @@ private:
  *
  * @param T : The type of the elements in the container.
  */
-template<class T, template <class> class DebuggingPolicy>
+template<class T, template <class> class DebuggingPolicy = NoDebugPolicyBistream >
 class container_reader
 {
 public:
@@ -470,7 +494,8 @@ public:
     {
         _bis >> _elements_left;
 
-        if ((_bis._pos + sizeof(T)*_elements_left) > _bis._s.size())
+
+        if (_bis.remainingChars() < (sizeof(T) * _elements_left))
             throw stream_too_small();
     }
 
@@ -505,7 +530,7 @@ public:
 
         _elements_left -= elements;
 
-        _bis._pos += sizeof(T) * elements;
+        _bis.skip(sizeof(T) * elements);
     }
 
     /**
