@@ -35,7 +35,10 @@ enum MasksSet1
     kThree  = 4,
     kFour   = 8
 };
+namespace mili 
+{
 BITWISE_ENUM_ENABLE(MasksSet1)
+}
 
 enum MasksSet2
 {

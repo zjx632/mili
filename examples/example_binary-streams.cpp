@@ -26,7 +26,8 @@ binary_streams: A minimal library supporting encoding of different data
 #include <vector>
 #include "mili/mili.h"
 
-using namespace mili;
+typedef mili::bostream<> bostream;
+typedef mili::bistream<> bistream;
 
 int main()
 {
@@ -63,7 +64,7 @@ int main()
 
     bos.clear();
 
-    container_writer<int> cw(5, bos);
+    mili::container_writer<int, mili::NoDebugPolicyBostream> cw(5, bos);
 
     cw << 1 << 2 << 3 << 4 << 5;
 
@@ -96,7 +97,7 @@ int main()
     bis.clear();
     bis.str(bos.str());
 
-    container_reader<int> reader(bis);
+    mili::container_reader<int, mili::NoDebugPolicyBistream> reader(bis);
 
     int a;
     reader.skip();
