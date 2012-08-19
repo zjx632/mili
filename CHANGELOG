@@ -45,6 +45,7 @@ Version 17  UNRELEASED
     * Added PlatformDetection library.
     * Changed s.copy to s._Copy_s in tests/binary-streams_test.cpp for Visual C++. Also corrected float initialization in that file.
     * Changed '_Pos' by 'Pos_' and '_Count' by 'Count_' in file 'mili/string_utils.h' (and its example and tests), breaking backward compatibility.
+    * Fixed compiler error in container_reader, by adding new methods to bistream; also fixed compiler errors and warnings en examples.
 
 Version 16
 ============
