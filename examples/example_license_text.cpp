@@ -1,6 +1,6 @@
 /*
-    Copyright (C) 2011 Hugo Arregui FuDePAN
-                  2011 Adrian Remonda FuDePAN
+example_license_text: An example that uses license_text.
+    Copyright (C) 2012  Leandro Ramos, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -17,48 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
 
-    This is a test file.
+    This is an example file.
 */
 
 #include <iostream>
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
 #include "mili/mili.h"
 
 using namespace mili;
-using std::cout;
+using namespace std;
 
-enum MasksSet1
+
+int main()
 {
-    kZero   = 0,
-    kOne    = 1,
-    kTwo    = 2,
-    kThree  = 4,
-    kFour   = 8
-};
+    cout << "This is an example of GPL3 version 3 license text:" << endl;
+    cout << getGPL3LicenseText("mili", "16", "Fudepan Team", "2012");
 
-BITWISE_ENUM_ENABLE(MasksSet1)
-
-enum MasksSet2
-{
-    kEight   = 8,
-    kSixteen = 16
-};
-
-typedef bitwise_enum<MasksSet1> M1;
-
-TEST(BitwiseEnumsTest, test)
-{
-    M1 b = kOne | kFour;
-
-    ASSERT_FALSE(b.has_bits(kZero));
-    ASSERT_TRUE(b.has_bits(kOne));
-    ASSERT_FALSE(b.has_bits(kTwo));
-    ASSERT_FALSE(b.has_bits(kThree));
-    ASSERT_TRUE(b.has_bits(kFour));
-
-    ASSERT_TRUE(kFour | kEight);
-    ASSERT_TRUE(kSixteen | kEight);
-
-    ASSERT_EQ(0x24u, b << 2);
+    return EXIT_SUCCESS;
 }
+
