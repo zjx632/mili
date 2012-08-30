@@ -136,6 +136,14 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "metaprogramming_utils.h"
 #endif
 
+#ifndef NO_METAPROGRAMMING_UTILS
+#   include "metaprogramming_utils.h"
+#endif
+
+#ifndef NO_LICENSE_TEXT
+#   include "license_text.h"
+#endif
+
 #ifndef NO_NON_COPYABLE
 #   include "non_copyable.h"
 #endif
