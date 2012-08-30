@@ -18,10 +18,9 @@
 
     This is a test file.
 */
-/*
+
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <string>
 #include "mili/mili.h"
 
 using namespace mili;
@@ -36,4 +35,3 @@ TEST(GPLv3Disclaimer, correctOutputTest)
     const string returnDisclaimer = getGPL3LicenseText("ViSi", "1.0", "Leandro Ramos, Pablo Oliva", "2012");                                  
     ASSERT_EQ(correctDisclaimer, returnDisclaimer);
 }
-*/

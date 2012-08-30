@@ -20,10 +20,10 @@
 
 #ifndef LICENSE_TEXT_H
 #define LICENSE_TEXT_H
-
+#include <string>
 NAMESPACE_BEGIN
 
-std::string getGPL3LicenseText(const std::string& project_name, const std::string& version, const std::string& copyright_names, 
+inline std::string getGPL3LicenseText(const std::string& project_name, const std::string& version, const std::string& copyright_names, 
                           const std::string& years_from_to)
 {
     return project_name + " " + version + "\n"
