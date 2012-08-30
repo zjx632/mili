@@ -32,8 +32,8 @@ Basic usage:
     * generic_exception:    NO_GENERIC_EXCEPTION
     * raii:                 NO_RAII
     * auto_array            NO_AUTO_ARRAY
-    * metaprogramming_utils  NO_METAPROGRAMMING_UTILS
-    * license_text           NO_LICENSE_TEXT
+    * metaprogramming_utils NO_METAPROGRAMMING_UTILS
+    * license_text          NO_LICENSE_TEXT
 
 You might want to copy the include files in an include directory.
 If so, just run the 'install.sh' script:
