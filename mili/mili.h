@@ -140,6 +140,10 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "license_text.h"
 #endif
 
+#ifndef NO_NON_COPYABLE
+#   include "non_copyable.h"
+#endif
+
 #undef NAMESPACE_BEGIN
 #undef NAMESPACE_END
 
