@@ -45,10 +45,9 @@ static void print_list(const IntList& list)
 int main()
 {
     IntList list;
-    IntList::RemovableElementHandler
-    one   = list.new_node(1),
-    two   = list.new_node(2),
-    three = list.new_node(3);
+    list.new_node(1);
+    IntList::RemovableElementHandler two = list.new_node(2);
+    list.new_node(3);
 
     print_list(list);
 
