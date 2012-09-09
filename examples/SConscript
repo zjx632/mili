@@ -2,7 +2,6 @@ Import ('env')
 
 inc = env.Dir('.')
 deps = ['mili']
-
 alias = ['mili-examples']
 
 name = 'mili-example_'
@@ -35,5 +34,4 @@ env.CreateProgram(name + 'coroutines_extended', inc, env.File('example_coroutine
 env.CreateProgram(name + 'coroutines_advanced', inc, env.File('example_coroutines_advanced.cpp'), deps, alias)
 env.CreateProgram(name + 'random-gen', inc, env.File('example_random-gen.cpp'), deps, alias)
 env.CreateProgram(name + 'platform-detection', inc, env.File('example_platform-detection.cpp'), deps, alias)
-
-
+env.CreateProgram(name + 'license_text', inc, env.File('example_license_text.cpp'), deps, alias)
