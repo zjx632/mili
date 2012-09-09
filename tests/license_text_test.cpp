@@ -1,6 +1,5 @@
 /*
-    Copyright (C) 2011 Hugo Arregui FuDePAN
-                  2011 Adrian Remonda FuDePAN
+    Copyright (C) 2012 Leandro Ramos, FuDePAN
 
     This file is part of the MiLi Minimalistic Library.
 
@@ -20,45 +19,19 @@
     This is a test file.
 */
 
-#include <iostream>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "mili/mili.h"
 
 using namespace mili;
-using std::cout;
+using namespace std;
 
-enum MasksSet1
+TEST(GPLv3Disclaimer, correctOutputTest)
 {
-    kZero   = 0,
-    kOne    = 1,
-    kTwo    = 2,
-    kThree  = 4,
-    kFour   = 8
-};
-
-BITWISE_ENUM_ENABLE(MasksSet1)
-
-enum MasksSet2
-{
-    kEight   = 8,
-    kSixteen = 16
-};
-
-typedef bitwise_enum<MasksSet1> M1;
-
-TEST(BitwiseEnumsTest, test)
-{
-    M1 b = kOne | kFour;
-
-    ASSERT_FALSE(b.has_bits(kZero));
-    ASSERT_TRUE(b.has_bits(kOne));
-    ASSERT_FALSE(b.has_bits(kTwo));
-    ASSERT_FALSE(b.has_bits(kThree));
-    ASSERT_TRUE(b.has_bits(kFour));
-
-    ASSERT_TRUE(kFour | kEight);
-    ASSERT_TRUE(kSixteen | kEight);
-
-    ASSERT_EQ(0x24u, b << 2);
+    const string correctDisclaimer = "ViSi 1.0\n"
+                                     "Copyright (C) 2012 Leandro Ramos, Pablo Oliva\n"
+                                     "This program comes with ABSOLUTELY NO WARRANTY; for details see http://www.gnu.org/licenses/gpl-3.0.html\n"
+                                     "ViSi is free software, and you are welcome to redistribute it under certain conditions; for more information visit http://www.gnu.org/licenses/gpl-3.0.html\n\n";
+    const string returnDisclaimer = getGPL3LicenseText("ViSi", "1.0", "Leandro Ramos, Pablo Oliva", "2012");                                  
+    ASSERT_EQ(correctDisclaimer, returnDisclaimer);
 }
