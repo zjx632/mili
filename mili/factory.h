@@ -23,6 +23,7 @@ factory: A minimal library for a generic factory.
 
 #include <map>
 #include "delete_container.h"
+#include "container_utils.h"
 
 NAMESPACE_BEGIN
 
@@ -78,8 +79,17 @@ class Factory<Key, Base, void>
     };
 
     std::map<Key, Creator*> _creators;
-
 public:
+    
+    struct KeyIterator: public CAutonomousIterator<std::map<Key, Creator*> >
+    {
+        KeyIterator(const std::map<Key, Creator*> m ):
+        CAutonomousIterator<std::map<Key, Creator*> >(m){}
+
+        KeyIterator(){}
+        
+    };    
+
     template <class DerivedClass>
     void register_factory(const Key& key)
     {
@@ -102,6 +112,11 @@ public:
             return it->second->create();
         else
             return NULL;
+    }
+    
+    void getConstructibleObjectsKeys(KeyIterator & it)
+    {
+        it = KeyIterator(_creators);
     }
 
     ~Factory()
