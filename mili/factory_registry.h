@@ -49,6 +49,11 @@ private:
         --users;
         return (users == 0);
     }
+    
+    void _getConstructibleObjectsKeys(typename Factory<Key,BaseClass>::KeyIterator & it)
+    {
+        fc.getConstructibleObjectsKeys(it);
+    }
 public:
     template<class DerivedClass>
     static void register_factory(const Key& k)
@@ -68,6 +73,11 @@ public:
             delete instance;
             instance = NULL;
         }
+    }
+    
+    static void getConstructibleObjectsKeys(typename Factory<Key,BaseClass>::KeyIterator & it)
+    {
+        instance->_getConstructibleObjectsKeys(it);
     }
 
 };
