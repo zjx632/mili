@@ -50,9 +50,9 @@ private:
         return (users == 0);
     }
     
-    void _getConstructibleObjectsKeys(typename Factory<Key,BaseClass>::KeyIterator & it)
+    typename Factory<Key,BaseClass>::KeyIterator& _getConstructibleObjectsKeys(typename Factory<Key,BaseClass>::KeyIterator & it)
     {
-        fc.getConstructibleObjectsKeys(it);
+        return fc.getConstructibleObjectsKeys(it);
     }
 public:
     template<class DerivedClass>
@@ -75,9 +75,9 @@ public:
         }
     }
     
-    static void getConstructibleObjectsKeys(typename Factory<Key,BaseClass>::KeyIterator & it)
+    static typename Factory<Key,BaseClass>::KeyIterator& getConstructibleObjectsKeys(typename Factory<Key,BaseClass>::KeyIterator & it)
     {
-        instance->_getConstructibleObjectsKeys(it);
+        return instance->_getConstructibleObjectsKeys(it);
     }
 
 };

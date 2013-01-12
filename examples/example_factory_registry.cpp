@@ -82,7 +82,7 @@ int main()
     std::cout << "Which speaker would you like?" << std::endl;
     std::cin >> className;
     speaker = mili::FactoryRegistry<Speaker, std::string>::new_class(className);
-    mili::FactoryRegistry<Speaker, std::string>::getConstructibleObjectsKeys(it);
+    it = mili::FactoryRegistry<Speaker, std::string>::getConstructibleObjectsKeys(it);
     if (speaker == NULL)
     {
         std::cout << "Speaker " << className << " doesn't exist" << std::endl;
