@@ -88,6 +88,21 @@ public:
         
         KeyIterator(const KeyIterator& it):
         CAutonomousIterator<std::map<Key, Creator*> >(it){}
+        
+        typename std::map<Key, Creator*>::const_reference operator*() const
+        {
+            return *(this->_current->first);
+        }
+        
+        typename std::map<Key, Creator*>::const_iterator& operator->()
+        {
+            return this->_current->first;
+        }
+        
+        const typename std::map<Key, Creator*>::const_iterator& operator->() const
+        {
+            return this->_current->first;
+        }
     };    
 
     template <class DerivedClass>
@@ -125,6 +140,8 @@ public:
         delete_container(_creators);
     }
 };
+
+
 
 #define FACTORY_REGISTRY_H
 #include "factory_registry.h"
