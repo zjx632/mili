@@ -83,11 +83,11 @@ public:
     
     struct KeyIterator: public CAutonomousIterator<std::map<Key, Creator*> >
     {
-        KeyIterator(const std::map<Key, Creator*> m ):
+        KeyIterator(const std::map<Key, Creator*> & m ):
         CAutonomousIterator<std::map<Key, Creator*> >(m){}
-
-        KeyIterator(){}
         
+        KeyIterator(const KeyIterator& it):
+        CAutonomousIterator<std::map<Key, Creator*> >(it){}
     };    
 
     template <class DerivedClass>
@@ -114,9 +114,10 @@ public:
             return NULL;
     }
     
-    void getConstructibleObjectsKeys(KeyIterator & it)
+    KeyIterator& getConstructibleObjectsKeys(KeyIterator & it)
     {
         it = KeyIterator(_creators);
+        return it;
     }
 
     ~Factory()
