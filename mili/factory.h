@@ -88,8 +88,8 @@ public:
         
         KeyIterator(const KeyIterator& it):
         CAutonomousIterator<std::map<Key, Creator*> >(it){}
-        
-        typename std::map<Key, Creator*>::const_reference operator*() const
+
+        typename std::map<Key, Creator*>::const_reference& operator*()
         {
             return *(this->_current->first);
         }
@@ -129,10 +129,9 @@ public:
             return NULL;
     }
     
-    KeyIterator& getConstructibleObjectsKeys(KeyIterator & it)
+    KeyIterator getConstructibleObjectsKeys()
     {
-        it = KeyIterator(_creators);
-        return it;
+        return KeyIterator(_creators);
     }
 
     ~Factory()
