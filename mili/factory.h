@@ -91,7 +91,7 @@ public:
 
         const typename std::map<Key, Creator*>::key_type& operator*() const
         {
-            return (this->_current->first);
+            return this->_current->first;
         }
 
     };    
