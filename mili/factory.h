@@ -89,20 +89,11 @@ public:
         KeyIterator(const KeyIterator& it):
         CAutonomousIterator<std::map<Key, Creator*> >(it){}
 
-        typename std::map<Key, Creator*>::const_reference& operator*()
+        const typename std::map<Key, Creator*>::key_type& operator*() const
         {
-            return *(this->_current->first);
+            return (this->_current->first);
         }
-        
-        typename std::map<Key, Creator*>::const_iterator& operator->()
-        {
-            return this->_current->first;
-        }
-        
-        const typename std::map<Key, Creator*>::const_iterator& operator->() const
-        {
-            return this->_current->first;
-        }
+
     };    
 
     template <class DerivedClass>
