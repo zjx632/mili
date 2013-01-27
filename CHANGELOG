@@ -1,5 +1,7 @@
 Version 17  UNRELEASED
 ===========
+    * Removed warning from template-info_test.cpp.
+    * Changed MiLi licence from GPL3 to Boost Software License - Version 1.0.
     * license_text: Added a file named "license_text.h" that provide functions to print licenses disclaimers. 
     * Factory Registry: Added an internal file named "factory_registry.h". It Added support to automatic derived classes registry
     * Type mapper: added the map_type_ macro when no 'typename' is required.
