@@ -60,7 +60,7 @@ TEST(TemplateInfoTest, is_reference)
 
 TEST(TemplateInfoTest, is_same_size)
 {
-    ASSERT_EQ(sizeof(int) == sizeof(long int), bool(template_info<int>::is_same_size<long int>::value));
+    ASSERT_EQ(int(sizeof(int) == sizeof(long int)), bool(template_info<int>::is_same_size<long int>::value));
 }
 
 TEST(TemplateInfoTest, is_container)
