@@ -1,21 +1,19 @@
 /*
 factory: A minimal library for a generic factory.
-    Copyright (C) 2009  Daniel Gutson and Marcelo Caro, FuDePAN
-
     This file is part of the MiLi Minimalistic Library.
 
-    MiLi is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    MiLi is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with MiLi.  If not, see <http://www.gnu.org/licenses/>.
+    Copyright (C) Daniel Gutson and Marcelo Caro, FuDePAN 2009
+    Distributed under the Boost Software License, Version 1.0.
+    (See accompanying file LICENSE_1_0.txt in the root directory or 
+    copy at http://www.boost.org/LICENSE_1_0.txt)
+    
+    MiLi IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
+    SHALL THE COPYRIGHT HOLDERS OR ANYONE DISTRIBUTING THE SOFTWARE BE LIABLE
+    FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE,
+    ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
 
     This is an example file.
 */
