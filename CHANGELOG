@@ -1,4 +1,4 @@
-Version 17  UNRELEASED
+Version 17
 ===========
     * Removed warning from template-info_test.cpp.
     * Changed MiLi license from GPL3 to Boost Software License - Version 1.0.
