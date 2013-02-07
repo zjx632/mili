@@ -21,9 +21,20 @@ license_text: A library that implements functions to show software licenses.
 #include <string>
 NAMESPACE_BEGIN
 
-inline std::string getBoostLicenseText( const std::string& project_name, 
-                                        const std::string& version, 
-                                        const std::string& copyright_names, 
+
+inline std::string getGPL3LicenseText(const std::string& project_name, const std::string& version, const std::string& copyright_names,
+                          const std::string& years_from_to)
+{
+    return project_name + " " + version + "\n"
+           + "Copyright (C) " + years_from_to + " " + copyright_names + "\n"
+           + "This program comes with ABSOLUTELY NO WARRANTY; for details see http://www.gnu.org/licenses/gpl-3.0.html\n"
+           +  project_name + " is free software, and you are welcome to redistribute it under certain conditions; for more information visit http://www.gnu.org/licenses/gpl-3.0.html\n\n";
+}
+
+
+inline std::string getBoostLicenseText( const std::string& project_name,
+                                        const std::string& version,
+                                        const std::string& copyright_names,
                                         const std::string& years_from_to)
 {
     return project_name + " " + version + "\n"
