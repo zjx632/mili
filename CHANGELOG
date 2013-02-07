@@ -1,5 +1,6 @@
 Version 17
 ===========
+    * Added support to the license text function with GPLv3.
     * Removed warning from template-info_test.cpp.
     * Changed MiLi license from GPL3 to Boost Software License - Version 1.0.
     * license_text: Added a file named "license_text.h" that provide functions to print licenses disclaimers. 
