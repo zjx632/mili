@@ -59,7 +59,7 @@ declare_static_assert(GenericAssertion);
     compile_assert(condition, GenericAssertion)
 
 #else
-#   define declare_static_assert(name)
+#   define declare_static_assert(name) typedef int _dummyX_##name
 #   define compile_assert(condition, name) static_assert(condition, #name)
 #   define template_compile_assert(condition, name) static_assert(condition, #name)
 #   define generic_assert(condition) static_assert(condition, #condition)
