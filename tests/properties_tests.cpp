@@ -26,41 +26,41 @@ using namespace mili;
 class Mock
 {
 public:
-    MOCK_METHOD1(mocked_set_celcius, void(float));
-    MOCK_CONST_METHOD0(mocked_get_celcius, void());
+    MOCK_METHOD1(mocked_set_celsius, void(float));
+    MOCK_CONST_METHOD0(mocked_get_celsius, void());
 };
 
 class TemperatureSensor
 {
 private:
-    float get_celcius() const
+    float get_celsius() const
     {
-        mock.mocked_get_celcius();
-        return _celcius;
+        mock.mocked_get_celsius();
+        return _celsius;
     };
 
-    void set_celcius(float val)
+    void set_celsius(float val)
     {
-        _celcius = val;
-        mock.mocked_set_celcius(val);
+        _celsius = val;
+        mock.mocked_set_celsius(val);
     }
 
 public:
     PROPERTIES
     {
-        PropertyRW<TemperatureSensor, float, &TemperatureSensor::get_celcius, &TemperatureSensor::set_celcius>   celcius;
+        PropertyRW<TemperatureSensor, float, &TemperatureSensor::get_celsius, &TemperatureSensor::set_celsius>   celsius;
     };
     Mock mock;
 private:
-    float _celcius;
+    float _celsius;
 };
 
 TEST(Properties, test)
 {
     TemperatureSensor s;
-    EXPECT_CALL(s.mock, mocked_set_celcius(0));
-    s.celcius = 0;
-    EXPECT_CALL(s.mock, mocked_get_celcius());
-    float f = s.celcius;
+    EXPECT_CALL(s.mock, mocked_set_celsius(0));
+    s.celsius = 0;
+    EXPECT_CALL(s.mock, mocked_get_celsius());
+    float f = s.celsius;
     ASSERT_EQ(f, 0);
 }
