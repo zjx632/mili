@@ -99,5 +99,5 @@ TEST(FactoryRegistryTest, getConstructibleObjectsTest)
     ++it;
     EXPECT_EQ("TimesFive", *it);
     it++;
-    EXPECT_EQ(true, it.end());
+    EXPECT_TRUE(it.end());
 }
