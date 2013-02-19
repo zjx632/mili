@@ -74,10 +74,16 @@ int main()
 {
     std::string className;
     Speaker* speaker;
+    mili::Factory<std::string,Speaker>::KeyIterator it(mili::FactoryRegistry<Speaker, std::string>::getConstructibleObjectsKeys());
 
     std::cout << "Which speaker would you like?" << std::endl;
     std::cin >> className;
     speaker = mili::FactoryRegistry<Speaker, std::string>::new_class(className);
+    while(!it.end())
+    {
+        std::cout << *(it) << std::endl;
+        it++;
+    }
     if (speaker == NULL)
     {
         std::cout << "Speaker " << className << " doesn't exist" << std::endl;
