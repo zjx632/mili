@@ -87,3 +87,16 @@ TEST(FactoryRegistryTest, NoRegisteredClassTest)
     anyone = FactoryRegistry<IntOperation, std::string>::new_class("TimesSeven");
     ASSERT_EQ(static_cast<IntOperation*>(NULL), anyone);
 }
+
+
+TEST(FactoryRegistryTest, getConstructibleObjectsTest)
+{
+    mili::Factory<std::string,IntOperation>::KeyIterator it(mili::FactoryRegistry<IntOperation, std::string>::getConstructibleObjectsKeys());
+    EXPECT_EQ("MinusOne", *it);
+    ++it;
+    EXPECT_EQ("PlusOne", *it);
+    ++it;
+    EXPECT_EQ("TimesFive", *it);
+    it++;
+    EXPECT_TRUE(it.end());
+}
