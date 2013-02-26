@@ -22,32 +22,46 @@ factory_registry: A simple way to registry derived classes without .h file
 #endif
 #include<string>
 
-template <class BaseClass, class Key = std::string>
-class FactoryRegistry
+template <class BaseClass_, class Key_, class ConstructorParameterType_>
+struct FactoryTraits
 {
-private:
-    Factory<Key, BaseClass> fc;
-    static FactoryRegistry<BaseClass, Key>* instance;
-    unsigned int users;
+    typedef BaseClass_ BaseClass;
+    typedef Key_ Key;
+    typedef ConstructorParameterType_ ConstructorParameterType; 
+};
 
-    FactoryRegistry(): users(0) {}
+
+template <class DerivedRegistry, class Traits>
+class BaseFactoryRegistry
+{
+protected:
+    typedef typename Traits::BaseClass BaseClass;
+    typedef typename Traits::Key Key;
+    typedef typename Traits::ConstructorParameterType ConstructorParameterType;
+
+    unsigned int users;
+    static DerivedRegistry* instance;
+    Factory<Key, BaseClass, ConstructorParameterType> fc;
+
+    BaseFactoryRegistry(): users(0) {}
+
+    virtual ~BaseFactoryRegistry()
+    {
+        deregister_factory();
+    }
 
     template <class DerivedClass>
     void _register_factory(const Key& k)
     {
         ++users;
-        fc.register_factory<DerivedClass>(k);
+        fc.template register_factory<DerivedClass>(k);
     }
-    BaseClass* _new_class(const Key& k)
-    {
-        return fc.new_class(k);
-    }
+
     bool _deregister_factory()
     {
         --users;
         return (users == 0);
     }
-    
     typename Factory<Key,BaseClass>::KeyIterator _getConstructibleObjectsKeys()
     {
         return fc.getConstructibleObjectsKeys();
@@ -57,12 +71,8 @@ public:
     static void register_factory(const Key& k)
     {
         if (instance == NULL)
-            instance = new FactoryRegistry<BaseClass, Key>;
-        instance->_register_factory<DerivedClass>(k);
-    }
-    static BaseClass* new_class(const Key& k)
-    {
-        return instance->_new_class(k);
+            instance = new DerivedRegistry();
+        instance->template _register_factory<DerivedClass>(k);
     }
     static void deregister_factory()
     {
@@ -79,21 +89,59 @@ public:
     }
 
 };
-template<class Base, class Key> FactoryRegistry<Base, Key>* FactoryRegistry<Base, Key>::instance = NULL;
 
-template<class BaseClass, class DerivedClass, class Key>
+template<class DerivedRegistry, class Traits> 
+DerivedRegistry* BaseFactoryRegistry<DerivedRegistry, Traits>::instance = NULL;
+
+template <class BaseClass, class Key = std::string, class ConstructorParameterType = void>
+class FactoryRegistry : public BaseFactoryRegistry< FactoryRegistry <BaseClass, Key, ConstructorParameterType>, 
+                                                    FactoryTraits   <BaseClass, Key, ConstructorParameterType> >
+{
+public:    
+    static BaseClass* new_class(const Key& k, ConstructorParameterType p)
+    {
+        return BaseFactoryRegistry<FactoryRegistry, FactoryTraits<BaseClass, Key, ConstructorParameterType> >::instance->_new_class(k, p);
+    }
+private: 
+    BaseClass* _new_class(const Key& k, ConstructorParameterType p)
+    {
+        return this->fc.new_class(k, p);
+    }  
+};
+
+template <class BaseClass, class Key>
+class FactoryRegistry<BaseClass, Key, void> : public BaseFactoryRegistry<   FactoryRegistry <BaseClass, Key, void>, 
+                                                                            FactoryTraits   <BaseClass, Key, void> >
+{
+public:
+    static BaseClass* new_class(const Key& k)
+    {
+        return BaseFactoryRegistry<FactoryRegistry, FactoryTraits<BaseClass, Key, void> >::instance->_new_class(k);
+    }
+private:
+    BaseClass* _new_class(const Key& k)
+    {
+        return this->fc.new_class(k);
+    }
+};
+
+template<class BaseClass, class DerivedClass, class Key, class ConstructorParameterType = void>
 class Registerer
 {
 public:
     Registerer(const Key& k)
     {
-        mili::FactoryRegistry<BaseClass, Key>::template register_factory<DerivedClass>(k);
+        mili::FactoryRegistry<BaseClass, Key, ConstructorParameterType>::template register_factory<DerivedClass>(k);
     }
     ~Registerer()
     {
-        mili::FactoryRegistry<BaseClass, Key>::deregister_factory();
+        mili::FactoryRegistry<BaseClass, Key, ConstructorParameterType>::deregister_factory();
     }
 };
 
 #define REGISTER_FACTORIZABLE_CLASS(BaseClassName, DerivedClassName, keytype, key)           \
     static mili::Registerer<BaseClassName,DerivedClassName,keytype>  r##DerivedClassName(key)
+
+#define REGISTER_FACTORIZABLE_CLASS_WITH_ARG(BaseClassName, DerivedClassName, keytype, key, ConstructorParameterTypeName)   \
+    static mili::Registerer<BaseClassName,DerivedClassName,keytype, ConstructorParameterTypeName>  rr##DerivedClassName(key)
+    
