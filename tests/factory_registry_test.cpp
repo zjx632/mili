@@ -62,6 +62,28 @@ class TimesFive: public IntOperation
 
 REGISTER_FACTORIZABLE_CLASS(IntOperation, TimesFive, string, "TimesFive");
 
+struct CurriedOperation
+{
+    const int _fixedArg;
+    CurriedOperation(int fixedArg): _fixedArg(fixedArg){};
+    virtual ~CurriedOperation(){};
+    virtual int binaryOperation(int x) = 0;
+};
+
+struct CurriedAdder : public CurriedOperation
+{
+    CurriedAdder(int x):CurriedOperation(x){};
+    virtual int binaryOperation(int x) {return _fixedArg + x;};
+};
+REGISTER_FACTORIZABLE_CLASS_WITH_ARG(CurriedOperation, CurriedAdder, std::string, "CurriedAdder", int);
+
+struct CurriedMultiplication : public CurriedOperation
+{
+    CurriedMultiplication(int x):CurriedOperation(x){};
+    virtual int binaryOperation(int x) {return _fixedArg * x;};
+};
+REGISTER_FACTORIZABLE_CLASS_WITH_ARG(CurriedOperation, CurriedMultiplication, std::string, "CurriedMultiplication", int);
+
 TEST(FactoryRegistryTest, ReturnTest)
 {
     IntOperation* plusone;
@@ -81,11 +103,34 @@ TEST(FactoryRegistryTest, ReturnTest)
     delete timesfive;
 }
 
+TEST(FactoryRegistryTest, ReturnTestWithArg)
+{
+    CurriedOperation* curriedAdder;
+    curriedAdder = FactoryRegistry<CurriedOperation, string, int>::new_class("CurriedAdder", 5);
+    ASSERT_NE(static_cast<CurriedOperation*>(NULL), curriedAdder);
+
+    CurriedOperation* curriedMultiplication;
+    curriedMultiplication = FactoryRegistry<CurriedOperation, string, int>::new_class("CurriedMultiplication", 3);
+    ASSERT_NE(static_cast<CurriedOperation*>(NULL), curriedMultiplication);
+    
+    EXPECT_EQ(6, curriedAdder->binaryOperation(1));
+    delete curriedAdder;
+    EXPECT_EQ(12, curriedMultiplication->binaryOperation(4));
+    delete curriedMultiplication;    
+}
+
 TEST(FactoryRegistryTest, NoRegisteredClassTest)
 {
     IntOperation* anyone;
     anyone = FactoryRegistry<IntOperation, std::string>::new_class("TimesSeven");
     ASSERT_EQ(static_cast<IntOperation*>(NULL), anyone);
+}
+
+TEST(FactoryRegistryTest, NoRegisteredClassTestWithArg)
+{
+    CurriedOperation* anyone;
+    anyone = FactoryRegistry<CurriedOperation, std::string, int>::new_class("CurriedPencet", 4);
+    ASSERT_EQ(static_cast<CurriedOperation*>(NULL), anyone);
 }
 
 

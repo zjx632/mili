@@ -4,6 +4,7 @@ Version 17.1 (UNRELEASED)
     * Removed a compilation warning when using compile_assert.h.
     * Corrected a typo in issue 78 (properties_tests.cpp).
     * Added GPLv3 and Boost support to the license text function.
+    * Added support for classes with one construction parameter in FactoryRegistry.
 
 Version 17
 ===========

@@ -29,6 +29,7 @@ factory_registry: A simple way to registry derived classes without .h file
 struct Speaker
 {
     virtual void saySomething() = 0;
+    virtual ~Speaker(){}
 };
 
 //! End of speaker interface file
@@ -67,9 +68,60 @@ REGISTER_FACTORIZABLE_CLASS(Speaker, Goodbye, std::string, "Goodbye");
 
 //! End of Goodbye.cpp
 
+
+class CustomizableSpeaker
+{
+public: 
+    CustomizableSpeaker(bool polite);
+    virtual ~CustomizableSpeaker(){};
+    virtual void saySomething() = 0;
+
+protected:
+    const bool _polite;
+};
+
+CustomizableSpeaker::CustomizableSpeaker(bool polite):
+    _polite(polite)
+{    
+}
+
+
+struct CustomizableHello : CustomizableSpeaker
+{
+    CustomizableHello(bool polite);
+    virtual void saySomething();
+};
+
+CustomizableHello::CustomizableHello(bool polite):
+    CustomizableSpeaker(polite)
+{    
+}
+
+void CustomizableHello::saySomething()
+{
+    std::cout << (_polite ? "Good morning" : "Hello") << std::endl;
+}
+REGISTER_FACTORIZABLE_CLASS_WITH_ARG(CustomizableSpeaker, CustomizableHello, std::string, "CustomizableHello", bool);
+
+struct CustomizableGoodbye : CustomizableSpeaker
+{
+    CustomizableGoodbye(bool polite);
+    virtual void saySomething();
+};
+
+CustomizableGoodbye::CustomizableGoodbye(bool polite):
+    CustomizableSpeaker(polite)
+{    
+}
+
+void CustomizableGoodbye::saySomething()
+{
+    std::cout << (_polite ? "Farewell" : "Goodbye") << std::endl;
+}
+REGISTER_FACTORIZABLE_CLASS_WITH_ARG(CustomizableSpeaker, CustomizableGoodbye, std::string, "CustomizableGoodbye", bool);
+
+
 //! Main file
-
-
 int main()
 {
     std::string className;
@@ -93,5 +145,29 @@ int main()
         speaker->saySomething();
         delete speaker;
     }
+
+    CustomizableSpeaker* customSpeaker;
+
+    std::cout << "\nPolite Speakers: " << std::endl;
+
+    customSpeaker = mili::FactoryRegistry<CustomizableSpeaker, std::string, bool>::new_class("CustomizableHello", true);
+    customSpeaker->saySomething();
+    delete customSpeaker;
+
+    customSpeaker = mili::FactoryRegistry<CustomizableSpeaker, std::string, bool>::new_class("CustomizableGoodbye", true);
+    customSpeaker->saySomething();
+    delete customSpeaker;
+
+    std::cout << "\nNon polite Speakers: " << std::endl;
+        
+    customSpeaker = mili::FactoryRegistry<CustomizableSpeaker, std::string, bool>::new_class("CustomizableHello", false);
+    customSpeaker->saySomething();
+    delete customSpeaker;
+
+    customSpeaker = mili::FactoryRegistry<CustomizableSpeaker, std::string, bool>::new_class("CustomizableGoodbye", false);
+    customSpeaker->saySomething();
+    delete customSpeaker;
+
+    
     return 0;
 }
