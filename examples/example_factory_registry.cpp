@@ -29,7 +29,7 @@ factory_registry: A simple way to registry derived classes without .h file
 struct Speaker
 {
     virtual void saySomething() = 0;
-    virtual ~Speaker(){};
+    virtual ~Speaker(){}
 };
 
 //! End of speaker interface file

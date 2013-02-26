@@ -64,7 +64,7 @@ REGISTER_FACTORIZABLE_CLASS(IntOperation, TimesFive, string, "TimesFive");
 
 struct CurriedOperation
 {
-    int _fixedArg;
+    const int _fixedArg;
     CurriedOperation(int fixedArg): _fixedArg(fixedArg){};
     virtual ~CurriedOperation(){};
     virtual int binaryOperation(int x) = 0;
