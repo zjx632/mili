@@ -33,3 +33,10 @@ TEST(GenericException, test)
     ASSERT_EQ(std::string("The location is not defined"), std::string(l.what()));
 }
 
+TEST(GenericException, assert_throw)
+{
+    InvalidLocation l;
+
+    EXPECT_THROW(mili::assert_throw<InvalidLocation>(true), InvalidLocation);
+    EXPECT_NO_THROW(mili::assert_throw<InvalidLocation>(false));
+}

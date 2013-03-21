@@ -65,6 +65,15 @@ public:                                                                         
 
 #define DEFINE_SPECIFIC_EXCEPTION(name, subtype) DEFINE_SPECIFIC_EXCEPTION_TEXT(name, subtype, #name)
 
+template <class ExceptionType>
+static inline void assert_throw(bool condition)
+{
+    if (condition)
+    {
+        throw ExceptionType();
+    }
+}
+
 NAMESPACE_END
 
 #endif
