@@ -79,6 +79,17 @@ TEST(ContainerUtilsTest, queue)
     insert_into(myqueue, 100);
 }
 
+TEST(ContainerUtilsTest, listContains)
+{
+    std::list<int> myList ;
+    myList.push_front(1);
+    myList.push_front(2);
+    myList.push_front(3);
+
+    EXPECT_TRUE(contains(myList, 2));
+    EXPECT_FALSE(contains(myList, 5));
+}
+
 TEST(ContainerUtilsTest, stringContains)
 {
     const std::string longText =
