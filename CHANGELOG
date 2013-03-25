@@ -6,6 +6,7 @@ Version 17.1 (UNRELEASED)
     * Added GPLv3 and Boost support to the license text function.
     * Added support for classes with one construction parameter in FactoryRegistry.
     * Added conditional exception thrower to mili::GenericException.
+    * Extended contains() in ContainerUtils to support strings.
 
 Version 17
 ===========
