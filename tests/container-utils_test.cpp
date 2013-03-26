@@ -82,9 +82,9 @@ TEST(ContainerUtilsTest, queue)
 TEST(ContainerUtilsTest, listContains)
 {
     std::list<int> myList ;
-    myList.push_front(1);
-    myList.push_front(2);
-    myList.push_front(3);
+    insert_into(myList, 1);
+    insert_into(myList, 2);
+    insert_into(myList, 3);
 
     EXPECT_TRUE(contains(myList, 2));
     EXPECT_FALSE(contains(myList, 5));
