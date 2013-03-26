@@ -4,9 +4,9 @@ container_utils: A minimal library with generic STL container utilities.
 
     Copyright (C) Daniel Gutson & Ezequiel S. Velez, FuDePAN 2009-2010
     Distributed under the Boost Software License, Version 1.0.
-    (See accompanying file LICENSE_1_0.txt in the root directory or 
+    (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
-    
+
     MiLi IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
@@ -26,6 +26,7 @@ container_utils: A minimal library with generic STL container utilities.
 #include <set>
 #include <new>
 #include <queue>
+#include <string>
 
 #include <algorithm>
 #include <exception>
@@ -155,6 +156,13 @@ template <class Key, class Comp, class Alloc, class Key2>
 inline bool contains(const std::set<Key, Comp, Alloc>& s, const Key2& key)
 {
     return s.count(key) > 0;
+}
+
+template <>
+inline bool contains(const std::string& l, const std::string& element)
+{
+    const std::string::size_type found = l.find(element);
+    return found != std::string::npos;
 }
 
 // ------------ Insertion Utilities

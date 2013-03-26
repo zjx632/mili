@@ -3,9 +3,9 @@
 
     Copyright (C) Hugo Arregui, FuDePAN 2011
     Distributed under the Boost Software License, Version 1.0.
-    (See accompanying file LICENSE_1_0.txt in the root directory or 
+    (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
-    
+
     MiLi IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
@@ -77,4 +77,33 @@ TEST(ContainerUtilsTest, queue)
     std::queue<int> myqueue;
     insert_into(myqueue, 100);
     insert_into(myqueue, 100);
+}
+
+TEST(ContainerUtilsTest, listContains)
+{
+    std::list<int> myList ;
+    insert_into(myList, 1);
+    insert_into(myList, 2);
+    insert_into(myList, 3);
+
+    EXPECT_TRUE(contains(myList, 2));
+    EXPECT_FALSE(contains(myList, 5));
+}
+
+TEST(ContainerUtilsTest, stringContains)
+{
+    const std::string longText =
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+    "Aenean luctus porttitor accumsan. "
+    "Duis ornare auctor nisl, vel gravida nunc viverra quis.";
+
+    const std::string beginning = "Lorem ipsum";
+    const std::string middle = "tus por";
+    const std::string end = "viverra quis.";
+    const std::string notPresent = "Pugliese Pugliese Pugliese";
+
+    EXPECT_TRUE(contains(longText, beginning));
+    EXPECT_TRUE(contains(longText, middle));
+    EXPECT_TRUE(contains(longText, end));
+    EXPECT_FALSE(contains(longText, notPresent));
 }
