@@ -65,14 +65,15 @@ platform_detection:
 #define MILI_COMPILER_VS		1
 #define MILI_COMPILER_GCC		2
 #define MILI_COMPILER_ICC		3
-#define MILI_COMPILER_UNKNOWN		4
+#define MILI_COMPILER_MINGW		4
+#define MILI_COMPILER_UNKNOWN	5
 
 /* Microsoft Visual C++ */
 #if   defined (_MSC_VER)
 #    define MILI_COMPILER MILI_COMPILER_VS
 
 /* GCC C/C++ */
-#elif defined (__GNUC__)
+#elif (defined (__GNUC__) && MILI_OS == MILI_OS_LINUX)
 #    define MILI_COMPILER MILI_COMPILER_GCC
 
 /* Intel C/C++ */
@@ -81,6 +82,10 @@ platform_detection:
    || defined (__ECC)			\
    || defined (__ICL)
 #    define MILI_COMPILER MILI_COMPILER_ICC*/
+
+/* Mingw*/
+#elif (defined (__GNUC__) && MILI_OS == MILI_OS_WINDOWS)
+#    define MILI_COMPILER MILI_COMPILER_MINGW
 
 /* Unknown compiler */
 #else
