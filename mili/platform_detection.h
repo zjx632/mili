@@ -88,5 +88,22 @@ platform_detection:
 
 #endif /* end Compiler detection */
 
+
+/* Detection of the C++ language standard
+   See: http://gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html#Common-Predefined-Macros
+*/
+#define MILI_CXX_VERSION_CXX98 0
+#define MILI_CXX_VERSION_CXX0X 1
+
+/* GCC C/C++ */
+#if defined (__GXX_EXPERIMENTAL_CXX0X__)
+#   define MILI_CXX_VERSION MILI_CXX_VERSION_CXX0X
+#else
+#   define MILI_CXX_VERSION MILI_CXX_VERSION_CXX98
+
+#endif /* end Detection of the C++ language standard */
+
+
+
 #endif /* PLATFORM_DETECTION_H */
 
