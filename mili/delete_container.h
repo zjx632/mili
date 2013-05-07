@@ -4,9 +4,9 @@ delete_container: A minimal library for deleting the objects of a container of p
 
     Copyright (C) Daniel Gutson, FuDePAN 2009
     Distributed under the Boost Software License, Version 1.0.
-    (See accompanying file LICENSE_1_0.txt in the root directory or 
+    (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
-    
+
     MiLi IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
@@ -20,6 +20,8 @@ delete_container: A minimal library for deleting the objects of a container of p
 #define DELETE_CONTAINER_H
 
 #include <algorithm>
+
+#include "type_mapper.h"
 
 NAMESPACE_BEGIN
 
@@ -62,6 +64,15 @@ template <class Key, class T, class Comp, class Alloc, template <class, class, c
 inline void delete_container(Container<Key, T*, Comp, Alloc>& cont)
 {
     for_each(cont.begin(), cont.end(), pair_deleter<typename Container<Key, T*, Comp, Alloc>::value_type >());
+    cont.clear();
+}
+
+/* Non-associative containers without allocators */
+template < class Container >
+inline void delete_container(Container& cont)
+{
+    typedef map_type(PtrRemover, typename Container::value_type) BType;
+    for_each(cont.begin(), cont.end(), deleter<BType>() );
     cont.clear();
 }
 

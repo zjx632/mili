@@ -7,6 +7,8 @@ Version 17.1 (UNRELEASED)
     * Added support for classes with one construction parameter in FactoryRegistry.
     * Added conditional exception thrower to mili::GenericException.
     * Extended contains() in ContainerUtils to support strings.
+    * (Issue 91) Extended delete_container to support any container that provides begin() and end().
+    * (Needed for issue 91) Added pointer removal to type mapper.
 
 Version 17
 ===========
