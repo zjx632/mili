@@ -56,15 +56,31 @@ NAMESPACE_BEGIN
         typedef typename mapper<From>::type type;   \
     }
 
+#define add_mapping_ptr_removal(mapper)             \
+    template <class From>                           \
+    struct mapper<From*>                            \
+    {                                               \
+        typedef typename mapper<From>::type type;   \
+    }
+
 #define map_type_(mapper, from_type) mapper<from_type>::type
 #define map_type(mapper, from_type) typename map_type_(mapper, from_type)
 
 // Some useful mappers:
 
-// Removes const and &:
+// Removes const, & and *:
 declare_type_mapper(BasicType);
 add_mapping_const_removal(BasicType);
 add_mapping_ref_removal(BasicType);
+add_mapping_ptr_removal(BasicType);
+
+// Only removes *
+declare_type_mapper(PtrRemover);
+add_mapping_ptr_removal(PtrRemover);
+
+// Only removes &
+declare_type_mapper(RefRemover);
+add_mapping_ptr_removal(RefRemover);
 
 NAMESPACE_END
 
