@@ -23,7 +23,6 @@ example_coroutines: An example that uses coroutines.
 #include "mili/mili.h"
 
 using namespace mili;
-using namespace std;
 
 // Example1: yielding within nested FOR loops.
 
@@ -64,7 +63,7 @@ struct TreeNode
     TreeNode(bool is_white)
         : left(NULL), right(NULL), is_white(is_white), data(last++)
     {
-        cout << data << ": " << boolalpha << is_white << endl;
+        std::cout << data << ": " << boolalpha << is_white << std::endl;
     }
     ~TreeNode()
     {
@@ -122,9 +121,9 @@ public:
 template <class T>
 class SetTriplets : public Coroutine
 {
-    typename set<T>::const_iterator t1;
-    typename set<T>::const_iterator t2;
-    typename set<T>::const_iterator t3;
+    typename std::set<T>::const_iterator t1;
+    typename std::set<T>::const_iterator t2;
+    typename std::set<T>::const_iterator t3;
 public:
     bool operator()(const set<T>& s, T& elem1, T& elem2, T& elem3)
     {
@@ -180,7 +179,7 @@ int main()
     delete root;
 
     // Example3:
-    set<int> s;
+    std::set<int> s;
     s.insert(1);
     s.insert(2);
     s.insert(3);
@@ -188,7 +187,7 @@ int main()
     SetTriplets<int> st;
     int e1, e2, e3;
     while (st(s, e1, e2, e3))
-        cout << e1 << "," << e2 << "," << e3 << endl;
+        std::cout << e1 << "," << e2 << "," << e3 << std::endl;
 
     return ret;
 }

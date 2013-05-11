@@ -112,7 +112,7 @@ public:
     template <class T>
     void insert(const ElementName& name, const T& element)
     {
-        elements[name] = to_string(element);
+        elements[name] = mili::to_string(element);
     }
 
     bool empty() const
