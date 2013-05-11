@@ -96,11 +96,10 @@ platform_detection:
 #define MILI_CXX_VERSION_CXX0X 1
 
 /* GCC C/C++ */
-#if defined (__GXX_EXPERIMENTAL_CXX0X__)
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus > 199711L)
 #   define MILI_CXX_VERSION MILI_CXX_VERSION_CXX0X
 #else
 #   define MILI_CXX_VERSION MILI_CXX_VERSION_CXX98
-
 #endif /* end Detection of the C++ language standard */
 
 
