@@ -111,6 +111,20 @@ int main()
     
     std::cout<<"Conditional compilation output: " OS_STRING " OS / " COMPILER_STRING " Compiler"<<std::endl;
 
+
+    /* Example of the C++ language standard detection */
+    switch(MILI_CXX_VERSION)
+    {
+        case MILI_CXX_VERSION_CXX98:
+            std::cout << "Using standard C++98.\n";
+            break;
+        case MILI_CXX_VERSION_CXX0X:
+            std::cout << "Using standard C++0x.\n";
+            break;
+        default:
+            std::cerr << "Standard not detected.\n";
+    }
+
     return result;
 }
 

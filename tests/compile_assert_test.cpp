@@ -19,8 +19,10 @@
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include "mili/platform_detection.h"
 
-#ifndef __GXX_EXPERIMENTAL_CXX0X__
+
+#if (MILI_CXX_VERSION == MILI_CXX_VERSION_CXX98)
 
 #define COMPILE_ASSERT_TEST
 #include "mili/mili.h"
