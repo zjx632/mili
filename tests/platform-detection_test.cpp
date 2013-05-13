@@ -46,3 +46,11 @@ TEST(PlatformDetectionTest, Compiler)
                ^ (MILI_COMPILER == MILI_COMPILER_UNKNOWN) );
 }
 
+TEST(PlatformDetectionTest, StandardCXX)
+{
+    ASSERT_EQ(MILI_CXX_VERSION_CXX98, 0);
+    ASSERT_EQ(MILI_CXX_VERSION_CXX0X, 1);
+    ASSERT_TRUE( MILI_CXX_VERSION == MILI_CXX_VERSION_CXX98 || \
+                 MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X);
+}
+

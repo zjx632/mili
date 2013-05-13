@@ -22,14 +22,13 @@ prepos_caller: A minimal library for wrapping object methods calls.
 #include "mili/prepos_mutex.h"
 
 using namespace mili;
-using namespace std;
 
 class Test
 {
 public:
     void f()
     {
-        cout << "f" << endl;
+        std::cout << "f" << std::endl;
     }
 };
 
@@ -38,7 +37,7 @@ public:
 
 void sample_using_print()
 {
-    cout << "Sample using print:\n";
+    std::cout << "Sample using print:\n";
     Test t;
     PrePosPrinter pre("pre"), pos("pos");
     PrePosCaller<Test* const, PrePosPrinter, PrePosPrinter> ppc(&t, pre, pos);
@@ -49,7 +48,7 @@ void sample_using_print()
 
 void sample_using_mutex()
 {
-    cout << "\nSample using a mutex:\n";
+    std::cout << "\nSample using a mutex:\n";
     Test t;
     pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -64,7 +63,7 @@ void sample_using_mutex()
 
 void sample_using_mutex_and_print()
 {
-    cout << "\nSample using both a mutex and printing:\n";
+    std::cout << "\nSample using both a mutex and printing:\n";
     Test t;
 
     PrePosPrinter pre_print("pre"), pos_print("pos");
