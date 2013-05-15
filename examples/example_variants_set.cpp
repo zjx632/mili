@@ -22,13 +22,12 @@ example_variants_set: An example that uses MiLi's Variants Set.
 #include "mili/mili.h"
 
 using namespace mili;
-using namespace std;
 
 int main()
 {
     VariantsSet variantSet;
     int ie = 0;
-    string is;
+    std::string is;
     float f;
     ElementName str = "greeting";
     variantSet.insert("number", 3);
@@ -41,20 +40,20 @@ int main()
         cout << "number: " << ie << endl;
 
         variantSet.get_element(str, is);
-        cout << "greeting: " << is << endl;
-        cout << "greeting: " << variantSet.get_element<string>(str) << endl;
+        std::cout << "greeting: " << is << std::endl;
+        std::cout << "greeting: " << variantSet.get_element<string>(str) << std::endl;
         variantSet.get_element("float", f);
     }
     catch (const BadElementName&)
     {
-        cerr << "Bad Element Name!" << endl;
+        std::cerr << "Bad Element Name!" << std::endl;
     }
     catch (const BadElementType&)
     {
-        cerr << "BadElementType!" << endl;
+        std::cerr << "BadElementType!" << std::endl;
     }
 
     variantSet.erase("temperature");
-    cout << "size: " << variantSet.size() << endl;
+    std::cout << "size: " << variantSet.size() << std::endl;
     return 0;
 }
