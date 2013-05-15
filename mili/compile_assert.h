@@ -23,8 +23,7 @@ compile_assert: A minimal library supporting compile time (static) assertions,
 
 //NAMESPACE_BEGIN
 
-#ifndef __GXX_EXPERIMENTAL_CXX0X__  // replace this by __cplusplus > 199711L when available
-
+#if (MILI_CXX_VERSION == MILI_CXX_VERSION_CXX98)
 
 #ifdef COMPILE_ASSERT_TEST
 #define fail_value() typedef float CompileTimeAssertion;
