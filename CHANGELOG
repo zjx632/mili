@@ -1,5 +1,6 @@
 Version 17.1 (UNRELEASED)
 ============
+    * Changed register name class in Factory_registry.
     * Implemented getConstructibleObjects in Factory_registry to provide a factory iterator.
     * Removed a compilation warning when using compile_assert.h.
     * Corrected a typo in issue 78 (properties_tests.cpp).
