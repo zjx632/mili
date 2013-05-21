@@ -140,8 +140,8 @@ public:
 };
 
 #define REGISTER_FACTORIZABLE_CLASS(BaseClassName, DerivedClassName, keytype, key)           \
-    static mili::Registerer<BaseClassName,DerivedClassName,keytype>  r##DerivedClassName(key)
+    static mili::Registerer<BaseClassName,DerivedClassName,keytype>  r##BaseClassName##DerivedClassName(key)
 
 #define REGISTER_FACTORIZABLE_CLASS_WITH_ARG(BaseClassName, DerivedClassName, keytype, key, ConstructorParameterTypeName)   \
-    static mili::Registerer<BaseClassName,DerivedClassName,keytype, ConstructorParameterTypeName>  rr##DerivedClassName(key)
+    static mili::Registerer<BaseClassName,DerivedClassName,keytype, ConstructorParameterTypeName>  rr##BaseClassName##DerivedClassName(key)
     
