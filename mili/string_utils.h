@@ -311,12 +311,14 @@ inline bool to_number(const std::string& s, Number& n)
 // Remove tabs and whitespaces at both sides
 inline std::string trim(const std::string& s)
 {
+    const size_t firstChar = 0;
+    const size_t charOffset = 1;
     std::string text(s);
 
     std::string::size_type positionStart = text.find_first_not_of(" \t");
-    text.erase(0, positionStart);
+    text.erase(firstChar, positionStart);
     std::string::size_type positionEnd = text.find_last_not_of(" \t");
-    text.erase(positionEnd + 1);
+    text.erase(positionEnd + charOffset);
 
     return text;
 }
