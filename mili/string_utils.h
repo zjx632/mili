@@ -308,14 +308,14 @@ inline bool to_number(const std::string& s, Number& n)
     return from_string(s, n);
 }
 
-// Remove whitespace at both sides
+// Remove tabs and whitespaces at both sides
 inline std::string trim(const std::string& s)
 {
     std::string text(s);
 
-    std::string::size_type positionStart = text.find_first_not_of(' ');
+    std::string::size_type positionStart = text.find_first_not_of(" \t");
     text.erase(0, positionStart);
-    std::string::size_type positionEnd = text.find_last_not_of(' ');
+    std::string::size_type positionEnd = text.find_last_not_of(" \t");
     text.erase(positionEnd + 1);
 
     return text;
