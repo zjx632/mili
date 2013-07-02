@@ -3,5 +3,5 @@ Import ('env')
 name = 'mili'
 inc = env.Dir('.')
 src = env.Glob('*.cpp')
-deps = ['mili','gmock', 'gtest', 'gtest_main']
+deps = ['gmock', 'gtest', 'gtest_main']
 env.CreateTest(name, inc, src, deps)
