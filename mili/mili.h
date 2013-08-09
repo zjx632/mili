@@ -145,8 +145,8 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "non_copyable.h"
 #endif
 
-#ifndef NO_C_CALL_IMPROVED
-#   include "c_call_improved.h"
+#ifndef NO_SAFE_C_FUNCTIONS_H
+#   include "safe_c_functions.h"
 #endif
 
 
