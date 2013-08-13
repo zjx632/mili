@@ -5,9 +5,9 @@ stream_utils: A minimal library that provides CSV and other file/stream
 
     Copyright (C) Daniel Gutson, FuDePAN 2009
     Distributed under the Boost Software License, Version 1.0.
-    (See accompanying file LICENSE_1_0.txt in the root directory or 
+    (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
-    
+
     MiLi IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
@@ -147,6 +147,42 @@ inline std::istream& operator >> (std::istream& is, std::set<Key, Comp, Alloc>& 
     return is;
 }
 
+/* Process quotes of the line*/
+template <class T>
+inline void processQuotes(const std::string& line, const _Separator<T>& s, std::string::size_type& pos, std::string::size_type& last_pos, std::string::size_type& posOpenQuote, std::string::size_type& posCloseQuote)
+{
+    posCloseQuote = (line.substr(posOpenQuote + 1, line.size())).find_first_of('\"');
+    const bool unQuote = (posCloseQuote != std::string::npos);
+    if (unQuote)
+    {
+        posCloseQuote += posOpenQuote + 1;
+        std::string tempLine = line.substr(last_pos, posOpenQuote - last_pos); //before first quote
+        tempLine += line.substr(posOpenQuote + 1, (posCloseQuote - posOpenQuote) - 1); //into quotes
+        while (pos < posCloseQuote)
+        {
+            pos = line.find(s.s, pos + 1);
+        }
+        if (pos > posCloseQuote + 1)
+        {
+            //after second quote
+            for (size_t i = posCloseQuote + 1; i < pos; ++i)
+            {
+                tempLine += line[i];
+            }
+        }
+        insert_into(s.v, from_string<typename T::value_type>(tempLine));
+    }
+    else
+    {
+        insert_into(s.v,
+                    from_string<typename T::value_type>(
+                        line.substr(last_pos, pos - last_pos)
+                    )
+                   );
+    }
+    last_pos = pos + 1;
+}
+
 /* This works for _Separator
 (Receives container and separator through a _Separator type) */
 template <class T>
@@ -159,20 +195,42 @@ inline std::istream& operator >> (std::istream& is, const _Separator<T>& s)
         std::string::size_type last_pos = 0, pos;
         bool found;
 
+        std::string::size_type posCloseQuote = 0, posOpenQuote;
+        bool foundQuote;
         do
         {
             pos = line.find(s.s, last_pos);
             found = (pos !=  std::string::npos);
             if (found)
             {
-                insert_into(s.v,
-                            /* Converts from string to type T */
-                            from_string<typename T::value_type>(
-                                line.substr(last_pos, pos - last_pos)
-                            )
-                           );
-
-                last_pos = pos + 1;
+                posOpenQuote = (line.substr(posCloseQuote + 1, line.size())).find_first_of('\"');
+                posOpenQuote+= posCloseQuote + 1;
+                foundQuote = (posOpenQuote != std::string::npos);
+                if (foundQuote)
+                {
+                    if (pos < posOpenQuote)
+                    {
+                        insert_into(s.v,
+                                    from_string<typename T::value_type>(
+                                        line.substr(last_pos, pos - last_pos)
+                                    )
+                                   );
+                        last_pos = pos + 1;
+                    }
+                    else
+                    {
+                        processQuotes(line, s, pos, last_pos, posOpenQuote, posCloseQuote);
+                    }
+                }
+                else
+                {
+                    insert_into(s.v,
+                                from_string<typename T::value_type>(
+                                    line.substr(last_pos, pos - last_pos)
+                                )
+                               );
+                    last_pos = pos + 1;
+                }
             }
         }
         while (found);
@@ -184,7 +242,6 @@ inline std::istream& operator >> (std::istream& is, const _Separator<T>& s)
                         )
                        );
     }
-
     return is;
 }
 
