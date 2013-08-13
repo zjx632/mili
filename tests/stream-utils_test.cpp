@@ -3,9 +3,9 @@
 
     Copyright (C) Hugo Arregui, FuDePAN 2011
     Distributed under the Boost Software License, Version 1.0.
-    (See accompanying file LICENSE_1_0.txt in the root directory or 
+    (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
-    
+
     MiLi IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
@@ -244,3 +244,91 @@ TEST(StreamUtilsTest, testReadWithGenericSeparator)
     remove(file);
 }
 
+TEST(StreamUtilsTest, testSeparatorWithDoubleQuotes)
+{
+    const std::string line = "value, \"text, text\", value";
+    std::stringstream ss(line);
+    std::vector<std::string> result;
+    ss >> mili::Separator(result, ',');
+
+    std::vector<std::string> expectedResult;
+    expectedResult.push_back("value");
+    expectedResult.push_back(" text, text");
+    expectedResult.push_back(" value");
+    ASSERT_TRUE(std::equal(expectedResult.begin(), expectedResult.end(), result.begin()));
+}
+
+TEST(StreamUtilsTest, testSeparatorWithDoubleQuotes2)
+{
+    const std::string line = "value, \"text, text\", value";
+    std::stringstream ss(line);
+    std::vector<std::string> result;
+    ss >> mili::Separator(result, ' ');
+
+    std::vector<std::string> expectedResult;
+    expectedResult.push_back("value,");
+    expectedResult.push_back("text, text,");
+    expectedResult.push_back("value");
+    ASSERT_TRUE(std::equal(expectedResult.begin(), expectedResult.end(), result.begin()));
+}
+
+TEST(StreamUtilsTest, testSeparatorWithDoubleQuotes3)
+{
+    const std::string line = "value, \"text, text\" text, value";
+    std::stringstream ss(line);
+    std::vector<std::string> result;
+    ss >> mili::Separator(result, ',');
+
+    std::vector<std::string> expectedResult;
+    expectedResult.push_back("value");
+    expectedResult.push_back(" text, text text");
+    expectedResult.push_back(" value");
+    ASSERT_TRUE(std::equal(expectedResult.begin(), expectedResult.end(), result.begin()));
+}
+
+TEST(StreamUtilsTest, testSeparatorWithDoubleQuotes4)
+{
+    const std::string line = "value, \"text, text, text text\" text, value";
+    std::stringstream ss(line);
+    std::vector<std::string> result;
+    ss >> mili::Separator(result, ',');
+
+    std::vector<std::string> expectedResult;
+    expectedResult.push_back("value");
+    expectedResult.push_back(" text, text, text text text");
+    expectedResult.push_back(" value");
+    ASSERT_TRUE(std::equal(expectedResult.begin(), expectedResult.end(), result.begin()));
+}
+
+TEST(StreamUtilsTest, testSeparatorWithOneQuote)
+{
+    const std::string line = "value, \"text, text, text text, value";
+    std::stringstream ss(line);
+    std::vector<std::string> result;
+    ss >> mili::Separator(result, ',');
+
+    std::vector<std::string> expectedResult;
+    expectedResult.push_back("value");
+    expectedResult.push_back(" \"text");
+    expectedResult.push_back(" text");
+    expectedResult.push_back(" text text");
+    expectedResult.push_back(" value");
+    ASSERT_TRUE(std::equal(expectedResult.begin(), expectedResult.end(), result.begin()));
+}
+
+TEST(StreamUtilsTest, testSeparatorWithManyDoubleQuotes)
+{
+    const std::string line = "value, \"text, text, value\" value \"text, value\" text value";
+    std::stringstream ss(line);
+    std::vector<std::string> result;
+    ss >> mili::Separator(result, ' ');
+
+    std::vector<std::string> expectedResult;
+    expectedResult.push_back("value,");
+    expectedResult.push_back("text, text, value");
+    expectedResult.push_back("value");
+    expectedResult.push_back("text, value");
+    expectedResult.push_back("text");
+    expectedResult.push_back("value");
+    ASSERT_TRUE(std::equal(expectedResult.begin(), expectedResult.end(), result.begin()));
+}
