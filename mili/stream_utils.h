@@ -149,7 +149,7 @@ inline std::istream& operator >> (std::istream& is, std::set<Key, Comp, Alloc>& 
 }
 
 static const char QUOTE = '\"';
-static const char END_POINTER = '\0';
+static const char END_LINE = '\0';
 struct QuoteNotFound : std::exception {};
 typedef char* Line;
 
@@ -160,12 +160,12 @@ inline void consume_quotes(Line& line, std::string& accum) throw(QuoteNotFound)
     if (*line == QUOTE)
     {
         ++line;
-        while((*line != QUOTE) && (*line != END_POINTER))
+        while((*line != QUOTE) && (*line != END_LINE))
         {
             accum += *line;
             ++line;
         }
-        if (*line == 0)
+        if (*line == END_LINE)
         {
             throw QuoteNotFound();
         }
@@ -181,7 +181,7 @@ inline void consume_args(Line& line, const char& separator, std::string& accum)
 {
     accum = "";
     std::string temporal;
-    while ((*line != separator) && (*line != END_POINTER))
+    while ((*line != separator) && (*line != END_LINE))
     {
         consume_quotes(line, temporal);
         accum += temporal;
@@ -199,7 +199,7 @@ inline std::istream& operator >> (std::istream& is, const _Separator<T>& s)
     {
         Line lineToParse = (Line)line.c_str();
         std::string partialArgument;
-        while(*lineToParse != END_POINTER)
+        while(*lineToParse != END_LINE)
         {
             consume_args(lineToParse, s.s, partialArgument);
             insert_into(s.v, from_string<typename T::value_type>(partialArgument));
