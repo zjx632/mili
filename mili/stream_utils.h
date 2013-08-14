@@ -27,6 +27,7 @@ stream_utils: A minimal library that provides CSV and other file/stream
 #include <string>
 #include "string_utils.h"
 #include "container_utils.h"
+#include "generic_exception.h"
 
 NAMESPACE_BEGIN
 
@@ -147,40 +148,45 @@ inline std::istream& operator >> (std::istream& is, std::set<Key, Comp, Alloc>& 
     return is;
 }
 
-/* Process quotes of the line*/
-template <class T>
-inline void processQuotes(const std::string& line, const _Separator<T>& s, std::string::size_type& pos, std::string::size_type& last_pos, std::string::size_type& posOpenQuote, std::string::size_type& posCloseQuote)
+static const char QUOTE = '\"';
+static const char END_POINTER = '\0';
+struct QuoteNotFound : std::exception {};
+typedef char* Line;
+
+/* If is a quote, consume everything until the next quote */
+inline void consume_quotes(Line& line, std::string& accum) throw(QuoteNotFound)
 {
-    posCloseQuote = (line.substr(posOpenQuote + 1, line.size())).find_first_of('\"');
-    const bool unQuote = (posCloseQuote != std::string::npos);
-    if (unQuote)
+    accum = "";
+    if (*line == QUOTE)
     {
-        posCloseQuote += posOpenQuote + 1;
-        std::string tempLine = line.substr(last_pos, posOpenQuote - last_pos); //before first quote
-        tempLine += line.substr(posOpenQuote + 1, (posCloseQuote - posOpenQuote) - 1); //into quotes
-        while (pos < posCloseQuote)
+        ++line;
+        while((*line != QUOTE) && (*line != END_POINTER))
         {
-            pos = line.find(s.s, pos + 1);
+            accum += *line;
+            ++line;
         }
-        if (pos > posCloseQuote + 1)
+        if (*line == 0)
         {
-            //after second quote
-            for (size_t i = posCloseQuote + 1; i < pos; ++i)
-            {
-                tempLine += line[i];
-            }
+            throw QuoteNotFound();
         }
-        insert_into(s.v, from_string<typename T::value_type>(tempLine));
     }
     else
     {
-        insert_into(s.v,
-                    from_string<typename T::value_type>(
-                        line.substr(last_pos, pos - last_pos)
-                    )
-                   );
+        accum += *line;
     }
-    last_pos = pos + 1;
+}
+
+/* Consume valid arguments, ignoring quotes if exist */
+inline void consume_args(Line& line, const char& separator, std::string& accum)
+{
+    accum = "";
+    std::string temporal;
+    while ((*line != separator) && (*line != END_POINTER))
+    {
+        consume_quotes(line, temporal);
+        accum += temporal;
+        ++line;
+    }
 }
 
 /* This works for _Separator
@@ -189,62 +195,19 @@ template <class T>
 inline std::istream& operator >> (std::istream& is, const _Separator<T>& s)
 {
     std::string line;
-
     if (std::getline(is, line))
     {
-        std::string::size_type last_pos = 0, pos;
-        bool found;
-
-        std::string::size_type posCloseQuote = 0, posOpenQuote;
-        bool foundQuote;
-        do
+        Line lineToParse = (Line)line.c_str();
+        std::string partialArgument;
+        while(*lineToParse != END_POINTER)
         {
-            pos = line.find(s.s, last_pos);
-            found = (pos !=  std::string::npos);
-            if (found)
-            {
-                posOpenQuote = (line.substr(posCloseQuote + 1, line.size())).find_first_of('\"');
-                posOpenQuote+= posCloseQuote + 1;
-                foundQuote = (posOpenQuote != std::string::npos);
-                if (foundQuote)
-                {
-                    if (pos < posOpenQuote)
-                    {
-                        insert_into(s.v,
-                                    from_string<typename T::value_type>(
-                                        line.substr(last_pos, pos - last_pos)
-                                    )
-                                   );
-                        last_pos = pos + 1;
-                    }
-                    else
-                    {
-                        processQuotes(line, s, pos, last_pos, posOpenQuote, posCloseQuote);
-                    }
-                }
-                else
-                {
-                    insert_into(s.v,
-                                from_string<typename T::value_type>(
-                                    line.substr(last_pos, pos - last_pos)
-                                )
-                               );
-                    last_pos = pos + 1;
-                }
-            }
+            consume_args(lineToParse, s.s, partialArgument);
+            insert_into(s.v, from_string<typename T::value_type>(partialArgument));
+            ++lineToParse;
         }
-        while (found);
-
-        if (last_pos != std::string::npos)
-            insert_into(s.v,
-                        from_string<typename T::value_type>(
-                            line.substr(last_pos)
-                        )
-                       );
     }
     return is;
 }
-
 NAMESPACE_END
 
 #endif

@@ -305,15 +305,15 @@ TEST(StreamUtilsTest, testSeparatorWithOneQuote)
     const std::string line = "value, \"text, text, text text, value";
     std::stringstream ss(line);
     std::vector<std::string> result;
-    ss >> mili::Separator(result, ',');
+    EXPECT_THROW(ss >> mili::Separator(result, ','), QuoteNotFound);
+}
 
-    std::vector<std::string> expectedResult;
-    expectedResult.push_back("value");
-    expectedResult.push_back(" \"text");
-    expectedResult.push_back(" text");
-    expectedResult.push_back(" text text");
-    expectedResult.push_back(" value");
-    ASSERT_TRUE(std::equal(expectedResult.begin(), expectedResult.end(), result.begin()));
+TEST(StreamUtilsTest, testSeparatorWithThreeQuote)
+{
+    const std::string line = "value, \"text,\" text, \"text text, value";
+    std::stringstream ss(line);
+    std::vector<std::string> result;
+    EXPECT_THROW(ss >> mili::Separator(result, ','), QuoteNotFound);
 }
 
 TEST(StreamUtilsTest, testSeparatorWithManyDoubleQuotes)
