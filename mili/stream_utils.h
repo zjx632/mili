@@ -165,7 +165,7 @@ inline void consume_quotes(Line& line, std::string& accum) throw(QuoteNotFound)
             accum += *line;
             ++line;
         }
-        assert_throw<QuoteNotFound>(!(*line == END_LINE));
+        assert_throw<QuoteNotFound>((*line != END_LINE));
     }
     else
     {
