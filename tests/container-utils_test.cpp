@@ -18,7 +18,7 @@
 */
 
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
+//#include <gmock/gmock.h>
 #include <string>
 #include <vector>
 #include <queue>
@@ -107,3 +107,58 @@ TEST(ContainerUtilsTest, stringContains)
     EXPECT_TRUE(contains(longText, end));
     EXPECT_FALSE(contains(longText, notPresent));
 }
+
+#if MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X
+
+struct UMapTest: public ::testing::Test
+{
+    void SetUp()
+    {
+        m["hello"] = "good bye";
+        m["Bonjour"] = "au revoir";
+        m["ハロー"] = "さようなら";
+        m["hola"] = "adios";
+        m["buenas"] = "adios";
+    }
+    std::unordered_map<std::string, std::string> m;
+};
+
+TEST_F(UMapTest, contains)
+{
+    ASSERT_FALSE(contains(m, "nothing"));
+}
+
+TEST_F(UMapTest, remove_first_from)
+{
+    ASSERT_TRUE(remove_first_from(m, "au revoir"));
+}
+
+TEST_F(UMapTest, remove_all_from)
+{
+    ASSERT_TRUE(remove_all_from(m, "adios"));
+}
+
+TEST_F(UMapTest, found)
+{
+    ASSERT_EQ("good bye", find(m, "hello"));
+}
+
+TEST_F(UMapTest, not_found)
+{
+    ASSERT_THROW(find(m, "world"), ElementNotFound);
+}
+
+TEST(USetTest, general)
+{
+    std::unordered_set<int> s;
+    s.insert(1);
+    s.insert(2);
+    ASSERT_EQ(1, find(s, 1));
+    ASSERT_FALSE(contains(s, 3));
+    ASSERT_TRUE(remove_first_from(s,1));
+}
+
+
+
+
+#endif
