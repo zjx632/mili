@@ -43,6 +43,7 @@ NAMESPACE_BEGIN
 
 struct ElementNotFound : std::exception {};
 
+/*definition of find functions throwing exceptions (const and no const)*/
 template <class Container, class Element>
 inline Element& find(Container& c, const Element& element) throw(ElementNotFound)
 {
@@ -180,7 +181,7 @@ inline T& find(std::unordered_map<Key, T, Hash,Pred,Alloc>& m, const Key2& key, 
 }
 
 template <class Key, class T, class Hash, class Pred,class Alloc,class Key2>
-inline const T& find(std::unordered_map<Key, T, Hash,Pred,Alloc>& m, const Key2& key, const std::nothrow_t&) noexcept
+inline const T& find(const std::unordered_map<Key, T, Hash,Pred,Alloc>& m, const Key2& key, const std::nothrow_t&) noexcept
 {
     const typename std::unordered_map<Key, T, Hash,Pred,Alloc>::const_iterator it = m.find(key);
     if (it == m.end())
@@ -189,8 +190,9 @@ inline const T& find(std::unordered_map<Key, T, Hash,Pred,Alloc>& m, const Key2&
         return it->second;
 }
 
+/* this also returns a reference to a const beacuse the unordered_set iterator is always a reference to a const*/
 template <class T, class Hash, class Pred,class Alloc,class Key2>
-inline T& find(std::unordered_set<T,Hash,Pred,Alloc>& s, const Key2& key, const std::nothrow_t&) noexcept
+inline const T& find(std::unordered_set<T,Hash,Pred,Alloc>& s, const Key2& key, const std::nothrow_t&) noexcept
 {
     const typename std::unordered_set<T,Hash,Pred,Alloc>::iterator it = s.find(key);
     if (it == s.end())
@@ -200,7 +202,7 @@ inline T& find(std::unordered_set<T,Hash,Pred,Alloc>& s, const Key2& key, const 
 }
 
 template <class T, class Hash, class Pred,class Alloc,class Key2>
-inline const T& find(std::unordered_set<T, Hash,Pred,Alloc>& s, const Key2& key, const std::nothrow_t&) noexcept
+inline const T& find(const std::unordered_set<T, Hash,Pred,Alloc>& s, const Key2& key, const std::nothrow_t&) noexcept
 {
     const typename std::unordered_set<T, Hash,Pred,Alloc>::const_iterator it = s.find(key);
     if (it == s.end())
