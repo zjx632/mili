@@ -105,7 +105,7 @@ inline const T& find(const std::unordered_map<Key, T, Hash,Pred,Alloc>& m, const
         return it->second;
 }
 
-/*This also returns a refernce to const because the unordered set iterator is always a const reference*/
+/*This also returns a reference to const because the unordered set iterator is always a const reference*/
 template <class T, class Hash, class Pred,class Alloc,class Key2>
 inline const T& find(std::unordered_set<T,Hash,Pred,Alloc>& s,const Key2& key) throw(ElementNotFound)
 {
@@ -238,27 +238,27 @@ inline bool contains(const std::list<Element>& l, const Element& element)
     return find(l.begin(), l.end(), element) != l.end();
 }
 
-template <class Key, class T, class Comp, class Alloc>
-inline bool contains(const std::map<Key, T, Comp, Alloc>& m, const Key& key)
+template <class Key, class T, class Comp, class Alloc, class Key2>
+inline bool contains(const std::map<Key, T, Comp, Alloc>& m, const Key2& key)
 {
     return m.count(key) > 0;
 }
 
-template <class Key, class Comp, class Alloc>
-inline bool contains(const std::set<Key, Comp, Alloc>& s, const Key& key)
+template <class Key, class Comp, class Alloc,class Key2>
+inline bool contains(const std::set<Key, Comp, Alloc>& s, const Key2& key)
 {
     return s.count(key) > 0;
 }
 
 #if MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X
-template <class Key, class T, class Hash, class Pred,class Alloc>
-inline bool contains(const std::unordered_map<Key, T, Hash,Pred, Alloc>& m, const Key& key)
+template <class Key, class T, class Hash, class Pred,class Alloc,class Key2>
+inline bool contains(const std::unordered_map<Key, T, Hash,Pred, Alloc>& m, const Key2& key)
 {
     return m.count(key) > 0;
 }
 
-template <class T, class Hash, class Pred,class Alloc>
-inline bool contains(const std::unordered_set<T, Hash, Pred, Alloc>& s, const T& key)
+template <class T, class Hash, class Pred,class Alloc,class Key2>
+inline bool contains(const std::unordered_set<T, Hash, Pred, Alloc>& s, const Key2& key)
 {
     return s.count(key) > 0;
 }
@@ -295,8 +295,8 @@ inline void insert_into(std::vector<ElementType, Alloc>& cont, const ElementType
 }
 
 /* This works for Ranker */
-template <class T, SameValueBehavior Behavior, class Comp>
-inline void insert_into(Ranker<T, Behavior, Comp>& cont, const T& element)
+template <class T, SameValueBehavior Behavior, class Comp,class T2>
+inline void insert_into(Ranker<T, Behavior, Comp>& cont, const T2& element)
 {
     cont.insert(element);
 }
@@ -312,8 +312,8 @@ inline void insert_into(std::queue<ElementType>& cont, const ElementType& elemen
 //------------ Remove first Utilities
 
 /* This works for Ranker */
-template <class T, SameValueBehavior Behavior, class Comp>
-inline bool remove_first_from(Ranker<T, Behavior, Comp>& cont, const T& element)
+template <class T, SameValueBehavior Behavior, class Comp, class T2>
+inline bool remove_first_from(Ranker<T, Behavior, Comp>& cont, const T2& element)
 {
     const typename Ranker<T, Behavior, Comp>::const_iterator it = find(cont.begin(), cont.end(), element);
     const bool result(it != cont.end());
