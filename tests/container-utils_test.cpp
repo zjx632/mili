@@ -18,7 +18,6 @@
 */
 
 #include <gtest/gtest.h>
-//#include <gmock/gmock.h>
 #include <string>
 #include <vector>
 #include <queue>
@@ -153,11 +152,20 @@ TEST(USetTest, general)
     std::unordered_set<int> s;
     s.insert(1);
     s.insert(2);
-    ASSERT_EQ(1, find(s, 1));
-    ASSERT_FALSE(contains(s, 3));
+    EXPECT_EQ(1, find(s, 1));
+    EXPECT_FALSE(contains(s, 3));
     ASSERT_TRUE(remove_first_from(s,1));
 }
 
+TEST(SetTest, general)
+{
+    std::set<std::string> s;
+    s.insert("asd");
+    s.insert("asd2");
+    EXPECT_EQ("asd", find(s, "asd"));
+    EXPECT_FALSE(contains(s, "asdffff"));
+    ASSERT_TRUE(remove_first_from(s,"asd"));
+}
 
 
 
