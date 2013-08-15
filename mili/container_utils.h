@@ -28,8 +28,14 @@ container_utils: A minimal library with generic STL container utilities.
 #include <queue>
 #include <string>
 
+#if MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X
+#include <unordered_map>
+#include <unordered_set>
+#endif
+
 #include <algorithm>
 #include <exception>
+#include "mili/platform_detection.h"
 #include "ranker.h"
 //#include <iterator>
 
@@ -57,7 +63,7 @@ inline const Element& find(const Container& c, const Element& element) throw(Ele
         return *it;
 }
 
-template <class Key, class T, class Comp, class Alloc, class Key2>
+template <class Key, class T, class Comp, class Alloc,class Key2>
 inline T& find(std::map<Key, T, Comp, Alloc>& m, const Key2& key) throw(ElementNotFound)
 {
     const typename std::map<Key, T, Comp, Alloc>::iterator it = m.find(key);
@@ -67,7 +73,7 @@ inline T& find(std::map<Key, T, Comp, Alloc>& m, const Key2& key) throw(ElementN
         return it->second;
 }
 
-template <class Key, class T, class Comp, class Alloc, class Key2>
+template <class Key, class T, class Comp, class Alloc,class Key2>
 inline const T& find(const std::map<Key, T, Comp, Alloc>& m, const Key2& key) throw(ElementNotFound)
 {
     const typename std::map<Key, T, Comp, Alloc>::const_iterator it = m.find(key);
@@ -76,6 +82,50 @@ inline const T& find(const std::map<Key, T, Comp, Alloc>& m, const Key2& key) th
     else
         return it->second;
 }
+
+/*Support for C++11's unordered_maps & unordered_sets*/
+#if MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X
+template <class Key, class T, class Hash, class Pred,class Alloc,class Key2>
+inline T& find(std::unordered_map<Key, T, Hash,Pred,Alloc>& m, const Key2& key) throw(ElementNotFound)
+{
+    const typename std::unordered_map<Key, T, Hash,Pred,Alloc>::iterator it = m.find(key);
+    if (it == m.end())
+        throw ElementNotFound();
+    else
+        return it->second;
+}
+
+template <class Key, class T, class Hash, class Pred,class Alloc,class Key2>
+inline const T& find(const std::unordered_map<Key, T, Hash,Pred,Alloc>& m, const Key2& key) throw(ElementNotFound)
+{
+    const typename std::unordered_map<Key, T, Hash,Pred,Alloc>::const_iterator it = m.find(key);
+    if (it == m.end())
+        throw ElementNotFound();
+    else
+        return it->second;
+}
+
+/*This also returns a refernce to const because the unordered set iterator is always a const reference*/
+template <class T, class Hash, class Pred,class Alloc,class Key2>
+inline const T& find(std::unordered_set<T,Hash,Pred,Alloc>& s,const Key2& key) throw(ElementNotFound)
+{
+    const typename std::unordered_set<T,Hash,Pred,Alloc>::iterator it = s.find(key);
+    if (it == s.end())
+        throw ElementNotFound();
+    else
+        return *it;
+}
+
+template <class T, class Hash, class Pred,class Alloc,class Key2>
+inline const T& find(const std::unordered_set<T, Hash,Pred,Alloc>& s, const Key2& key) throw(ElementNotFound)
+{
+    const typename std::unordered_set<T, Hash,Pred,Alloc>::const_iterator it = s.find(key);
+    if (it == s.end())
+        throw ElementNotFound();
+    else
+        return *it;
+}
+#endif
 
 /* find, nothrow versions */
 template <class Container, class Element>
@@ -98,7 +148,7 @@ inline const Element* find(const Container& c, const Element& element, const std
         return *it;
 }
 
-template <class Key, class T, class Comp, class Alloc, class Key2>
+template <class Key, class T, class Comp, class Alloc,class Key2>
 inline T* find(std::map<Key, T*, Comp, Alloc>& m, const Key2& key, const std::nothrow_t&)
 {
     const typename std::map<Key, T*, Comp, Alloc>::iterator it = m.find(key);
@@ -108,7 +158,7 @@ inline T* find(std::map<Key, T*, Comp, Alloc>& m, const Key2& key, const std::no
         return it->second;
 }
 
-template <class Key, class T, class Comp, class Alloc, class Key2>
+template <class Key, class T, class Comp, class Alloc,class Key2>
 inline const T* find(const std::map<Key, T*, Comp, Alloc>& m, const Key2& key, const std::nothrow_t&)
 {
     const typename std::map<Key, T*, Comp, Alloc>::const_iterator it = m.find(key);
@@ -117,6 +167,48 @@ inline const T* find(const std::map<Key, T*, Comp, Alloc>& m, const Key2& key, c
     else
         return it->second;
 }
+
+#if MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X
+template <class Key, class T, class Hash, class Pred,class Alloc,class Key2>
+inline T& find(std::unordered_map<Key, T, Hash,Pred,Alloc>& m, const Key2& key, const std::nothrow_t&) noexcept
+{
+    const typename std::unordered_map<Key, T, Hash,Pred,Alloc>::iterator it = m.find(key);
+    if (it == m.end())
+        return NULL;
+    else
+        return it->second;
+}
+
+template <class Key, class T, class Hash, class Pred,class Alloc,class Key2>
+inline const T& find(std::unordered_map<Key, T, Hash,Pred,Alloc>& m, const Key2& key, const std::nothrow_t&) noexcept
+{
+    const typename std::unordered_map<Key, T, Hash,Pred,Alloc>::const_iterator it = m.find(key);
+    if (it == m.end())
+        return NULL;
+    else
+        return it->second;
+}
+
+template <class T, class Hash, class Pred,class Alloc,class Key2>
+inline T& find(std::unordered_set<T,Hash,Pred,Alloc>& s, const Key2& key, const std::nothrow_t&) noexcept
+{
+    const typename std::unordered_set<T,Hash,Pred,Alloc>::iterator it = s.find(key);
+    if (it == s.end())
+        return NULL;
+    else
+        return *it;
+}
+
+template <class T, class Hash, class Pred,class Alloc,class Key2>
+inline const T& find(std::unordered_set<T, Hash,Pred,Alloc>& s, const Key2& key, const std::nothrow_t&) noexcept
+{
+    const typename std::unordered_set<T, Hash,Pred,Alloc>::const_iterator it = s.find(key);
+    if (it == s.end())
+        return NULL;
+    else
+        return *it;
+}
+#endif
 
 /* contains(): generic form */
 template <class Container, class Element>
@@ -146,17 +238,31 @@ inline bool contains(const std::list<Element>& l, const Element& element)
     return find(l.begin(), l.end(), element) != l.end();
 }
 
-template <class Key, class T, class Comp, class Alloc, class Key2>
-inline bool contains(const std::map<Key, T, Comp, Alloc>& m, const Key2& key)
+template <class Key, class T, class Comp, class Alloc>
+inline bool contains(const std::map<Key, T, Comp, Alloc>& m, const Key& key)
 {
     return m.count(key) > 0;
 }
 
-template <class Key, class Comp, class Alloc, class Key2>
-inline bool contains(const std::set<Key, Comp, Alloc>& s, const Key2& key)
+template <class Key, class Comp, class Alloc>
+inline bool contains(const std::set<Key, Comp, Alloc>& s, const Key& key)
 {
     return s.count(key) > 0;
 }
+
+#if MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X
+template <class Key, class T, class Hash, class Pred,class Alloc>
+inline bool contains(const std::unordered_map<Key, T, Hash,Pred, Alloc>& m, const Key& key)
+{
+    return m.count(key) > 0;
+}
+
+template <class T, class Hash, class Pred,class Alloc>
+inline bool contains(const std::unordered_set<T, Hash, Pred, Alloc>& s, const T& key)
+{
+    return s.count(key) > 0;
+}
+#endif
 
 template <>
 inline bool contains(const std::string& l, const std::string& element)
@@ -167,18 +273,25 @@ inline bool contains(const std::string& l, const std::string& element)
 
 // ------------ Insertion Utilities
 
-/* This works for vectors and lists */
+/* This works for maps,multimaps,set,unordered_maps,unordered_sets */
 template <class Container, class ElementType>
 inline void insert_into(Container& cont, const ElementType& element)
+{
+    cont.insert(element);
+}
+
+/* This works for lists */
+template<class ElementType, class Alloc>
+inline void insert_into(std::list<ElementType, Alloc>& cont, const ElementType& element)
 {
     cont.push_back(element);
 }
 
-/* This works for sets */
-template<class ElementType, class Comp, class Alloc>
-inline void insert_into(std::set<ElementType, Comp, Alloc>& cont, const ElementType& element)
+/* This works for vector */
+template<class ElementType, class Alloc>
+inline void insert_into(std::vector<ElementType, Alloc>& cont, const ElementType& element)
 {
-    cont.insert(element);
+    cont.push_back(element);
 }
 
 /* This works for Ranker */
@@ -194,6 +307,7 @@ inline void insert_into(std::queue<ElementType>& cont, const ElementType& elemen
 {
     cont.push(element);
 }
+
 
 //------------ Remove first Utilities
 
@@ -218,8 +332,8 @@ inline bool remove_first_from(Container& cont, const typename Container::value_t
 }
 
 /* This works for sets */
-template<class ElementType, class Comp, class Alloc>
-inline bool remove_first_from(std::set<ElementType, Comp, Alloc>& cont, const ElementType& element)
+template<class ElementType, class Comp, class Alloc,class ElementType2>
+inline bool remove_first_from(std::set<ElementType, Comp, Alloc>& cont, const ElementType2& element)
 {
     return (cont.erase(element) > 0);
 }
@@ -240,6 +354,32 @@ inline bool remove_first_from(std::map<Key, T, Comp, Alloc>& m, const ElementTyp
     }
     return false;
 }
+
+#if MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X
+/*this works for USet*/
+template<class T, class Hash, class Pred, class Alloc,class T2>
+inline bool remove_first_from(std::unordered_set<T,Hash,Pred,Alloc>& cont, const T2& element)
+{
+    return (cont.erase(element) > 0);
+}
+
+/* This works for UMaps */
+template <class Key, class T, class Hash, class Pred, class Alloc,class T2>
+inline bool remove_first_from(std::unordered_map<Key, T, Hash, Pred, Alloc>& m, const T2& element)
+{
+    typename std::unordered_map<Key, T, Hash, Pred, Alloc>::iterator it = m.begin();
+    while (it != m.end())
+    {
+        if (it->second == element)
+        {
+            m.erase(it);
+            return true;
+        }
+        ++it;
+    }
+    return false;
+}
+#endif
 
 //------------ Remove all Utilities
 
@@ -266,8 +406,8 @@ inline bool remove_all_from(Container<T, Alloc>& cont, const typename Container<
 }
 
 /* This works for Sets */
-template<class ElementType, class Comp, class Alloc>
-inline bool remove_all_from(std::set<ElementType, Comp, Alloc>& cont, const ElementType& element)
+template<class ElementType, class Comp, class Alloc,class ElementType2>
+inline bool remove_all_from(std::set<ElementType, Comp, Alloc>& cont, const ElementType2& element)
 {
     return remove_first_from(cont, element);
 }
@@ -296,9 +436,42 @@ inline bool remove_all_from(std::map<Key, T, Comp, Alloc>& m, const ElementType&
     return result;
 }
 
+#if MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X
+/* This works for USets */
+template<class T, class Hash, class Pred, class Alloc, class T2>
+inline bool remove_all_from(std::unordered_set<T,Hash,Pred,Alloc>& cont, const T2& element)
+{
+    return remove_first_from(cont, element);
+}
+
+/* This works for UMaps */
+template <class Key, class T, class Hash, class Pred, class Alloc, class T2>
+inline bool remove_all_from(std::unordered_map<Key, T, Hash, Pred, Alloc>& m, const T2& element)
+{
+    typename std::unordered_map<Key, T, Hash, Pred, Alloc>::iterator it = m.begin();
+    bool result(false);
+    while (it != m.end())
+    {
+        if (it->second == element)
+        {
+            typename std::unordered_map<Key, T, Hash, Pred, Alloc>::iterator it_temp(it);
+            ++it_temp;
+            m.erase(it);
+            it = it_temp;
+            result = true;
+        }
+        else
+        {
+            ++it;
+        }
+    }
+    return result;
+}
+#endif
+
 /* This works for Ranker */
-template <class T, SameValueBehavior Behavior, class Comp>
-inline bool remove_all_from(Ranker<T, Behavior, Comp>& cont, const T& element)
+template <class T, SameValueBehavior Behavior, class Comp, class T2>
+inline bool remove_all_from(Ranker<T, Behavior, Comp>& cont, const T2& element)
 {
     const typename Ranker<T, Behavior, Comp>::const_iterator it = find(cont.begin(), cont.end(), element);
     const bool result(it != cont.end());
