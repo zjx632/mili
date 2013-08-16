@@ -92,9 +92,9 @@ TEST(ContainerUtilsTest, listContains)
 TEST(ContainerUtilsTest, stringContains)
 {
     const std::string longText =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
-    "Aenean luctus porttitor accumsan. "
-    "Duis ornare auctor nisl, vel gravida nunc viverra quis.";
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+        "Aenean luctus porttitor accumsan. "
+        "Duis ornare auctor nisl, vel gravida nunc viverra quis.";
 
     const std::string beginning = "Lorem ipsum";
     const std::string middle = "tus por";
@@ -154,7 +154,7 @@ TEST(USetTest, general)
     s.insert(2);
     EXPECT_EQ(1, find(s, 1));
     EXPECT_FALSE(contains(s, 3));
-    ASSERT_TRUE(remove_first_from(s,1));
+    EXPECT_TRUE(remove_first_from(s,1));
 }
 
 TEST(SetTest, general)
@@ -164,7 +164,7 @@ TEST(SetTest, general)
     s.insert("asd2");
     EXPECT_EQ("asd", find(s, "asd"));
     EXPECT_FALSE(contains(s, "asdffff"));
-    ASSERT_TRUE(remove_first_from(s,"asd"));
+    EXPECT_TRUE(remove_first_from(s,"asd"));
 }
 
 
