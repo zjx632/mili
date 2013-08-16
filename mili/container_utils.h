@@ -369,7 +369,7 @@ inline bool remove_first_from(std::map<Key, T, Comp, Alloc>& m, const ElementTyp
         }
         else
         {
-        ++it;
+            ++it;
         }
     }
     return result;
