@@ -18,6 +18,7 @@
 */
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <string>
 #include <vector>
 #include <queue>
@@ -92,9 +93,9 @@ TEST(ContainerUtilsTest, listContains)
 TEST(ContainerUtilsTest, stringContains)
 {
     const std::string longText =
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
-        "Aenean luctus porttitor accumsan. "
-        "Duis ornare auctor nisl, vel gravida nunc viverra quis.";
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+    "Aenean luctus porttitor accumsan. "
+    "Duis ornare auctor nisl, vel gravida nunc viverra quis.";
 
     const std::string beginning = "Lorem ipsum";
     const std::string middle = "tus por";
@@ -106,67 +107,3 @@ TEST(ContainerUtilsTest, stringContains)
     EXPECT_TRUE(contains(longText, end));
     EXPECT_FALSE(contains(longText, notPresent));
 }
-
-#if MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X
-
-struct UMapTest: public ::testing::Test
-{
-    void SetUp()
-    {
-        m["hello"] = "good bye";
-        m["Bonjour"] = "au revoir";
-        m["ハロー"] = "さようなら";
-        m["hola"] = "adios";
-        m["buenas"] = "adios";
-    }
-    std::unordered_map<std::string, std::string> m;
-};
-
-TEST_F(UMapTest, contains)
-{
-    ASSERT_FALSE(contains(m, "nothing"));
-}
-
-TEST_F(UMapTest, remove_first_from)
-{
-    ASSERT_TRUE(remove_first_from(m, "au revoir"));
-}
-
-TEST_F(UMapTest, remove_all_from)
-{
-    ASSERT_TRUE(remove_all_from(m, "adios"));
-}
-
-TEST_F(UMapTest, found)
-{
-    ASSERT_EQ("good bye", find(m, "hello"));
-}
-
-TEST_F(UMapTest, not_found)
-{
-    ASSERT_THROW(find(m, "world"), ElementNotFound);
-}
-
-TEST(USetTest, general)
-{
-    std::unordered_set<int> s;
-    s.insert(1);
-    s.insert(2);
-    EXPECT_EQ(1, find(s, 1));
-    EXPECT_FALSE(contains(s, 3));
-    EXPECT_TRUE(remove_first_from(s,1));
-}
-
-TEST(SetTest, general)
-{
-    std::set<std::string> s;
-    s.insert("asd");
-    s.insert("asd2");
-    EXPECT_EQ("asd", find(s, "asd"));
-    EXPECT_FALSE(contains(s, "asdffff"));
-    EXPECT_TRUE(remove_first_from(s,"asd"));
-}
-
-
-
-#endif
