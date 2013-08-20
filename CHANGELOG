@@ -13,8 +13,6 @@ Version 17.1 (UNRELEASED)
     * (Needed for issue 91) Added pointer removal to the type mapper library.
     * Added safecpy() function; a safe function for memcpy().
     * Solved compilation errors in files example_coroutines_extended.cpp, example_stream-utils.cpp and example_variants_set.cpp.
-    * Added support for C++0x's unordered_map & unordered_set in container_utils
-
 
 Version 17
 ===========
