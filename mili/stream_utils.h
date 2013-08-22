@@ -1,6 +1,6 @@
 /*
 stream_utils: A minimal library that provides CSV and other file/stream
-    functionalities..
+    functionalities.
     This file is part of the MiLi Minimalistic Library.
 
     Copyright (C) Daniel Gutson, FuDePAN 2009
@@ -149,40 +149,39 @@ inline std::istream& operator >> (std::istream& is, std::set<Key, Comp, Alloc>& 
 }
 
 static const char QUOTE = '\"';
-static const char END_LINE = '\0';
 struct QuoteNotFound : std::exception {};
-typedef char* Line;
+typedef std::string::const_iterator LineIterator;
 
 /* If is a quote, consume everything until the next quote */
-inline void consume_quotes(Line& line, std::string& accum) throw(QuoteNotFound)
+inline void consume_quotes(LineIterator& current, const LineIterator& end, std::string& accum) throw(QuoteNotFound)
 {
-    accum = "";
-    if (*line == QUOTE)
+    if (*current == QUOTE)
     {
-        ++line;
-        while((*line != QUOTE) && (*line != END_LINE))
+        ++current; //update current char ignoring inital quote.
+        while((current != end) && (*current != QUOTE))
         {
-            accum += *line;
-            ++line;
+            accum += *current;
+            ++current;
         }
-        assert_throw<QuoteNotFound>((*line != END_LINE));
+        assert_throw<QuoteNotFound>((current != end)); //not found unquote
     }
     else
     {
-        accum += *line;
+        accum += *current;
     }
+    ++current;
 }
 
 /* Consume valid arguments, ignoring quotes if exist */
-inline void consume_args(Line& line, const char& separator, std::string& accum)
+inline void consume_args(LineIterator& current, const LineIterator& end, const char& separator, std::string& accum)
 {
-    accum = "";
-    std::string temporal;
-    while ((*line != separator) && (*line != END_LINE))
+    while((current != end) && (*current != separator))
     {
-        consume_quotes(line, temporal);
-        accum += temporal;
-        ++line;
+        consume_quotes(current, end, accum);
+    }
+    if (*current == separator)
+    {
+        ++current;
     }
 }
 
@@ -194,13 +193,12 @@ inline std::istream& operator >> (std::istream& is, const _Separator<T>& s)
     std::string line;
     if (std::getline(is, line))
     {
-        Line lineToParse = (Line)line.c_str();
-        std::string partialArgument;
-        while(*lineToParse != END_LINE)
+        const LineIterator endLine = line.end();
+        for (LineIterator current(line.begin()); current != endLine; )
         {
-            consume_args(lineToParse, s.s, partialArgument);
+            std::string partialArgument("");
+            consume_args(current, endLine, s.s, partialArgument);
             insert_into(s.v, from_string<typename T::value_type>(partialArgument));
-            ++lineToParse;
         }
     }
     return is;
