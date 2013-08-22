@@ -44,21 +44,41 @@ NAMESPACE_BEGIN
 struct ElementNotFound : std::exception {};
 
 /*definition of find functions throwing exceptions (const and no const)*/
-template <class Container, class Element>
-inline Element& find(Container& c, const Element& element)
+template <class T, class Alloc, class T2>
+inline T& find(std::list<T, Alloc>& cont, T2& element)
 {
-    const typename Container::iterator it = find(c.begin(), c.end(), element);
-    if (it == c.end())
+    const typename std::list<T, Alloc>::iterator it = find(cont.begin(), cont.end(), element);
+    if (it == cont.end())
         throw ElementNotFound();
     else
         return *it;
 }
 
-template <class Container, class Element>
-inline const Element& find(const Container& c, const Element& element)
+template <class T, class Alloc, class T2>
+inline const T& find(const std::list<T, Alloc>& cont, const T2& element)
 {
-    const typename Container::const_iterator it = find(c.begin(), c.end(), element);
-    if (it == c.end())
+    const typename std::list<T, Alloc>::const_iterator it = find(cont.begin(), cont.end(), element);
+    if (it == cont.end())
+        throw ElementNotFound();
+    else
+        return *it;
+}
+
+template <class T, class Alloc, class T2>
+inline T& find(std::vector<T, Alloc>& cont, T2& element)
+{
+    const typename std::vector<T, Alloc>::iterator it = find(cont.begin(), cont.end(), element);
+    if (it == cont.end())
+        throw ElementNotFound();
+    else
+        return *it;
+}
+
+template <class T, class Alloc, class T2>
+inline const T& find(const std::vector<T, Alloc>& cont, const T2& element)
+{
+    const typename std::vector<T, Alloc>::const_iterator it = find(cont.begin(), cont.end(), element);
+    if (it == cont.end())
         throw ElementNotFound();
     else
         return *it;
@@ -143,113 +163,118 @@ inline const T& find(const std::unordered_set<T, Hash, Pred, Alloc>& s, const Ke
 #endif
 
 /* find, nothrow versions */
-template <class Container, class Element>
-inline Element* find(Container& c, const Element& element, const std::nothrow_t&)
+template <class T, class Alloc, class T2>
+inline T* find(std::list<T, Alloc>& cont, T2& element, const std::nothrow_t&)
 {
-    const typename Container::iterator it = find(c.begin(), c.end(), element);
-    if (it == c.end())
+    const typename std::list<T, Alloc>::iterator it = find(cont.begin(), cont.end(), element);
+    if (it == cont.end())
+        return NULL;
+    else
+        return &(*it);
+}
+
+template <class T, class Alloc, class T2>
+inline const T* find(const std::list<T, Alloc>& cont, const T2& element, const std::nothrow_t&)
+{
+    const typename std::list<T, Alloc>::const_iterator it = find(cont.begin(), cont.end(), element);
+    if (it == cont.end())
         return NULL;
     else
         return *it;
 }
 
-template <class Container, class Element>
-inline const Element* find(const Container& c, const Element& element, const std::nothrow_t&)
+template <class T, class Alloc, class T2>
+inline T* find(std::vector<T, Alloc>& cont, T2& element, const std::nothrow_t&)
 {
-    const typename Container::const_iterator it = find(c.begin(), c.end(), element);
-    if (it == c.end())
+    const typename std::vector<T, Alloc>::iterator it = find(cont.begin(), cont.end(), element);
+    if (it == cont.end())
         return NULL;
     else
-        return *it;
+        return &(*it);
+}
+
+template <class T, class Alloc, class T2>
+inline const T* find(const std::vector<T, Alloc>& cont, const T2& element, const std::nothrow_t&)
+{
+    const typename std::vector<T, Alloc>::const_iterator it = find(cont.begin(), cont.end(), element);
+    if (it == cont.end())
+        return NULL;
+    else
+        return &(*it);
 }
 
 template <class Key, class T, class Comp, class Alloc, class Key2>
-inline T* find(std::map<Key, T*, Comp, Alloc>& m, const Key2& key, const std::nothrow_t&)
+inline T* find(std::map<Key, T, Comp, Alloc>& m, Key2& key, const std::nothrow_t&)
 {
-    const typename std::map<Key, T*, Comp, Alloc>::iterator it = m.find(key);
+    const typename std::map<Key, T, Comp, Alloc>::iterator it = m.find(key);
     if (it == m.end())
         return NULL;
     else
-        return it->second;
+        return &(it->second);
 }
 
 template <class Key, class T, class Comp, class Alloc, class Key2>
-inline const T* find(const std::map<Key, T*, Comp, Alloc>& m, const Key2& key, const std::nothrow_t&)
+inline const T* find(const std::map<Key, T, Comp, Alloc>& m, const Key2& key, const std::nothrow_t&)
 {
-    const typename std::map<Key, T*, Comp, Alloc>::const_iterator it = m.find(key);
+    const typename std::map<Key, T, Comp, Alloc>::const_iterator it = m.find(key);
     if (it == m.end())
         return NULL;
     else
-        return it->second;
+        return &(it->second);
 }
 
 #if MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X
 template <class Key, class T, class Hash, class Pred,class Alloc, class Key2>
-inline T& find(std::unordered_map<Key, T, Hash, Pred, Alloc>& m, const Key2& key, const std::nothrow_t&) noexcept
+inline T* find(std::unordered_map<Key, T, Hash, Pred, Alloc>& m, const Key2& key, const std::nothrow_t&) noexcept
 {
     const auto it = m.find(key);
     if (it == m.end())
         return NULL;
     else
-        return it->second;
+        return &(it->second);
 }
 
 template <class Key, class T, class Hash, class Pred, class Alloc, class Key2>
-inline const T& find(const std::unordered_map<Key, T, Hash, Pred, Alloc>& m, const Key2& key, const std::nothrow_t&) noexcept
+inline const T* find(const std::unordered_map<Key, T, Hash, Pred, Alloc>& m, const Key2& key, const std::nothrow_t&) noexcept
 {
     const auto it = m.find(key);
     if (it == m.end())
         return NULL;
     else
-        return it->second;
+        return &(it->second);
 }
 
 /* this also returns a reference to a const beacuse the unordered_set iterator is always a reference to a const*/
 template <class T, class Hash, class Pred, class Alloc, class Key2>
-inline const T& find(std::unordered_set<T, Hash, Pred, Alloc>& s, const Key2& key, const std::nothrow_t&) noexcept
+inline const T* find(std::unordered_set<T, Hash, Pred, Alloc>& s, const Key2& key, const std::nothrow_t&) noexcept
 {
     const auto it = s.find(key);
     if (it == s.end())
         return nullptr;
     else
-        return *it;
+        return &(*it);
 }
 
 template <class T, class Hash, class Pred, class Alloc, class Key2>
-inline const T& find(const std::unordered_set<T, Hash, Pred, Alloc>& s, const Key2& key, const std::nothrow_t&) noexcept
+inline const T* find(const std::unordered_set<T, Hash, Pred, Alloc>& s, const Key2& key, const std::nothrow_t&) noexcept
 {
     const auto it = s.find(key);
     if (it == s.end())
         return nullptr;
     else
-        return *it;
+        return &(*it);
 }
 #endif
 
-/* contains(): generic form */
-template <class Container, class Element>
-inline bool contains(const Container& c, const Element& element)
-{
-    try
-    {
-        find(c, element);
-        return true;
-    }
-    catch (ElementNotFound)
-    {
-        return false;
-    }
-}
-
 /* contains specializations */
-template <class Element>
-inline bool contains(const std::vector<Element>& v, const Element& element)
+template <class T, class Alloc, class T2>
+inline bool contains(const std::vector<T, Alloc>& v, const T2& element)
 {
     return find(v.begin(), v.end(), element) != v.end();
 }
 
-template <class Element>
-inline bool contains(const std::list<Element>& l, const Element& element)
+template <class T, class Alloc, class T2>
+inline bool contains(const std::list<T, Alloc>& l, const T2& element)
 {
     return find(l.begin(), l.end(), element) != l.end();
 }
@@ -260,8 +285,8 @@ inline bool contains(const std::map<Key, T, Comp, Alloc>& m, const Key2& key)
     return m.count(key) > 0;
 }
 
-template <class Key, class Comp, class Alloc, class Key2>
-inline bool contains(const std::set<Key, Comp, Alloc>& s, const Key2& key)
+template <class Key, class Comp, class Alloc, class T2>
+inline bool contains(const std::set<Key, Comp, Alloc>& s, const T2& key)
 {
     return s.count(key) > 0;
 }
@@ -280,8 +305,8 @@ inline bool contains(const std::unordered_set<T, Hash, Pred, Alloc>& s, const Ke
 }
 #endif
 
-template <>
-inline bool contains(const std::string& l, const std::string& element)
+template <class str>
+inline bool contains(const std::string& l, const str& element)
 {
     const std::string::size_type found = l.find(element);
     return found != std::string::npos;
@@ -289,12 +314,20 @@ inline bool contains(const std::string& l, const std::string& element)
 
 // ------------ Insertion Utilities
 
-/* This works for maps,multimaps,set,unordered_maps,unordered_sets */
-template <class Container, class ElementType>
-inline void insert_into(Container& cont, const ElementType& element)
+/*this works for sets*/
+template <class T, class Compare, class Alloc, class T2>
+inline void insert_into(std::set<T, Compare, Alloc>& cont, const T2& element)
 {
     cont.insert(element);
 }
+/*this works for unordered sets*/
+#if MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X
+template <class Key, class Hash, class Pred, class Alloc, class Key2>
+inline void insert_into(std::unordered_set<Key, Hash, Pred, Alloc>& cont, const Key2& element)
+{
+    cont.insert(element);
+}
+#endif
 
 /* This works for lists */
 template<class ElementType, class Alloc, class ElementType2>
@@ -310,6 +343,13 @@ inline void insert_into(std::vector<ElementType, Alloc>& cont, const ElementType
     cont.push_back(element);
 }
 
+/*this works for deque*/
+template<class ElementType, class Alloc, class ElementType2>
+inline void insert_into(std::deque<ElementType, Alloc>& cont, const ElementType2& element)
+{
+    cont.push_back(element);
+}
+
 /* This works for Ranker */
 template <class T, SameValueBehavior Behavior, class Comp, class T2>
 inline void insert_into(Ranker<T, Behavior, Comp>& cont, const T2& element)
@@ -318,8 +358,8 @@ inline void insert_into(Ranker<T, Behavior, Comp>& cont, const T2& element)
 }
 
 /* This works for Queue */
-template <class ElementType>
-inline void insert_into(std::queue<ElementType>& cont, const ElementType& element)
+template <class T, class Container, class T2>
+inline void insert_into(std::queue<T, Container>& cont, const T2& element)
 {
     cont.push(element);
 }
@@ -327,21 +367,21 @@ inline void insert_into(std::queue<ElementType>& cont, const ElementType& elemen
 
 //------------ Remove first Utilities
 
-/* This works for Ranker */
-template <class T, SameValueBehavior Behavior, class Comp, class T2>
-inline bool remove_first_from(Ranker<T, Behavior, Comp>& cont, const T2& element)
+/* This works for vectors*/
+template <class T, class Alloc, class T2>
+inline bool remove_first_from(std::vector<T, Alloc>& cont, const T2& element)
 {
-    const typename Ranker<T, Behavior, Comp>::const_iterator it = find(cont.begin(), cont.end(), element);
+    const typename std::vector<T, Alloc>::iterator it = find(cont.begin(), cont.end(), element);
     const bool result(it != cont.end());
-    if (result) cont.remove_first(element);
+    if (result) cont.erase(it);
     return result;
 }
 
-/* This works for vectors and lists */
-template <class Container>
-inline bool remove_first_from(Container& cont, const typename Container::value_type& element)
+/* This works for lists*/
+template <class T, class Alloc, class T2>
+inline bool remove_first_from(std::list<T, Alloc>& cont, const T2& element)
 {
-    const typename Container::iterator it = find(cont.begin(), cont.end(), element);
+    const typename std::list<T, Alloc>::iterator it = find(cont.begin(), cont.end(), element);
     const bool result(it != cont.end());
     if (result) cont.erase(it);
     return result;
@@ -405,13 +445,44 @@ inline bool remove_first_from(std::unordered_map<Key, T, Hash, Pred, Alloc>& m, 
 }
 #endif
 
+/* This works for Ranker */
+template <class T, SameValueBehavior Behavior, class Comp, class T2>
+inline bool remove_first_from(Ranker<T, Behavior, Comp>& cont, const T2& element)
+{
+    const typename Ranker<T, Behavior, Comp>::const_iterator it = find(cont.begin(), cont.end(), element);
+    const bool result(it != cont.end());
+    if (result) cont.remove_first(element);
+    return result;
+}
+
 //------------ Remove all Utilities
 
-/* This works for Non-associative containers */
-template <class T, class Alloc, template <class, class> class Container >
-inline bool remove_all_from(Container<T, Alloc>& cont, const typename Container<T, Alloc>::value_type& element)
+/* This works for vectors */
+template <class T, class Alloc, class T2 >
+inline bool remove_all_from(std::vector<T, Alloc>& cont, const T2& element)
 {
-    typename Container<T, Alloc>::iterator it = cont.begin();
+    typename std::vector<T, Alloc>::iterator it = cont.begin();
+    bool result(false);
+    while (it != cont.end())
+    {
+        if (*it == element)
+        {
+            it = cont.erase(it);
+            result = true;
+        }
+        else
+        {
+            ++it;
+        }
+    }
+    return result;
+}
+
+/*This is for lists*/
+template <class T, class Alloc, class T2 >
+inline bool remove_all_from(std::list<T, Alloc>& cont, const T2& element)
+{
+    typename std::list<T, Alloc>::iterator it = cont.begin();
     bool result(false);
     while (it != cont.end())
     {
