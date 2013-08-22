@@ -45,7 +45,7 @@ struct ElementNotFound : std::exception {};
 
 /*definition of find functions throwing exceptions (const and no const)*/
 template <class T, class Alloc, class T2>
-inline T& find(std::list<T, Alloc>& cont, T2& element)
+inline T& find(std::list<T, Alloc>& cont, const T2& element)
 {
     const typename std::list<T, Alloc>::iterator it = find(cont.begin(), cont.end(), element);
     if (it == cont.end())
@@ -65,7 +65,7 @@ inline const T& find(const std::list<T, Alloc>& cont, const T2& element)
 }
 
 template <class T, class Alloc, class T2>
-inline T& find(std::vector<T, Alloc>& cont, T2& element)
+inline T& find(std::vector<T, Alloc>& cont, const T2& element)
 {
     const typename std::vector<T, Alloc>::iterator it = find(cont.begin(), cont.end(), element);
     if (it == cont.end())
@@ -164,7 +164,7 @@ inline const T& find(const std::unordered_set<T, Hash, Pred, Alloc>& s, const Ke
 
 /* find, nothrow versions */
 template <class T, class Alloc, class T2>
-inline T* find(std::list<T, Alloc>& cont, T2& element, const std::nothrow_t&)
+inline T* find(std::list<T, Alloc>& cont, const T2& element, const std::nothrow_t&)
 {
     const typename std::list<T, Alloc>::iterator it = find(cont.begin(), cont.end(), element);
     if (it == cont.end())
@@ -184,7 +184,7 @@ inline const T* find(const std::list<T, Alloc>& cont, const T2& element, const s
 }
 
 template <class T, class Alloc, class T2>
-inline T* find(std::vector<T, Alloc>& cont, T2& element, const std::nothrow_t&)
+inline T* find(std::vector<T, Alloc>& cont, const T2& element, const std::nothrow_t&)
 {
     const typename std::vector<T, Alloc>::iterator it = find(cont.begin(), cont.end(), element);
     if (it == cont.end())
@@ -204,7 +204,7 @@ inline const T* find(const std::vector<T, Alloc>& cont, const T2& element, const
 }
 
 template <class Key, class T, class Comp, class Alloc, class Key2>
-inline T* find(std::map<Key, T, Comp, Alloc>& m, Key2& key, const std::nothrow_t&)
+inline T* find(std::map<Key, T, Comp, Alloc>& m, const Key2& key, const std::nothrow_t&)
 {
     const typename std::map<Key, T, Comp, Alloc>::iterator it = m.find(key);
     if (it == m.end())
