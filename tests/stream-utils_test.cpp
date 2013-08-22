@@ -1,6 +1,7 @@
 /*
     This file is part of the MiLi Minimalistic Library.
 
+
     Copyright (C) Hugo Arregui, FuDePAN 2011
     Distributed under the Boost Software License, Version 1.0.
     (See accompanying file LICENSE_1_0.txt in the root directory or
