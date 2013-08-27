@@ -148,19 +148,17 @@ inline std::istream& operator >> (std::istream& is, std::set<Key, Comp, Alloc>& 
     return is;
 }
 
-static const char QUOTE = '\"';
 struct QuoteNotFound : std::exception {};
-typedef std::string::const_iterator LineIterator;
 
 /* If is a quote, consume everything until the next quote */
-inline void consume_quotes(LineIterator& current, const LineIterator& end, std::string& accum) throw(QuoteNotFound)
+inline void consume_double_quotes(std::string::iterator& current, const std::string::iterator& end, std::string& accum)
 {
-    if(*current == QUOTE)
+    if(*current == '\"')
     {
-        const LineIterator firstCharOfArg = current + 1; //ignoring inital quote.
-        const LineIterator pos = std::find(firstCharOfArg, end, QUOTE);
+        const std::string::iterator firstCharOfArg = current + 1; //ignoring inital quote.
+        const std::string::iterator pos = std::find(firstCharOfArg, end, '\"');
         assert_throw<QuoteNotFound>(pos != end); //not found unquote
-        accum += std::string(firstCharOfArg, pos);
+        accum.insert(accum.begin() + accum.length(), firstCharOfArg, pos);
         current = pos;
     }
     else
@@ -171,12 +169,12 @@ inline void consume_quotes(LineIterator& current, const LineIterator& end, std::
 }
 
 /* Consume valid arguments, ignoring quotes if exist */
-inline void consume_args(LineIterator& current, const LineIterator& end, const char& separator, std::string& accum)
+inline void consume_args(std::string::iterator& current, const std::string::iterator& end, const char& separator, std::string& accum)
 {
     accum.clear();
     while((current != end) && (*current != separator))
     {
-        consume_quotes(current, end, accum);
+        consume_double_quotes(current, end, accum);
     }
     if (*current == separator)
     {
@@ -192,9 +190,9 @@ inline std::istream& operator >> (std::istream& is, const _Separator<T>& s)
     std::string line;
     if (std::getline(is, line))
     {
-        const LineIterator endLine = line.end();
-        std::string partialArgument("");
-        for (LineIterator current(line.begin()); current != endLine; )
+        const std::string::iterator endLine = line.end();
+        std::string partialArgument;
+        for (std::string::iterator current(line.begin()); current != endLine; )
         {
             consume_args(current, endLine, s.s, partialArgument);
             insert_into(s.v, from_string<typename T::value_type>(partialArgument));
