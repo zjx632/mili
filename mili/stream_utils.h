@@ -155,15 +155,13 @@ typedef std::string::const_iterator LineIterator;
 /* If is a quote, consume everything until the next quote */
 inline void consume_quotes(LineIterator& current, const LineIterator& end, std::string& accum) throw(QuoteNotFound)
 {
-    if (*current == QUOTE)
+    if(*current == QUOTE)
     {
-        ++current; //update current char ignoring inital quote.
-        while((current != end) && (*current != QUOTE))
-        {
-            accum += *current;
-            ++current;
-        }
-        assert_throw<QuoteNotFound>((current != end)); //not found unquote
+        const LineIterator firstCharOfArg = current + 1; //ignoring inital quote.
+        const LineIterator pos = std::find(firstCharOfArg, end, QUOTE);
+        assert_throw<QuoteNotFound>(pos != end); //not found unquote
+        accum += std::string(firstCharOfArg, pos);
+        current = pos;
     }
     else
     {
@@ -175,6 +173,7 @@ inline void consume_quotes(LineIterator& current, const LineIterator& end, std::
 /* Consume valid arguments, ignoring quotes if exist */
 inline void consume_args(LineIterator& current, const LineIterator& end, const char& separator, std::string& accum)
 {
+    accum.clear();
     while((current != end) && (*current != separator))
     {
         consume_quotes(current, end, accum);
@@ -194,9 +193,9 @@ inline std::istream& operator >> (std::istream& is, const _Separator<T>& s)
     if (std::getline(is, line))
     {
         const LineIterator endLine = line.end();
+        std::string partialArgument("");
         for (LineIterator current(line.begin()); current != endLine; )
         {
-            std::string partialArgument("");
             consume_args(current, endLine, s.s, partialArgument);
             insert_into(s.v, from_string<typename T::value_type>(partialArgument));
         }
