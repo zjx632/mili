@@ -98,6 +98,16 @@ inline const T& find(std::set<T, Comp, Alloc>& s, const Key2& key)
         return *it;
 }
 
+template <class T, class Comp, class Alloc, class Key2>
+inline const T& find(const std::set<T, Comp, Alloc>& s, const Key2& key)
+{
+    const typename std::set<T, Comp, Alloc>::const_iterator it = s.find(key);
+    if (it == s.end())
+        throw ElementNotFound();
+    else
+        return *it;
+}
+
 template <class Key, class T, class Comp, class Alloc, class Key2>
 inline T& find(std::map<Key, T, Comp, Alloc>& m, const Key2& key)
 {
@@ -180,7 +190,7 @@ inline const T* find(const std::list<T, Alloc>& cont, const T2& element, const s
     if (it == cont.end())
         return NULL;
     else
-        return *it;
+        return &(*it);
 }
 
 template <class T, class Alloc, class T2>
@@ -202,6 +212,27 @@ inline const T* find(const std::vector<T, Alloc>& cont, const T2& element, const
     else
         return &(*it);
 }
+
+template <class T, class Comp, class Alloc, class Key2>
+inline const T* find(std::set<T, Comp, Alloc>& s, const Key2& key, const std::nothrow_t&)
+{
+    const typename std::set<T, Comp, Alloc>::const_iterator it = s.find(key);
+    if (it == s.end())
+        return NULL;
+    else
+        return &(*it);
+}
+
+template <class T, class Comp, class Alloc, class Key2>
+inline const T* find(const std::set<T, Comp, Alloc>& s, const Key2& key, const std::nothrow_t&)
+{
+    const typename std::set<T, Comp, Alloc>::const_iterator it = s.find(key);
+    if (it == s.end())
+        return NULL;
+    else
+        return &(*it);
+}
+
 
 template <class Key, class T, class Comp, class Alloc, class Key2>
 inline T* find(std::map<Key, T, Comp, Alloc>& m, const Key2& key, const std::nothrow_t&)
