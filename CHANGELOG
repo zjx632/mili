@@ -11,8 +11,9 @@ Version 17.1 (UNRELEASED)
     * Extended contains() in ContainerUtils to support strings.
     * (Issue 91) Extended delete_container to support any container that provides begin() and end().
     * (Needed for issue 91) Added pointer removal to the type mapper library.
-    * Added support for C++0x's unordered_map & unordered_set in container_utils
-    * Added support for Container's derived from STL Containers in container_utils 
+    * (Issue 96) Added support for C++0x's unordered_map & unordered_set in container_utils.
+    * (Issue 96) Added support for Container's derived from STL Containers in container_utils.
+    * (Issue 96) Added support for std::unordered_map and std::unordered_set in delete_container.
 
 Version 17
 ===========
