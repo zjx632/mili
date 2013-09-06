@@ -3,9 +3,9 @@
 
     Copyright (C) Hugo Arregui, FuDePAN 2011
     Distributed under the Boost Software License, Version 1.0.
-    (See accompanying file LICENSE_1_0.txt in the root directory or 
+    (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
-    
+
     MiLi IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
@@ -17,6 +17,8 @@
     This is a test file.
 */
 
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -50,4 +52,30 @@ TEST(DeleteContainerTest, delete_container)
     EXPECT_CALL(*o2, die()).Times(1);
     EXPECT_CALL(*o3, die()).Times(1);
     delete_container(vec1);
+}
+
+TEST(DeleteContainerTest, UnorderedMap)
+{
+    MockObject* o1 = new MockObject;
+    MockObject* o2 = new MockObject;
+    MockObject* o3 = new MockObject;
+    std::unordered_map<std::string, MockObject*> mapToDelete({{"milk", o1},{"flour", o2}, {"eggs", o3}});
+
+    EXPECT_CALL(*o1, die()).Times(1);
+    EXPECT_CALL(*o2, die()).Times(1);
+    EXPECT_CALL(*o3, die()).Times(1);
+    delete_container(mapToDelete);
+}
+
+TEST(DeleteContainerTest, UnorderedSet)
+{
+    MockObject* o1 = new MockObject;
+    MockObject* o2 = new MockObject;
+    MockObject* o3 = new MockObject;
+    std::unordered_set<MockObject*> setToDelete({o1, o2, o3});
+
+    EXPECT_CALL(*o1, die()).Times(1);
+    EXPECT_CALL(*o2, die()).Times(1);
+    EXPECT_CALL(*o3, die()).Times(1);
+    delete_container(setToDelete);
 }
