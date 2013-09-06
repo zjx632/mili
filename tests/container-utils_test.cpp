@@ -63,7 +63,8 @@ TEST_F(MapTest, remove_all_from)
 
 TEST_F(MapTest, found)
 {
-    ASSERT_EQ("good bye", find(m, "hello"));
+    EXPECT_EQ("good bye", find(m, "hello"));
+    EXPECT_EQ("good bye", *find(m, "hello", std::nothrow));
 }
 
 TEST_F(MapTest, not_found)
@@ -114,6 +115,7 @@ TEST(ContainerUtilsTest, derivedlist)
     insert_into(myList, 3);
     EXPECT_EQ(true, contains(myList,1));
     EXPECT_EQ(1, find(myList, 1));
+    EXPECT_EQ(1, *find(myList, 1, std::nothrow));
     EXPECT_TRUE(remove_first_from(myList, 2));
     EXPECT_TRUE(remove_all_from(myList, 1));
     EXPECT_EQ(1, myList.aboveN(1));
@@ -133,6 +135,7 @@ TEST(ContainerUtilsTest, derivedMap)
     myMap.insert(std::pair<char,int>('d',1));
     EXPECT_EQ(true, contains(myMap,'a'));
     EXPECT_EQ(1, find(myMap, 'a'));
+    EXPECT_EQ(1, *find(myMap, 'a', std::nothrow));
     EXPECT_TRUE(remove_first_from(myMap, 2));
     EXPECT_TRUE(remove_all_from(myMap, 1));
 
@@ -188,7 +191,8 @@ TEST_F(UMapTest, remove_all_from)
 
 TEST_F(UMapTest, found)
 {
-    ASSERT_EQ("good bye", find(m, "hello"));
+    EXPECT_EQ("good bye", find(m, "hello"));
+    EXPECT_EQ("good bye", *find(m, "hello", std::nothrow));
 }
 
 TEST_F(UMapTest, not_found)
@@ -202,6 +206,7 @@ TEST(USetTest, general)
     insert_into(s,1);
     insert_into(s,2);
     EXPECT_EQ(1, find(s, 1));
+    EXPECT_EQ(1, *find(s, 1, std::nothrow));
     EXPECT_FALSE(contains(s, 3));
     EXPECT_TRUE(remove_first_from(s,1));
 }
@@ -212,10 +217,9 @@ TEST(SetTest, general)
     insert_into(s,"asd");
     insert_into(s,"asd2");
     EXPECT_EQ("asd", find(s, "asd"));
+    EXPECT_EQ("asd", *find(s, "asd", std::nothrow));
     EXPECT_FALSE(contains(s, "asdffff"));
     EXPECT_TRUE(remove_first_from(s,"asd"));
 }
-
-
 
 #endif
