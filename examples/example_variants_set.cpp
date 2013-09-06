@@ -37,11 +37,11 @@ int main()
     try
     {
         variantSet.get_element("number", ie);
-        cout << "number: " << ie << endl;
+        std::cout << "number: " << ie << std::endl;
 
         variantSet.get_element(str, is);
         std::cout << "greeting: " << is << std::endl;
-        std::cout << "greeting: " << variantSet.get_element<string>(str) << std::endl;
+        std::cout << "greeting: " << variantSet.get_element<std::string>(str) << std::endl;
         variantSet.get_element("float", f);
     }
     catch (const BadElementName&)

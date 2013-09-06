@@ -39,7 +39,7 @@ static void generate_file(const char* name)
 
         f << v; /* PROVIDED BY MiLi */
 
-        f << endl;
+        f << std::endl;
     }
 }
 
@@ -51,7 +51,7 @@ static void load_file(const char* name)
     while (f >> v)  /* PROVIDED BY MiLi */
     {
         std::cout << Separator(v, '\t');  /* PROVIDED BY MiLi */
-        std::cout << endl;
+        std::cout << std::endl;
         v.clear();
     }
 }
