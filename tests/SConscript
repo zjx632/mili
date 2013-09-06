@@ -1,5 +1,5 @@
 Import ('env')
-env.Append(CXXFLAGS=['--std=c++0x'])
+
 name = 'mili'
 inc = env.Dir('.')
 src = env.Glob('*.cpp')

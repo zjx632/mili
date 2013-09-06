@@ -63,7 +63,7 @@ struct TreeNode
     TreeNode(bool is_white)
         : left(NULL), right(NULL), is_white(is_white), data(last++)
     {
-        std::cout << data << ": " << boolalpha << is_white << std::endl;
+        std::cout << data << ": " << std::boolalpha << is_white << std::endl;
     }
     ~TreeNode()
     {
@@ -125,7 +125,7 @@ class SetTriplets : public Coroutine
     typename std::set<T>::const_iterator t2;
     typename std::set<T>::const_iterator t3;
 public:
-    bool operator()(const set<T>& s, T& elem1, T& elem2, T& elem3)
+    bool operator()(const std::set<T>& s, T& elem1, T& elem2, T& elem3)
     {
         BEGIN_COROUTINE
         {
@@ -162,7 +162,7 @@ int main()
     do
     {
         ret = cr1();
-        cout << ret << endl;
+        std::cout << ret << std::endl;
     }
     while (ret != -1000);
 
@@ -174,7 +174,7 @@ int main()
     {
         node = iter(node);
         if (node != NULL)
-            cout << node->data << endl;
+            std::cout << node->data << std::endl;
     }
     delete root;
 
