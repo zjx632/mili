@@ -17,8 +17,8 @@ safe_c_functions.h: improves some call to C functions like std::memcpy().
     DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef SAFE_C_FUNCTIONS_H
-#define SAFE_C_FUNCTIONS_H
+#ifndef SAFE_C_FUNCTIONS
+#define SAFE_C_FUNCTIONS
 
 NAMESPACE_BEGIN
 
