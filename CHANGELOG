@@ -1,4 +1,4 @@
-Version 17.1 (UNRELEASED)
+Version 18 (UNRELEASED)
 ============
     * Function trim in "string_utils.h" now support tabs and whitespaces.
     * Changed register name class in Factory_registry.
