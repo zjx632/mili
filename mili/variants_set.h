@@ -34,25 +34,24 @@ typedef mili::GenericException<VariantsSetExceptionHierarchy> VariantsSetExcepti
 DEFINE_SPECIFIC_EXCEPTION_TEXT(BadElementName, VariantsSetExceptionHierarchy, "Element not found");
 DEFINE_SPECIFIC_EXCEPTION_TEXT(BadElementType, VariantsSetExceptionHierarchy, "Conversion failed");
 
-
 typedef std::string ElementName;
 
 class VariantsSet
 {
     typedef std::string ElementValue;
-    typedef std::map<ElementName, ElementValue> VariantContainer;
+    typedef std::map<ElementName, ElementValue> VariantsContainer;
 
     /** @brief Container to store the elements. */
-    VariantContainer _elements;
+    VariantsContainer _elements;
 
 public:
 
     /* typedef to simulate STL */
-    typedef VariantContainer::iterator iterator;
-    typedef VariantContainer::const_iterator const_iterator;
-    typedef VariantContainer::value_type value_type;
-    typedef VariantContainer::reference reference;
-    typedef VariantContainer::const_reference const_reference;
+    typedef VariantsContainer::iterator iterator;
+    typedef VariantsContainer::const_iterator const_iterator;
+    typedef VariantsContainer::value_type value_type;
+    typedef VariantsContainer::reference reference;
+    typedef VariantsContainer::const_reference const_reference;
 
     /* Returns a const_iterator pointing to the beginning of the VariantsSet. */
     const_iterator begin() const
@@ -132,7 +131,7 @@ public:
 
     void erase(const ElementName& name) throw(BadElementName)
     {
-        const VariantContainer::const_iterator it = _elements.find(name);
+        const VariantsContainer::const_iterator it = _elements.find(name);
         if (it != _elements.end())
             _elements.erase(name);
         else
