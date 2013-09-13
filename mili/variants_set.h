@@ -22,125 +22,135 @@ VariantsSet: A minimal library that implements a set of variables of heterogenic
 
 #include <string>
 #include <map>
+#include "generic_exception.h"
+
 
 NAMESPACE_BEGIN
 
-struct VariantsSetException : std::exception {};
-struct BadElementType : VariantsSetException {};
-struct BadElementName : VariantsSetException {};
+/** @brief Exceptions for VariantSet. */
+struct VariantsSetExceptionHierarchy {};
+typedef mili::GenericException<VariantsSetExceptionHierarchy> VariantsSetException;
+
+DEFINE_SPECIFIC_EXCEPTION_TEXT(BadElementName, VariantsSetExceptionHierarchy, "Element not found");
+DEFINE_SPECIFIC_EXCEPTION_TEXT(BadElementType, VariantsSetExceptionHierarchy, "Conversion failed");
+
 
 typedef std::string ElementName;
 
 class VariantsSet
 {
-    typedef std::map<ElementName, std::string> VariantsSets;
+    typedef std::string ElementValue;
+    typedef std::map<ElementName, ElementValue> VariantContainer;
 
-    VariantsSets elements;
+    /** @brief Container to store the elements. */
+    VariantContainer _elements;
 
 public:
+
     /* typedef to simulate STL */
-    typedef VariantsSets::iterator iterator;
-    typedef VariantsSets::const_iterator const_iterator;
-    typedef VariantsSets::value_type value_type;
-    typedef VariantsSets::reference reference;
-    typedef VariantsSets::const_reference const_reference;
+    typedef VariantContainer::iterator iterator;
+    typedef VariantContainer::const_iterator const_iterator;
+    typedef VariantContainer::value_type value_type;
+    typedef VariantContainer::reference reference;
+    typedef VariantContainer::const_reference const_reference;
 
     /* Returns a const_iterator pointing to the beginning of the VariantsSet. */
-    inline const_iterator begin() const
+    const_iterator begin() const
     {
-        return elements.begin();
+        return _elements.begin();
     }
+
     /* Returns a const_iterator pointing to the end of the VariantsSet. */
-    inline const_iterator end() const
+    const_iterator end() const
     {
-        return elements.end();
+        return _elements.end();
     }
+
     /* Returns a iterator pointing to the beginning of the VariantsSet. */
-    inline iterator begin()
+    iterator begin()
     {
-        return elements.begin();
+        return _elements.begin();
     }
     /* Returns a iterator pointing to the end of the VariantsSet. */
-    inline iterator end()
+    iterator end()
     {
-        return elements.end();
+        return _elements.end();
     }
 
     /* returns the element called name */
     template <class T>
-    T get_element(const ElementName& name) const throw(BadElementType, BadElementName)
+    T get_element(const ElementName& name) const throw (BadElementType, BadElementName)
     {
-        const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
+        const T* const strElement = find(_elements, name, std::nothrow);
+        // TODO use mili::assert_throw<BadElementName, name>(strElement == nullptr). It depends on issue99
+        if (strElement == NULL)
+            throw BadElementName(name);
+
         T element;
-        if (it != elements.end())
-        {
-            if (!from_string<T>(it->second, element))
-                throw BadElementType();
-        }
-        else
-            throw BadElementName();
+        // TODO use mili::assert_throw<BadElementType, name>(strElement == nullptr). It depends on issue99
+        if (!from_string<T>(*strElement, element))
+            throw BadElementType(name);
         return element;
     }
 
     template <class T>
-    void get_element(const ElementName& name, T& element) const throw(BadElementType, BadElementName)
+    void get_element(const ElementName& name, T& element) const throw (BadElementType, BadElementName)
     {
-        const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
-        if (it != elements.end())
-        {
-            if (!from_string<T>(it->second, element))
-                throw BadElementType();
-        }
-        else
-            throw BadElementName();
+        const ElementValue* const strElement = find(_elements, name, std::nothrow);
+        // TODO use mili::assert_throw<BadElementName, name>(strElement == nullptr). It depends on issue99
+        if (strElement == NULL)
+            throw BadElementName(name);
+
+        // TODO use mili::assert_throw<BadElementType, name>(strElement == nullptr). It depends on issue99
+        if (!from_string<T>(*strElement, element))
+            throw BadElementType(name);
     }
 
 
     /* get_element, nothrow versions */
     template <class T>
-    bool get_element(const ElementName& name, T& element, const std::nothrow_t&) const throw()
+    bool get_element(const ElementName& name, T& element, const std::nothrow_t&) const
     {
-        const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
-        const bool success_name(it != elements.end());
-        bool success_type(false);
-        if (success_name)
-            success_type = from_string<T>(it->second, element);
-        return (success_name && success_type);
+        bool found = false;
+        const T* const strElement = find(_elements, name, std::nothrow);
+        if (strElement != NULL)
+            found = from_string<T>(*strElement, element);
+        return found;
     }
 
     /* inserts the element in the varianteSet. */
     template <class T>
     void insert(const ElementName& name, const T& element)
     {
-        elements[name] = mili::to_string(element);
+        _elements[name] = to_string(element);
     }
 
     bool empty() const
     {
-        return elements.empty();
+        return _elements.empty();
     }
 
     void erase(const ElementName& name) throw(BadElementName)
     {
-        const std::map<ElementName, std::string>::const_iterator it = elements.find(name);
-        if (it != elements.end())
-            elements.erase(name);
+        const VariantContainer::const_iterator it = _elements.find(name);
+        if (it != _elements.end())
+            _elements.erase(name);
         else
-            throw BadElementName();
+            throw BadElementName(name);
     }
 
     void clear()
     {
-        elements.clear();
+        _elements.clear();
     }
 
     size_t size() const
     {
-        return elements.size();
+        return _elements.size();
     }
 
     VariantsSet()
-        : elements()
+        : _elements()
     {}
 };
 
