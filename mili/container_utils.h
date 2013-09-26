@@ -35,7 +35,7 @@ container_utils: A minimal library with generic STL container utilities.
 
 #include <algorithm>
 #include <exception>
-#include "mili/platform_detection.h"
+#include "platform_detection.h"
 #include "ranker.h"
 
 
