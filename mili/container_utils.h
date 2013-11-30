@@ -34,14 +34,19 @@ container_utils: A minimal library with generic STL container utilities.
 #endif
 
 #include <algorithm>
-#include <exception>
 #include "mili/platform_detection.h"
-#include "ranker.h"
+#include "mili/ranker.h"
+#include "mili/generic_exception.h"
 
 
 NAMESPACE_BEGIN
 
-struct ElementNotFound : std::exception {};
+/** @brief Exceptions for ContainerUtils. */
+struct ContainerUtilsExceptionHierarchy {};
+typedef mili::GenericException<ContainerUtilsExceptionHierarchy> ContainerUtilsException;
+
+DEFINE_SPECIFIC_EXCEPTION_TEXT(ElementNotFound, ContainerUtilsExceptionHierarchy, "Element not found");
+
 
 /*definition of find functions throwing exceptions (const and no const)*/
 template <class T, class Alloc, class T2>
