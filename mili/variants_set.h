@@ -81,7 +81,6 @@ public:
     T get_element(const ElementName& name) const throw (BadElementType, BadElementName)
     {
         const T* const strElement = find(_elements, name, std::nothrow);
-        // TODO use mili::assert_throw<BadElementName, name>(strElement == nullptr). It depends on issue99
         if (strElement == NULL)
             throw BadElementName(name);
 
@@ -96,11 +95,9 @@ public:
     void get_element(const ElementName& name, T& element) const throw (BadElementType, BadElementName)
     {
         const ElementValue* const strElement = find(_elements, name, std::nothrow);
-        // TODO use mili::assert_throw<BadElementName, name>(strElement == nullptr). It depends on issue99
         if (strElement == NULL)
             throw BadElementName(name);
 
-        // TODO use mili::assert_throw<BadElementType, name>(strElement == nullptr). It depends on issue99
         if (!from_string<T>(*strElement, element))
             throw BadElementType(name);
     }
@@ -129,9 +126,9 @@ public:
         return _elements.empty();
     }
 
-    void erase(const ElementName& name) throw(BadElementName)
+    void erase(const ElementName& name) throw (BadElementName)
     {
-        const VariantsContainer::const_iterator it = _elements.find(name);
+        const const_iterator it = _elements.find(name);
         if (it != _elements.end())
             _elements.erase(name);
         else
