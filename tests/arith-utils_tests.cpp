@@ -65,3 +65,38 @@ TEST(ArithUtilsTest, is_lossless_sum)
     ASSERT_FALSE(is_lossless_sum(1e80, 0.0001));
     ASSERT_FALSE(is_lossless_sum(0.0001, 1e80));
 }
+
+TEST(ArithUtilsTest, deg2rad)
+{
+    ASSERT_NEAR(0.f, deg2rad(0.f), 10e-6f);
+    ASSERT_NEAR(1.5707963f, deg2rad(90.f), 10e-6f);
+    ASSERT_NEAR(float(M_PI), deg2rad(180.f), 10e-6f);
+}
+
+TEST(ArithUtilsTest, rad2deg)
+{
+    ASSERT_NEAR(0.f, rad2deg(0.f), 10e-6f);
+    ASSERT_NEAR(90.f, rad2deg(1.5707963f), 10e-6f);
+    ASSERT_NEAR(180.f, rad2deg(float(M_PI)), 10e-6f);
+}
+
+TEST(ArithUtilsTest, is_near_zero)
+{
+    // Float. Default tolerance.
+    ASSERT_TRUE(is_near_zero(0.000001f));
+    ASSERT_FALSE(is_near_zero(0.00001f));
+    ASSERT_TRUE(is_near_zero(-0.000001f));
+    ASSERT_FALSE(is_near_zero(-0.00001f));
+    // Float. Tolerance passed as argument.
+    ASSERT_TRUE(is_near_zero(0.0000001f, 10e-7f));
+    ASSERT_FALSE(is_near_zero(0.000001f, 10e-7f));
+
+    // Double. Default tolerance.
+    ASSERT_TRUE(is_near_zero(0.000001));
+    ASSERT_FALSE(is_near_zero(0.00001));
+    ASSERT_TRUE(is_near_zero(-0.000001));
+    ASSERT_FALSE(is_near_zero(-0.00001));
+    // Double. Tolerance passed as argument.
+    ASSERT_TRUE(is_near_zero(0.0000001, 10e-7));
+    ASSERT_FALSE(is_near_zero(0.000001, 10e-7));
+}

@@ -224,14 +224,30 @@ inline bool is_lossless_sum(T x, T y)
     return x == T(0) || y == T(0) || (x + y > std::max(x, y));
 }
 
+/* Float presicion PI number. */
+const float FLOAT_PI = 3.14159265358979f;
+
 template <class T>
 //TODO[C++0x]: use decltype
 inline map_type(ToFloatMapper, T) deg2rad(T deg)
 {
-    static const float deg2rad_ratio = M_PI / 180;
+    static const float deg2rad_ratio = FLOAT_PI / 180.f;
     return deg * deg2rad_ratio;
 }
 
+template <class T>
+//TODO[C++0x]: use decltype
+inline map_type(ToFloatMapper, T) rad2deg(T rad)
+{
+    static const float rad2deg_ratio = 180.f / FLOAT_PI;
+    return rad * rad2deg_ratio;
+}
+
+template <class T>
+inline bool is_near_zero(T x, T tolerance = T(10e-6))
+{
+    return std::abs(x) < tolerance;
+}
 
 inline bool implies(bool p, bool q)
 {
