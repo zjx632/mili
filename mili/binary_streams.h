@@ -381,7 +381,7 @@ public:
      */
     uint32_t remainingChars() const
     {
-        assert( _pos <= _s.size() );
+        assert(_pos <= _s.size());
         return _s.size() - _pos;
     }
 
@@ -397,7 +397,7 @@ public:
      */
     void skip(uint32_t chars)
     {
-        assert( _pos + chars <= _s.size() );
+        assert(_pos + chars <= _s.size());
         _pos += chars;
     }
 private:

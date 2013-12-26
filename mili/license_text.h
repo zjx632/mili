@@ -2,11 +2,11 @@
 license_text: A library that implements functions to show software licenses.
     This file is part of the MiLi Minimalistic Library.
 
-    Copyright (C) Leandro Ramos, FuDePAN 2012 
+    Copyright (C) Leandro Ramos, FuDePAN 2012
     Distributed under the Boost Software License, Version 1.0.
-    (See accompanying file LICENSE_1_0.txt in the root directory or 
+    (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
-    
+
     MiLi IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
@@ -23,7 +23,7 @@ NAMESPACE_BEGIN
 
 
 inline std::string getGPL3LicenseText(const std::string& project_name, const std::string& version, const std::string& copyright_names,
-                          const std::string& years_from_to)
+                                      const std::string& years_from_to)
 {
     return project_name + " " + version + "\n"
            + "Copyright (C) " + years_from_to + " " + copyright_names + "\n"
@@ -32,10 +32,10 @@ inline std::string getGPL3LicenseText(const std::string& project_name, const std
 }
 
 
-inline std::string getBoostLicenseText( const std::string& project_name,
-                                        const std::string& version,
-                                        const std::string& copyright_names,
-                                        const std::string& years_from_to)
+inline std::string getBoostLicenseText(const std::string& project_name,
+                                       const std::string& version,
+                                       const std::string& copyright_names,
+                                       const std::string& years_from_to)
 {
     return project_name + " " + version + "\n"
            + "Copyright (C) " + copyright_names + ", FuDePAN " + years_from_to + "\n"
