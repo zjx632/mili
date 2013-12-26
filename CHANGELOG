@@ -16,6 +16,7 @@ Version 18 (UNRELEASED)
     * (Issue 96) Added support for C++0x's unordered_map & unordered_set in container_utils.
     * (Issue 96) Added support for Container's derived from STL Containers in container_utils.
     * (Issue 96) Added support for std::unordered_map and std::unordered_set in delete_container.
+    * Solved style issues.
 
 Version 17
 ===========

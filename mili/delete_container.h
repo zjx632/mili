@@ -80,7 +80,7 @@ template < class Container >
 inline void delete_container(Container& cont)
 {
     typedef map_type(PtrRemover, typename Container::value_type) BType;
-    std::for_each(cont.begin(), cont.end(), deleter<BType>() );
+    std::for_each(cont.begin(), cont.end(), deleter<BType>());
     cont.clear();
 }
 

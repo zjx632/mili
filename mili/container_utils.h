@@ -152,7 +152,7 @@ inline const T& find(const std::unordered_map<Key, T, Hash, Pred, Alloc>& m, con
 
 /*This also returns a reference to const because the unordered set iterator is always a const reference*/
 template <class T, class Hash, class Pred, class Alloc, class Key2>
-inline const T& find(std::unordered_set<T, Hash, Pred, Alloc>& s,const Key2& key)
+inline const T& find(std::unordered_set<T, Hash, Pred, Alloc>& s, const Key2& key)
 {
     const auto it = s.find(key);
     if (it == s.end())
@@ -255,7 +255,7 @@ inline const T* find(const std::map<Key, T, Comp, Alloc>& m, const Key2& key, co
 }
 
 #if MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X
-template <class Key, class T, class Hash, class Pred,class Alloc, class Key2>
+template <class Key, class T, class Hash, class Pred, class Alloc, class Key2>
 inline T* find(std::unordered_map<Key, T, Hash, Pred, Alloc>& m, const Key2& key, const std::nothrow_t&) noexcept
 {
     const auto it = m.find(key);
@@ -431,7 +431,7 @@ inline bool remove_first_from(std::map<Key, T, Comp, Alloc>& m, const ElementTyp
 {
     typename std::map<Key, T, Comp, Alloc>::iterator it = m.begin();
     bool result(false);
-    while (it != m.end()&&!result)
+    while (it != m.end() && !result)
     {
         if (it->second == element)
         {
@@ -460,7 +460,7 @@ inline bool remove_first_from(std::unordered_map<Key, T, Hash, Pred, Alloc>& m, 
 {
     auto it = m.begin();
     bool result(false);
-    while (it != m.end()&&!result)
+    while (it != m.end() && !result)
     {
         if (it->second == element)
         {
@@ -579,7 +579,7 @@ inline bool remove_all_from(std::unordered_map<Key, T, Hash, Pred, Alloc>& m, co
     {
         if (it->second == element)
         {
-            it=m.erase(it);
+            it = m.erase(it);
             result = true;
         }
         else

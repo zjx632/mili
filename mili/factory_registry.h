@@ -4,9 +4,9 @@ factory_registry: A simple way to registry derived classes without .h file
 
     Copyright (C) Leandro Ramos, FuDePAN 2012
     Distributed under the Boost Software License, Version 1.0.
-    (See accompanying file LICENSE_1_0.txt in the root directory or 
+    (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
-    
+
     MiLi IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
@@ -27,7 +27,7 @@ struct FactoryTraits
 {
     typedef BaseClass_ BaseClass;
     typedef Key_ Key;
-    typedef ConstructorParameterType_ ConstructorParameterType; 
+    typedef ConstructorParameterType_ ConstructorParameterType;
 };
 
 
@@ -62,7 +62,7 @@ protected:
         --users;
         return (users == 0);
     }
-    typename Factory<Key,BaseClass>::KeyIterator _getConstructibleObjectsKeys()
+    typename Factory<Key, BaseClass>::KeyIterator _getConstructibleObjectsKeys()
     {
         return fc.getConstructibleObjectsKeys();
     }
@@ -82,36 +82,36 @@ public:
             instance = NULL;
         }
     }
-    
-    static typename Factory<Key,BaseClass>::KeyIterator getConstructibleObjectsKeys()
+
+    static typename Factory<Key, BaseClass>::KeyIterator getConstructibleObjectsKeys()
     {
         return instance->_getConstructibleObjectsKeys();
     }
 
 };
 
-template<class DerivedRegistry, class Traits> 
+template<class DerivedRegistry, class Traits>
 DerivedRegistry* BaseFactoryRegistry<DerivedRegistry, Traits>::instance = NULL;
 
 template <class BaseClass, class Key = std::string, class ConstructorParameterType = void>
-class FactoryRegistry : public BaseFactoryRegistry< FactoryRegistry <BaseClass, Key, ConstructorParameterType>, 
-                                                    FactoryTraits   <BaseClass, Key, ConstructorParameterType> >
+class FactoryRegistry : public BaseFactoryRegistry < FactoryRegistry <BaseClass, Key, ConstructorParameterType>,
+    FactoryTraits   <BaseClass, Key, ConstructorParameterType> >
 {
-public:    
+public:
     static BaseClass* new_class(const Key& k, ConstructorParameterType p)
     {
         return BaseFactoryRegistry<FactoryRegistry, FactoryTraits<BaseClass, Key, ConstructorParameterType> >::instance->_new_class(k, p);
     }
-private: 
+private:
     BaseClass* _new_class(const Key& k, ConstructorParameterType p)
     {
         return this->fc.new_class(k, p);
-    }  
+    }
 };
 
 template <class BaseClass, class Key>
-class FactoryRegistry<BaseClass, Key, void> : public BaseFactoryRegistry<   FactoryRegistry <BaseClass, Key, void>, 
-                                                                            FactoryTraits   <BaseClass, Key, void> >
+class FactoryRegistry<BaseClass, Key, void> : public BaseFactoryRegistry <   FactoryRegistry <BaseClass, Key, void>,
+    FactoryTraits   <BaseClass, Key, void> >
 {
 public:
     static BaseClass* new_class(const Key& k)
@@ -144,4 +144,3 @@ public:
 
 #define REGISTER_FACTORIZABLE_CLASS_WITH_ARG(BaseClassName, DerivedClassName, keytype, key, ConstructorParameterTypeName)   \
     static mili::Registerer<BaseClassName,DerivedClassName,keytype, ConstructorParameterTypeName>  rr##BaseClassName##DerivedClassName(key)
-    
