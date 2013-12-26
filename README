@@ -36,6 +36,7 @@ Basic usage:
     * metaprogramming_utils NO_METAPROGRAMMING_UTILS
     * license_text          NO_LICENSE_TEXT
     * safe_c_functions      NO_SAFE_C_FUNCTIONS
+    * circular_buffer       NO_CIRCULAR_BUFFER
 
 You might want to copy the include files in an include directory.
 If so, just run the 'install.sh' script:

@@ -36,3 +36,4 @@ env.CreateProgram(name + 'random-gen', inc, env.File('example_random-gen.cpp'), 
 env.CreateProgram(name + 'platform-detection', inc, env.File('example_platform-detection.cpp'), deps, alias)
 env.CreateProgram(name + 'license_text', inc, env.File('example_license_text.cpp'), deps, alias)
 env.CreateProgram(name + 'safe_c_functions', inc, env.File('example_safe_c_functions.cpp'), deps, alias)
+env.CreateProgram(name + 'circular-buffer', inc, env.File('example_circular-buffer.cpp'), deps, alias)
