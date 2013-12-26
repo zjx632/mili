@@ -149,6 +149,10 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "safe_c_functions.h"
 #endif
 
+#ifndef NO_CIRCULAR_BUFFER
+#   include "circular_buffer.h"
+#endif
+
 
 #undef NAMESPACE_BEGIN
 #undef NAMESPACE_END
