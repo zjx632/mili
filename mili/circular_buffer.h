@@ -62,7 +62,7 @@ public:
      *
      * @param item      The item we want to add.
      */
-    void queue(const T item);
+    void queue(T item);
 
     /**
      * @brief Tells how much buffer space is available.
