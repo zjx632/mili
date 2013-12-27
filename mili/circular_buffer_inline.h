@@ -47,7 +47,7 @@ inline void CircBuffer<T, Size>::parkReadIndex()
 }
 
 template<typename T, UInt Size>
-inline  bool CircBuffer<T, Size>::isEmpty() const
+inline bool CircBuffer<T, Size>::isEmpty() const
 {
     return (_read == Size);
 }
