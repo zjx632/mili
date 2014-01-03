@@ -3,7 +3,7 @@ circular_buffer: A type-templetized circular buffer.
     This file is part of the MiLi Minimalistic Library.
 
 
-    Copyright (C) Pablo Oliva, Franco Riberi, FuDePAN 2009
+    Copyright (C) Pablo Oliva, Franco Riberi, FuDePAN 2013
     Distributed under the Boost Software License, Version 1.0.
     (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -25,21 +25,33 @@ NAMESPACE_BEGIN
 
 #include <cassert>
 
-template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+template < typename T,
+         CircularBufferSizeType Size,
+         class DequeueOnEmptyPolicy,
+         class EnqueueOnFullPolicy,
+         class DropTooManyPolicy >
 inline bool CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
 ::isFull() const
 {
     return (_read == _write);
 }
 
-template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+template < typename T,
+         CircularBufferSizeType Size,
+         class DequeueOnEmptyPolicy,
+         class EnqueueOnFullPolicy,
+         class DropTooManyPolicy >
 inline void CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
 ::flush()
 {
     _read = Size;
 }
 
-template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+template < typename T,
+         CircularBufferSizeType Size,
+         class DequeueOnEmptyPolicy,
+         class EnqueueOnFullPolicy,
+         class DropTooManyPolicy >
 inline void CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
 ::parkReadIndex()
 {
@@ -49,14 +61,22 @@ inline void CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropT
     }
 }
 
-template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+template < typename T,
+         CircularBufferSizeType Size,
+         class DequeueOnEmptyPolicy,
+         class EnqueueOnFullPolicy,
+         class DropTooManyPolicy >
 inline bool CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
 ::isEmpty() const
 {
     return (_read == Size);
 }
 
-template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+template < typename T,
+         CircularBufferSizeType Size,
+         class DequeueOnEmptyPolicy,
+         class EnqueueOnFullPolicy,
+         class DropTooManyPolicy >
 inline void CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
 ::unparkReadIndex()
 {
@@ -66,13 +86,21 @@ inline void CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropT
     }
 }
 
-template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+template < typename T,
+         CircularBufferSizeType Size,
+         class DequeueOnEmptyPolicy,
+         class EnqueueOnFullPolicy,
+         class DropTooManyPolicy >
 inline CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
 ::CircBuffer()
-    : _write(0), _read(Size)
+    : _write(0u), _read(Size)
 {}
 
-template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+template < typename T,
+         CircularBufferSizeType Size,
+         class DequeueOnEmptyPolicy,
+         class EnqueueOnFullPolicy,
+         class DropTooManyPolicy >
 inline void CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
 ::queue(const T item)
 {
@@ -83,7 +111,11 @@ inline void CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropT
     _write %= Size;
 }
 
-template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+template < typename T,
+         CircularBufferSizeType Size,
+         class DequeueOnEmptyPolicy,
+         class EnqueueOnFullPolicy,
+         class DropTooManyPolicy >
 inline CircularBufferSizeType CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
 ::available() const
 {
@@ -99,7 +131,11 @@ inline CircularBufferSizeType CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueO
     return result;
 }
 
-template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+template < typename T,
+         CircularBufferSizeType Size,
+         class DequeueOnEmptyPolicy,
+         class EnqueueOnFullPolicy,
+         class DropTooManyPolicy >
 inline T CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
 ::dequeue()
 {
@@ -111,12 +147,19 @@ inline T CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooM
     return result;
 }
 
-template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
-template<CircularBufferSizeType SrcSize, class SrcDequeueOnEmptyPolicy, class SrcEnqueueOnFullPolicy, class SrcDropTooManyPolicy>
+template < typename T,
+         CircularBufferSizeType Size,
+         class DequeueOnEmptyPolicy,
+         class EnqueueOnFullPolicy,
+         class DropTooManyPolicy >
+template < CircularBufferSizeType SrcSize,
+         class SrcDequeueOnEmptyPolicy,
+         class SrcEnqueueOnFullPolicy,
+         class SrcDropTooManyPolicy >
 inline CircularBufferSizeType CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
 ::moveFrom(CircBuffer<T, SrcSize, SrcDequeueOnEmptyPolicy, SrcEnqueueOnFullPolicy, SrcDropTooManyPolicy>& src)
 {
-    CircularBufferSizeType result = 0;
+    CircularBufferSizeType result = 0u;
 
     while (!src.isEmpty() && !isFull())
     {
@@ -126,21 +169,33 @@ inline CircularBufferSizeType CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueO
     return result;
 }
 
-template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+template < typename T,
+         CircularBufferSizeType Size,
+         class DequeueOnEmptyPolicy,
+         class EnqueueOnFullPolicy,
+         class DropTooManyPolicy >
 inline CircularBufferSizeType CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
 ::used() const
 {
     return Size - available();
 }
 
-template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+template < typename T,
+         CircularBufferSizeType Size,
+         class DequeueOnEmptyPolicy,
+         class EnqueueOnFullPolicy,
+         class DropTooManyPolicy >
 inline CircularBufferSizeType CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
 ::size() const
 {
     return Size;
 }
 
-template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+template < typename T,
+         CircularBufferSizeType Size,
+         class DequeueOnEmptyPolicy,
+         class EnqueueOnFullPolicy,
+         class DropTooManyPolicy >
 inline void CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
 ::discard(CircularBufferSizeType amount)
 {
