@@ -27,7 +27,8 @@ using namespace std;
 
 int main()
 {
-    std::cout << "Build a Circular Buffer of 4 ints "  << std::endl;
+    std::cout << "Build a Circular Buffer of 4 ints; by default, "
+              "its error policies will be to use assertions." << std::endl;
     CircBuffer<int, 4u> cBuf;
     CircBuffer<int, 4u> dst;
 

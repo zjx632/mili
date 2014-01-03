@@ -20,25 +20,28 @@ circular_buffer: A type-templetized circular buffer.
 NAMESPACE_BEGIN
 
 #ifndef CIRC_BUFFER_INLINE_H
-#error UInternal header file, DO NOT include this.
+#error Internal header file, DO NOT include this.
 #endif
 
 #include <cassert>
 
-template<typename T, UInt Size>
-inline bool CircBuffer<T, Size>::isFull() const
+template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+inline bool CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
+::isFull() const
 {
     return (_read == _write);
 }
 
-template<typename T, UInt Size>
-inline void CircBuffer<T, Size>::flush()
+template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+inline void CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
+::flush()
 {
     _read = Size;
 }
 
-template<typename T, UInt Size>
-inline void CircBuffer<T, Size>::parkReadIndex()
+template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+inline void CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
+::parkReadIndex()
 {
     if (isFull())
     {
@@ -46,14 +49,16 @@ inline void CircBuffer<T, Size>::parkReadIndex()
     }
 }
 
-template<typename T, UInt Size>
-inline bool CircBuffer<T, Size>::isEmpty() const
+template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+inline bool CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
+::isEmpty() const
 {
     return (_read == Size);
 }
 
-template<typename T, UInt Size>
-inline void CircBuffer<T, Size>::unparkReadIndex()
+template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+inline void CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
+::unparkReadIndex()
 {
     if (isEmpty())
     {
@@ -61,25 +66,28 @@ inline void CircBuffer<T, Size>::unparkReadIndex()
     }
 }
 
-template<typename T, UInt Size>
-inline CircBuffer<T, Size>::CircBuffer()
+template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+inline CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
+::CircBuffer()
     : _write(0), _read(Size)
 {}
 
-template<typename T, UInt Size>
-inline void CircBuffer<T, Size>::queue(const T item)
+template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+inline void CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
+::queue(const T item)
 {
-    assert(!isFull());
+    EnqueueOnFullPolicy::checkPredicate(!isFull());
     _buf[_write] = item;
     unparkReadIndex();
     ++_write;
     _write %= Size;
 }
 
-template<typename T, UInt Size>
-inline UInt CircBuffer<T, Size>::available() const
+template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+inline CircularBufferSizeType CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
+::available() const
 {
-    UInt result;
+    CircularBufferSizeType result;
     if (isEmpty())
     {
         result = Size;
@@ -91,10 +99,11 @@ inline UInt CircBuffer<T, Size>::available() const
     return result;
 }
 
-template<typename T, UInt Size>
-inline T CircBuffer<T, Size>::dequeue()
+template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+inline T CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
+::dequeue()
 {
-    assert(!isEmpty());
+    DequeueOnEmptyPolicy::checkPredicate(!isEmpty());
     const T result = _buf[_read];
     ++_read;
     _read %= Size;
@@ -102,11 +111,12 @@ inline T CircBuffer<T, Size>::dequeue()
     return result;
 }
 
-template<typename T, UInt Size>
-template<UInt SrcSize>
-inline UInt CircBuffer<T, Size>::moveFrom(CircBuffer<T, SrcSize>& src)
+template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+template<CircularBufferSizeType SrcSize, class SrcDequeueOnEmptyPolicy, class SrcEnqueueOnFullPolicy, class SrcDropTooManyPolicy>
+inline CircularBufferSizeType CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
+::moveFrom(CircBuffer<T, SrcSize, SrcDequeueOnEmptyPolicy, SrcEnqueueOnFullPolicy, SrcDropTooManyPolicy>& src)
 {
-    UInt result = 0;
+    CircularBufferSizeType result = 0;
 
     while (!src.isEmpty() && !isFull())
     {
@@ -116,22 +126,25 @@ inline UInt CircBuffer<T, Size>::moveFrom(CircBuffer<T, SrcSize>& src)
     return result;
 }
 
-template<typename T, UInt Size>
-inline UInt CircBuffer<T, Size>::used() const
+template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+inline CircularBufferSizeType CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
+::used() const
 {
     return Size - available();
 }
 
-template<typename T, UInt Size>
-inline UInt CircBuffer<T, Size>::size() const
+template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+inline CircularBufferSizeType CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
+::size() const
 {
     return Size;
 }
 
-template<typename T, UInt Size>
-inline void CircBuffer<T, Size>::discard(UInt amount)
+template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy, class EnqueueOnFullPolicy, class DropTooManyPolicy>
+inline void CircBuffer<T, Size, DequeueOnEmptyPolicy, EnqueueOnFullPolicy, DropTooManyPolicy>
+::discard(CircularBufferSizeType amount)
 {
-    assert(amount <= used());
+    DropTooManyPolicy::checkPredicate(amount <= used());
     _read = (_read + amount) % Size;
     parkReadIndex();
 }
