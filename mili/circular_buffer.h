@@ -21,20 +21,36 @@ circular_buffer: A type-templetized circular buffer.
 #define CIRC_BUFFER_H
 
 #include <stdint.h>
+#include "generic_exception.h"
+#include "exception_policy.h"
 
 NAMESPACE_BEGIN
 
+/** @brief Exceptions for CircularBuffer. */
+struct CircularBufferExceptionHierarchy {};
+typedef mili::GenericException<CircularBufferExceptionHierarchy> CircularBufferException;
+
+DEFINE_SPECIFIC_EXCEPTION_TEXT(EmptyDequeue, CircularBufferExceptionHierarchy, "Attempt to dequeue an element from an empty buffer.");
+DEFINE_SPECIFIC_EXCEPTION_TEXT(FullEnqueue, CircularBufferExceptionHierarchy, "Attempt to enqueue an element on a full buffer.");
+DEFINE_SPECIFIC_EXCEPTION_TEXT(ExcessiveDrop, CircularBufferExceptionHierarchy, "Attempt to drop more elements than those contained in the buffer.");
+
 /** @brief The type we want to use for circular buffer. */
-typedef uint16_t UInt;
+typedef unsigned int CircularBufferSizeType;
 
 /**
- * @brief Circular buffer
+ * @brief Circular buffer.
+ *
+ * Takes 5 template parameters:
+ * T                    The type that the buffer will contain.
+ * Size                 The amount of elements contained by the buffer.
+ * DequeueOnEmptyPolicy The action to perform when dequeue() is invoked on an empty buffer. Assertion by default.
+ * EnqueueOnFullPolicy  The action to perform when queue() is invoked on a full buffer. Assertion by default.
+ * DropTooManyPolicy    The action to perform when drop() is invoked on a buffer that has too few elements to drop. Assertion by default.
  */
-template<typename T, UInt Size>
+template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy = AssertionErrorPolicy, class EnqueueOnFullPolicy = AssertionErrorPolicy, class DropTooManyPolicy = AssertionErrorPolicy>
 class CircBuffer
 {
 public:
-
     /**
      * @brief Constructor.
      */
@@ -68,21 +84,21 @@ public:
      * @brief Tells how much buffer space is available.
      * @return Space available in the buffer.
      */
-    UInt available() const;
+    CircularBufferSizeType available() const;
 
     /**
      * @brief Tells how much buffer space is used.
      *
      * @return Space used in the buffer.
      */
-    UInt used() const;
+    CircularBufferSizeType used() const;
 
     /**
      * @brief Tells how large the buffer is.
      *
      * @return Size of the buffer.
      */
-    UInt size() const;
+    CircularBufferSizeType size() const;
 
     /**
      * @brief Removes the index pointed to by _read and returns it. Fails if the buffer is empty.
@@ -96,7 +112,7 @@ public:
      *
      * @param amount The amount of elements we want to discard.
      */
-    void discard(UInt amount);
+    void discard(CircularBufferSizeType amount);
 
     /**
     * @brief Moves as many items as possible from src to this CircBuffer.
@@ -105,8 +121,8 @@ public:
     *
     * @return The amount of elements moved.
     */
-    template<UInt SrcSize>
-    UInt moveFrom(CircBuffer<T, SrcSize>& src);
+    template<CircularBufferSizeType SrcSize, class SrcDequeueOnEmptyPolicy, class SrcEnqueueOnFullPolicy, class SrcDropTooManyPolicy>
+    CircularBufferSizeType moveFrom(CircBuffer<T, SrcSize, SrcDequeueOnEmptyPolicy, SrcEnqueueOnFullPolicy, SrcDropTooManyPolicy>& src);
 
 private:
     /**
@@ -122,12 +138,12 @@ private:
     /**
      * @brief The write index on the array.
      */
-    UInt _write;
+    CircularBufferSizeType _write;
 
     /**
      * @brief The read index on the array; is equal to ParkingLot when there is no data to read.
      */
-    UInt _read;
+    CircularBufferSizeType _read;
 
     /**
      * @brief The array of elements where we store our values.
@@ -137,7 +153,7 @@ private:
     /**
      * @brief The place where the read index goes when it has no valid data to point to.
      */
-    static const UInt ParkingLot = Size;
+    static const CircularBufferSizeType ParkingLot = Size;
 };
 
 NAMESPACE_END
