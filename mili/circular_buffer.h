@@ -3,7 +3,7 @@ circular_buffer: A type-templetized circular buffer.
     This file is part of the MiLi Minimalistic Library.
 
 
-    Copyright (C) Pablo Oliva, Franco Riberi, FuDePAN 2009
+    Copyright (C) Pablo Oliva, Franco Riberi, FuDePAN 2013
     Distributed under the Boost Software License, Version 1.0.
     (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -20,7 +20,6 @@ circular_buffer: A type-templetized circular buffer.
 #ifndef CIRC_BUFFER_H
 #define CIRC_BUFFER_H
 
-#include <stdint.h>
 #include "generic_exception.h"
 #include "exception_policy.h"
 
@@ -47,7 +46,11 @@ typedef unsigned int CircularBufferSizeType;
  * EnqueueOnFullPolicy  The action to perform when queue() is invoked on a full buffer. Assertion by default.
  * DropTooManyPolicy    The action to perform when drop() is invoked on a buffer that has too few elements to drop. Assertion by default.
  */
-template<typename T, CircularBufferSizeType Size, class DequeueOnEmptyPolicy = AssertionErrorPolicy, class EnqueueOnFullPolicy = AssertionErrorPolicy, class DropTooManyPolicy = AssertionErrorPolicy>
+template < typename T,
+         CircularBufferSizeType Size,
+         class DequeueOnEmptyPolicy = AssertionErrorPolicy,
+         class EnqueueOnFullPolicy = AssertionErrorPolicy,
+         class DropTooManyPolicy = AssertionErrorPolicy >
 class CircBuffer
 {
 public:
@@ -121,7 +124,10 @@ public:
     *
     * @return The amount of elements moved.
     */
-    template<CircularBufferSizeType SrcSize, class SrcDequeueOnEmptyPolicy, class SrcEnqueueOnFullPolicy, class SrcDropTooManyPolicy>
+    template < CircularBufferSizeType SrcSize,
+             class SrcDequeueOnEmptyPolicy,
+             class SrcEnqueueOnFullPolicy,
+             class SrcDropTooManyPolicy >
     CircularBufferSizeType moveFrom(CircBuffer<T, SrcSize, SrcDequeueOnEmptyPolicy, SrcEnqueueOnFullPolicy, SrcDropTooManyPolicy>& src);
 
 private:
@@ -163,3 +169,4 @@ NAMESPACE_END
 #undef CIRC_BUFFER_INLINE_H
 
 #endif
+

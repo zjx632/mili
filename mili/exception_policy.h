@@ -2,7 +2,7 @@
 exception_policy: A selector to choose error handling policies.
     This file is part of the MiLi Minimalistic Library.
 
-    Copyright (C) Pablo Oliva, Daniel Gutson, FuDePAN 2009
+    Copyright (C) Pablo Oliva, Daniel Gutson, FuDePAN 2013
     Distributed under the Boost Software License, Version 1.0.
     (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
