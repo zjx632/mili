@@ -286,6 +286,10 @@ TEST(CircularBuffer, Discard)
     EXPECT_EQ(0, cBuf.available());
     cBuf.discard(4);
     EXPECT_EQ(4, cBuf.available());
+
+    EXPECT_TRUE(cBuf.isEmpty());
+    cBuf.queue(5);
+    EXPECT_EQ(5, cBuf.dequeue());
 }
 
 TEST(CircularBufferWithExceptions, EmptyDequeueException)
