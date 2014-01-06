@@ -17,6 +17,7 @@ Version 18 (UNRELEASED)
     * (Issue 96) Added support for Container's derived from STL Containers in container_utils.
     * (Issue 96) Added support for std::unordered_map and std::unordered_set in delete_container.
     * Solved style issues.
+    * (Issue 105) Added Circular Buffer, a templetized constant size buffer.
 
 Version 17
 ===========
