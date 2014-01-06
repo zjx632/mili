@@ -77,7 +77,7 @@ public:
     void flush();
 
     /**
-     * @brief Adds the item k to the buffer. Fails if the buffer is full.
+     * @brief Adds the item k to the buffer. Checks if the buffer is full.
      *
      * @param item      The item we want to add.
      */
@@ -104,14 +104,14 @@ public:
     CircularBufferSizeType size() const;
 
     /**
-     * @brief Removes the index pointed to by _read and returns it. Fails if the buffer is empty.
+     * @brief Removes the index pointed to by _read and returns it. Checks if the buffer is empty.
      *
      * @return The removed item.
      */
     T dequeue();
 
     /**
-     * @brief Discards amount elements of the buffer, fails if there are too few elements.
+     * @brief Discards amount elements of the buffer, checks if there are too few elements.
      *
      * @param amount The amount of elements we want to discard.
      */
