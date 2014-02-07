@@ -70,7 +70,9 @@ static inline void assert_throw(bool condition)
 {
     if (!condition)
     {
+#ifdef MILI_EXCEPTIONS_COMPILER_ENABLED
         throw ExceptionType();
+#endif
     }
 }
 

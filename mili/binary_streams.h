@@ -106,7 +106,9 @@ struct DebugPolicyBistream
         if (s != name)
         {
             std::cerr << s << " | " << name << std::endl;
+#ifdef MILI_EXCEPTIONS_COMPILER_ENABLED
             throw type_mismatch();
+#endif
         }
     }
 };
@@ -266,9 +268,7 @@ class bistream
     {
         static void call(bistream* bis, T& x)
         {
-            if (bis->_s.size() < bis->_pos + sizeof(x))
-                throw type_too_large();
-
+            assert_throw<type_too_large>(bis->_s.size() >= bis->_pos + sizeof(x));
             bis->_pos += bis->_s.copy(reinterpret_cast<char*>(&x), sizeof(x), bis->_pos);
         }
     };
@@ -285,8 +285,7 @@ class bistream
             // then check there is enough rooom.
             if ((! template_info< typename T::value_type >::is_container) &&
                     (! template_info< typename T::value_type >::is_basic_string))
-                if (bis->_s.size() < ((size * sizeof(typename T::value_type)) + bis->_pos))
-                    throw stream_too_small();
+                assert_throw<stream_too_small>(bis->_s.size() >= ((size * sizeof(typename T::value_type)) + bis->_pos));
 
             for (uint32_t i(0); i < size; i++)
             {
@@ -360,9 +359,7 @@ public:
         uint32_t size;
         (*this) >> size;
 
-        if (_s.size() < size + _pos)
-            throw type_too_large();
-
+        assert_throw<type_too_large>(_s.size() > size + _pos);
         str   = _s.substr(_pos, size);
 
         _pos += size;
@@ -439,8 +436,7 @@ public:
      */
     container_writer& operator<<(const T& element)
     {
-        if (_elements_left == 0)
-            throw container_finished();
+        assert_throw<container_finished>(_elements_left > 0);
 
         --_elements_left;
 
