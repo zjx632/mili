@@ -2,7 +2,7 @@
 platform_detection:
     This file is part of the MiLi Minimalistic Library.
 
-    Copyright (C) Daniel Muñoz, FuDePAN 2012
+    Copyright (C) Daniel Muñoz, Pablo Oliva FuDePAN 2012
     Distributed under the Boost Software License, Version 1.0.
     (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -65,7 +65,7 @@ platform_detection:
 #define MILI_COMPILER_VS        1
 #define MILI_COMPILER_GCC       2
 #define MILI_COMPILER_ICC       3
-#define MILI_COMPILER_UNKNOWN       4
+#define MILI_COMPILER_UNKNOWN   4
 
 /* Microsoft Visual C++ */
 #if   defined (_MSC_VER)
@@ -102,7 +102,20 @@ platform_detection:
 #   define MILI_CXX_VERSION MILI_CXX_VERSION_CXX98
 #endif /* end Detection of the C++ language standard */
 
-
+/* Detection of exceptions' availability
+ * See:
+ * (GCC) http://gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html
+ * and
+ * (ICC) http://software.intel.com/sites/products/documentation/doclib/stdxe/2013/composerxe/compiler/cpp-lin/GUID-E65FC029-9273-4CDD-8C4C-3372B9A60DC7.htm
+ */
+#if (MILI_COMPILER == MILI_COMPILER_GCC) || (MILI_COMPILER == MILI_COMPILER_ICC)
+// If we are using gcc or icc, we can ask about exceptions' support (with the same flag).
+#    if defined(__EXCEPTIONS)
+#        define MILI_EXCEPTIONS_COMPILER_ENABLED
+#    endif
+#else // On other compilers, we leave exceptions enabled by default.
+// TODO: research exceptions' support flags for other compilers.
+#    define MILI_EXCEPTIONS_COMPILER_ENABLED
+#endif /* End detection of support for exceptions */
 
 #endif /* PLATFORM_DETECTION_H */
-
