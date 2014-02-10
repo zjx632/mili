@@ -65,6 +65,14 @@ public:                                                                         
 
 #define DEFINE_SPECIFIC_EXCEPTION(name, subtype) DEFINE_SPECIFIC_EXCEPTION_TEXT(name, subtype, #name)
 
+#ifdef MILI_EXCEPTIONS_COMPILER_ENABLED
+/**
+* @brief Checks condition, throws ExceptionType if condition fails.
+*
+* Only available if exceptions are supported.
+*
+* @param condition The condition to check.
+*/
 template <class ExceptionType>
 static inline void assert_throw(bool condition)
 {
@@ -73,6 +81,7 @@ static inline void assert_throw(bool condition)
         throw ExceptionType();
     }
 }
+#endif // MILI_EXCEPTIONS_COMPILER_ENABLED
 
 NAMESPACE_END
 

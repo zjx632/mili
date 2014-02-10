@@ -77,6 +77,8 @@ public:
     }
 
     /* returns the element called name */
+    /* Throwing version only available if exceptions are allowed.*/
+#   ifdef MILI_EXCEPTIONS_COMPILER_ENABLED
     template <class T>
     T get_element(const ElementName& name) const throw (BadElementType, BadElementName)
     {
@@ -101,7 +103,7 @@ public:
         if (!from_string<T>(*strElement, element))
             throw BadElementType(name);
     }
-
+#   endif //MILI_EXCEPTIONS_COMPILER_ENABLED
 
     /* get_element, nothrow versions */
     template <class T>
@@ -114,7 +116,7 @@ public:
         return found;
     }
 
-    /* inserts the element in the varianteSet. */
+    /* inserts the element in the VariantsSet. */
     template <class T>
     void insert(const ElementName& name, const T& element)
     {

@@ -18,6 +18,10 @@ Version 18 (UNRELEASED)
     * (Issue 96) Added support for std::unordered_map and std::unordered_set in delete_container.
     * Solved style issues.
     * (Issue 105) Added Circular Buffer, a templetized constant size buffer.
+    * (Issue 106) Added exception support detection for gcc and icc.
+    * (Issue 107) Functions that have both throw and nothrow versions only compile
+      their nothrow versions if exceptions aren't enabled.
+    * (Issue 107) Assert_throw is only available if exceptions are supported.
 
 Version 17
 ===========
