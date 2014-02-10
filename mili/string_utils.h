@@ -24,6 +24,8 @@ string_utils: A minimal library with string utilities.
 #include <cstring>
 #include <sstream>
 
+#include "generic_exception.h"
+
 NAMESPACE_BEGIN
 
 template <class NORMALIZER>
@@ -323,6 +325,8 @@ inline std::string trim(const std::string& s)
 
 struct StringNotFound : std::exception {};
 
+/* Throwing version only available if exceptions are allowed.*/
+#ifdef MILI_EXCEPTIONS_COMPILER_ENABLED
 inline std::string::size_type ensure_found(std::string::size_type found) throw(StringNotFound)
 {
     if (found != std::string::npos)
@@ -330,6 +334,7 @@ inline std::string::size_type ensure_found(std::string::size_type found) throw(S
     else
         throw StringNotFound();
 }
+#endif //MILI_EXCEPTIONS_COMPILER_ENABLED
 
 inline std::string::size_type ensure_found(std::string::size_type found, std::string::size_type default_value)
 {

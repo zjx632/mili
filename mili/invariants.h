@@ -21,6 +21,8 @@ invariants: A minimal library for a checking invariants.
 
 #include <exception>
 
+#include "generic_exception.h"
+
 NAMESPACE_BEGIN
 
 struct InvariantNotMet : std::exception
@@ -32,18 +34,17 @@ struct InvariantNotMet : std::exception
 namespace invariant
 {
 // this will be a template alias in C++0x
-#define define_invariant(Name, op)              \
-    template <class T, T operand>               \
-    class Name                                  \
-    {                                           \
-            const T value;                      \
-        public:                                 \
-            operator T()const { return value; } \
-            Name(T value) : value(value)        \
-            {                                   \
-                if (!(value op operand))        \
-                    throw InvariantNotMet();    \
-            }                                   \
+#define define_invariant(Name, op)                                  \
+    template <class T, T operand>                                   \
+    class Name                                                      \
+    {                                                               \
+            const T value;                                          \
+        public:                                                     \
+            operator T()const { return value; }                     \
+            Name(T value) : value(value)                            \
+            {                                                       \
+                assert_throw<InvariantNotMet>((value op operand));  \
+            }                                                       \
     }
 
 define_invariant(lt, <);
@@ -60,8 +61,7 @@ class NeverNull
 public:
     NeverNull(T* ptr) : ptr(ptr)
     {
-        if (ptr == NULL)
-            throw InvariantNotMet();
+        assert_throw<InvariantNotMet>(ptr != NULL);
     }
     operator T* () const
     {
@@ -95,8 +95,8 @@ public:
 
         ~Temp()
         {
-            if (!Invariant(t))
-                throw InvariantNotMet();
+            assert_throw<InvariantNotMet>(Invariant(t));
+            // Ask Daniel G for validation about this; it seems valid in the context of this technique.
         }
     };
 

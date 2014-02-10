@@ -106,8 +106,7 @@ platform_detection:
  * See:
  * (GCC) http://gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html
  * and
- * (ICC) http://www.rcac.purdue.edu/userinfo/resources/common/compile/compilers/intel/man/icc.txt
- * on the "Optimization" section
+ * (ICC) http://software.intel.com/sites/products/documentation/doclib/stdxe/2013/composerxe/compiler/cpp-lin/GUID-E65FC029-9273-4CDD-8C4C-3372B9A60DC7.htm
  */
 #if (MILI_COMPILER == MILI_COMPILER_GCC) || (MILI_COMPILER == MILI_COMPILER_ICC)
 // If we are using gcc or icc, we can ask about exceptions' support (with the same flag).
