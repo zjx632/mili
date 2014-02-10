@@ -65,16 +65,17 @@ public:                                                                         
 
 #define DEFINE_SPECIFIC_EXCEPTION(name, subtype) DEFINE_SPECIFIC_EXCEPTION_TEXT(name, subtype, #name)
 
+#ifdef MILI_EXCEPTIONS_COMPILER_ENABLED
+/* Assert_throw is only available if exceptions are supported. */
 template <class ExceptionType>
 static inline void assert_throw(bool condition)
 {
     if (!condition)
     {
-#ifdef MILI_EXCEPTIONS_COMPILER_ENABLED
         throw ExceptionType();
-#endif
     }
 }
+#endif // MILI_EXCEPTIONS_COMPILER_ENABLED
 
 NAMESPACE_END
 
