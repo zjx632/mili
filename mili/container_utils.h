@@ -37,51 +37,45 @@ container_utils: A minimal library with generic STL container utilities.
 #include <exception>
 #include "platform_detection.h"
 #include "ranker.h"
-
+#include "generic_exception.h"
 
 NAMESPACE_BEGIN
 
 struct ElementNotFound : std::exception {};
 
-/*definition of find functions throwing exceptions (const and no const)*/
+/* Definition of find functions throwing exceptions (const and no const);
+   only available if exceptions are allowed.*/
+#ifdef MILI_EXCEPTIONS_COMPILER_ENABLED
 template <class T, class Alloc, class T2>
 inline T& find(std::list<T, Alloc>& cont, const T2& element)
 {
     const typename std::list<T, Alloc>::iterator it = find(cont.begin(), cont.end(), element);
-    if (it == cont.end())
-        throw ElementNotFound();
-    else
-        return *it;
+    assert_throw<ElementNotFound>(it != cont.end());
+    return *it;
 }
 
 template <class T, class Alloc, class T2>
 inline const T& find(const std::list<T, Alloc>& cont, const T2& element)
 {
     const typename std::list<T, Alloc>::const_iterator it = find(cont.begin(), cont.end(), element);
-    if (it == cont.end())
-        throw ElementNotFound();
-    else
-        return *it;
+    assert_throw<ElementNotFound>(it != cont.end());
+    return *it;
 }
 
 template <class T, class Alloc, class T2>
 inline T& find(std::vector<T, Alloc>& cont, const T2& element)
 {
     const typename std::vector<T, Alloc>::iterator it = find(cont.begin(), cont.end(), element);
-    if (it == cont.end())
-        throw ElementNotFound();
-    else
-        return *it;
+    assert_throw<ElementNotFound>(it != cont.end());
+    return *it;
 }
 
 template <class T, class Alloc, class T2>
 inline const T& find(const std::vector<T, Alloc>& cont, const T2& element)
 {
     const typename std::vector<T, Alloc>::const_iterator it = find(cont.begin(), cont.end(), element);
-    if (it == cont.end())
-        throw ElementNotFound();
-    else
-        return *it;
+    assert_throw<ElementNotFound>(it != cont.end());
+    return *it;
 }
 
 /*In the templates we use another class (for example Key2) for the parameter element because
@@ -92,40 +86,32 @@ template <class T, class Comp, class Alloc, class Key2>
 inline const T& find(std::set<T, Comp, Alloc>& s, const Key2& key)
 {
     const typename std::set<T, Comp, Alloc>::const_iterator it = s.find(key);
-    if (it == s.end())
-        throw ElementNotFound();
-    else
-        return *it;
+    assert_throw<ElementNotFound>(it != s.end());
+    return *it;
 }
 
 template <class T, class Comp, class Alloc, class Key2>
 inline const T& find(const std::set<T, Comp, Alloc>& s, const Key2& key)
 {
     const typename std::set<T, Comp, Alloc>::const_iterator it = s.find(key);
-    if (it == s.end())
-        throw ElementNotFound();
-    else
-        return *it;
+    assert_throw<ElementNotFound>(it != s.end());
+    return *it;
 }
 
 template <class Key, class T, class Comp, class Alloc, class Key2>
 inline T& find(std::map<Key, T, Comp, Alloc>& m, const Key2& key)
 {
     const typename std::map<Key, T, Comp, Alloc>::iterator it = m.find(key);
-    if (it == m.end())
-        throw ElementNotFound();
-    else
-        return it->second;
+    assert_throw<ElementNotFound>(it != m.end());
+    return it->second;
 }
 
 template <class Key, class T, class Comp, class Alloc, class Key2>
 inline const T& find(const std::map<Key, T, Comp, Alloc>& m, const Key2& key)
 {
     const typename std::map<Key, T, Comp, Alloc>::const_iterator it = m.find(key);
-    if (it == m.end())
-        throw ElementNotFound();
-    else
-        return it->second;
+    assert_throw<ElementNotFound>(it != m.end());
+    return it->second;
 }
 
 /*Support for C++11's unordered_maps & unordered_sets*/
@@ -134,20 +120,16 @@ template <class Key, class T, class Hash, class Pred, class Alloc, class Key2>
 inline T& find(std::unordered_map<Key, T, Hash, Pred, Alloc>& m, const Key2& key)
 {
     const auto it = m.find(key);
-    if (it == m.end())
-        throw ElementNotFound();
-    else
-        return it->second;
+    assert_throw<ElementNotFound>(it != m.end());
+    return it->second;
 }
 
 template <class Key, class T, class Hash, class Pred, class Alloc, class Key2>
 inline const T& find(const std::unordered_map<Key, T, Hash, Pred, Alloc>& m, const Key2& key)
 {
     const auto it = m.find(key);
-    if (it == m.end())
-        throw ElementNotFound();
-    else
-        return it->second;
+    assert_throw<ElementNotFound>(it != m.end());
+    return it->second;
 }
 
 /*This also returns a reference to const because the unordered set iterator is always a const reference*/
@@ -155,22 +137,19 @@ template <class T, class Hash, class Pred, class Alloc, class Key2>
 inline const T& find(std::unordered_set<T, Hash, Pred, Alloc>& s, const Key2& key)
 {
     const auto it = s.find(key);
-    if (it == s.end())
-        throw ElementNotFound();
-    else
-        return *it;
+    assert_throw<ElementNotFound>(it != s.end());
+    return *it;
 }
 
 template <class T, class Hash, class Pred, class Alloc, class Key2>
 inline const T& find(const std::unordered_set<T, Hash, Pred, Alloc>& s, const Key2& key)
 {
     const auto it = s.find(key);
-    if (it == s.end())
-        throw ElementNotFound();
-    else
-        return *it;
+    assert_throw<ElementNotFound>(it != s.end());
+    return *it;
 }
-#endif
+#endif // MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X
+#endif // MILI_EXCEPTIONS_COMPILER_ENABLED
 
 /* find, nothrow versions */
 template <class T, class Alloc, class T2>

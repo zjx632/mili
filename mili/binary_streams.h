@@ -32,8 +32,6 @@ bitwise_streams: A minimal library for doing type-safe bitwise operations.
 #include "template_info.h"
 #include "container_utils.h"
 
-
-
 NAMESPACE_BEGIN
 
 declare_static_assert(pointers_not_allowed);
@@ -43,14 +41,9 @@ class BstreamExceptionHierarchy {};
 
 typedef GenericException< BstreamExceptionHierarchy> BstreamException;
 
-DEFINE_SPECIFIC_EXCEPTION_TEXT(container_not_finished,
-                               BstreamExceptionHierarchy,
-                               "More elements were expected to be written.");
-
 DEFINE_SPECIFIC_EXCEPTION_TEXT(container_finished,
                                BstreamExceptionHierarchy,
                                "The container was finished already.");
-
 
 DEFINE_SPECIFIC_EXCEPTION_TEXT(stream_too_small,
                                BstreamExceptionHierarchy,
@@ -58,7 +51,7 @@ DEFINE_SPECIFIC_EXCEPTION_TEXT(stream_too_small,
 
 DEFINE_SPECIFIC_EXCEPTION_TEXT(skip_excess,
                                BstreamExceptionHierarchy,
-                               "Trying to skip too much.");
+                               "Trying to skip too many elements.");
 
 DEFINE_SPECIFIC_EXCEPTION_TEXT(type_too_large,
                                BstreamExceptionHierarchy,
@@ -360,7 +353,7 @@ public:
         (*this) >> size;
 
         assert_throw<type_too_large>(_s.size() > size + _pos);
-        str   = _s.substr(_pos, size);
+        str = _s.substr(_pos, size);
 
         _pos += size;
         return *this;
@@ -453,13 +446,11 @@ public:
      */
     ~container_writer()
     {
-        if (_elements_left != 0)
-            throw container_not_finished();
+        assert(_elements_left == 0);
     }
 private:
     /** The amount of elements you have yet to insert. */
     uint32_t    _elements_left;
-
 
     /** A reference to the output stream. */
     bostream<DebuggingPolicy>& _bos;
@@ -487,9 +478,7 @@ public:
     {
         _bis >> _elements_left;
 
-
-        if (_bis.remainingChars() < (sizeof(T) * _elements_left))
-            throw stream_too_small();
+        assert_throw<stream_too_small>(_bis.remainingChars() >= (sizeof(T) * _elements_left));
     }
 
     /**
@@ -518,8 +507,7 @@ public:
      */
     void skip(uint32_t elements = 1)
     {
-        if (elements > _elements_left)
-            throw skip_excess();
+        assert_throw<skip_excess>(elements <= _elements_left);
 
         _elements_left -= elements;
 
