@@ -24,7 +24,7 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #ifndef MILI_H
 #define MILI_H
 
-//deprecated: will desapear in next version
+//deprecated: will disappear in next version
 #ifdef NO_MILI_NAMESPACE
 #   define NAMESPACE_BEGIN
 #   define NAMESPACE_END
@@ -33,9 +33,8 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   define NAMESPACE_END }
 #endif
 
-#ifndef NO_PLATFORM_DETECTION
-#    include "platform_detection.h"
-#endif
+// Platform detection cannot be avoided, since it determines how MiLi is built.
+#include "platform_detection.h"
 
 #ifndef NO_BITWISE_ENUMS
 #   include "bitwise_enums.h"
@@ -58,7 +57,9 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #endif
 
 #ifndef NO_INVARIANTS
-#   include "invariants.h"
+#   ifdef MILI_EXCEPTIONS_COMPILER_ENABLED
+#       include "invariants.h"
+#   endif
 #endif
 
 #ifndef NO_TYPE_MAPPER
@@ -78,7 +79,9 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #endif
 
 #ifndef NO_VARIANTS_SET
-#   include "variants_set.h"
+#   ifdef MILI_EXCEPTIONS_COMPILER_ENABLED
+#       include "variants_set.h"
+#   endif
 #endif
 
 #ifndef NO_CONTAINER_UTILS
@@ -110,7 +113,9 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #endif
 
 #ifndef NO_BINSTREAMS
-#   include "binary_streams.h"
+#   ifdef MILI_EXCEPTIONS_COMPILER_ENABLED
+#       include "binary_streams.h"
+#   endif
 #endif
 
 #ifndef NO_COROUTINES
@@ -122,7 +127,9 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #endif
 
 #ifndef NO_GENERIC_EXCEPTION
-#   include "generic_exception.h"
+#   ifdef MILI_EXCEPTIONS_COMPILER_ENABLED
+#       include "generic_exception.h"
+#   endif
 #endif
 
 #ifndef NO_RAII

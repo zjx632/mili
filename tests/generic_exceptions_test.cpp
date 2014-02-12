@@ -26,11 +26,18 @@ class LocationExceptionHierarchy {};
 typedef mili::GenericException<LocationExceptionHierarchy> LocationException;
 
 DEFINE_SPECIFIC_EXCEPTION_TEXT(InvalidLocation, LocationExceptionHierarchy, "The location is not defined");
+DEFINE_SPECIFIC_EXCEPTION(InvalidLocationWithoutText, LocationExceptionHierarchy);
 
-TEST(GenericException, test)
+TEST(GenericException, test_with_text)
 {
     InvalidLocation l;
     ASSERT_EQ(std::string("The location is not defined"), std::string(l.what()));
+}
+
+TEST(GenericException, test_without_text)
+{
+    InvalidLocationWithoutText l;
+    ASSERT_EQ(std::string("InvalidLocationWithoutText"), std::string(l.what()));
 }
 
 TEST(GenericException, assert_throw)

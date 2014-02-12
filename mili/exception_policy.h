@@ -20,6 +20,9 @@ exception_policy: A selector to choose error handling policies.
 #define EXCEPTION_POLICY_H
 
 #include <stdint.h>
+#include <cassert>
+
+#include "platform_detection.h"
 #include "generic_exception.h"
 
 NAMESPACE_BEGIN
@@ -40,8 +43,12 @@ struct AssertionErrorPolicy
     }
 };
 
+#ifdef MILI_EXCEPTIONS_COMPILER_ENABLED
 /**
  * @brief A policy that uses assert_throw to validate its predicates.
+ *
+ * Only available if exceptions are supported.
+ *
  * Throws ExceptionType if its predicate check fails.
  */
 template <class ExceptionType>
@@ -57,6 +64,7 @@ struct ExceptionErrorPolicy
         mili::assert_throw<ExceptionType>(predicate);
     }
 };
+#endif
 
 /**
  * @brief A policy that does not validate its predicates.
