@@ -82,7 +82,7 @@ public:
     template <class T>
     T get_element(const ElementName& name) const throw (BadElementType, BadElementName)
     {
-        const T* const strElement = find(_elements, name, std::nothrow);
+        const ElementValue* const strElement = find(_elements, name, std::nothrow);
         if (strElement == NULL)
             throw BadElementName(name);
 
