@@ -55,6 +55,8 @@ protected:
 };
 
 #ifndef _WIN32
+
+#   if _POSIX_C_SOURCE >= 1 || _XOPEN_SOURCE || _POSIX_SOURCE
 struct AutonomousSeedPolicy : TimeBasedSeedPolicy
 {
     AutonomousSeedPolicy(unsigned int seed) :
@@ -65,12 +67,32 @@ struct AutonomousSeedPolicy : TimeBasedSeedPolicy
         TimeBasedSeedPolicy()
     {}
 
+    //NOTE: The rand_r function was declared obsolete by POSIX.1-2008.
     int get()
     {
         return rand_r(&seed);
     }
 };
-#endif
+#   endif //_POSIX_C_SOURCE >= 1 || _XOPEN_SOURCE || _POSIX_SOURCE
+
+struct NonThreadSafeAutonomousSeedPolicy : TimeBasedSeedPolicy
+{
+    NonThreadSafeAutonomousSeedPolicy(unsigned int seed) :
+        TimeBasedSeedPolicy(seed)
+    {}
+
+    NonThreadSafeAutonomousSeedPolicy() :
+        TimeBasedSeedPolicy()
+    {}
+
+    int get()
+    {
+        srand(seed);
+        return rand();
+    }
+};
+
+#endif //_WIN32
 
 struct GlobalSeedPolicy : TimeBasedSeedPolicy
 {
@@ -95,7 +117,11 @@ struct GlobalSeedPolicy : TimeBasedSeedPolicy
 #ifdef _WIN32
 typedef GlobalSeedPolicy DefaultSeedPolicy;
 #else
+#   if _POSIX_C_SOURCE >= 1 || _XOPEN_SOURCE || _POSIX_SOURCE
 typedef AutonomousSeedPolicy DefaultSeedPolicy;
+#   else
+typedef NonThreadSafeAutonomousSeedPolicy DefaultSeedPolicy;
+#   endif
 #endif
 
 // this is for integral values
