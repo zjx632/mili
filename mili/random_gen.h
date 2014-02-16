@@ -56,6 +56,8 @@ protected:
 
 #ifndef _WIN32
 
+//NOTE: The rand_r function was declared obsolete by POSIX.1-2008.
+//      For this reason, the next macro checks whether rand_r function is available.
 #   if _POSIX_C_SOURCE >= 1 || _XOPEN_SOURCE || _POSIX_SOURCE
 struct AutonomousSeedPolicy : TimeBasedSeedPolicy
 {
@@ -67,7 +69,6 @@ struct AutonomousSeedPolicy : TimeBasedSeedPolicy
         TimeBasedSeedPolicy()
     {}
 
-    //NOTE: The rand_r function was declared obsolete by POSIX.1-2008.
     int get()
     {
         return rand_r(&seed);
