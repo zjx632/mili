@@ -52,3 +52,17 @@ TEST(RandomGenTest, rndSameSeed)
         ASSERT_EQ(randOne.get(), randTwo.get());
     }
 }
+
+TEST(RandomGenTest, getMethod)
+{
+    const unsigned int max = 100u;
+    const unsigned int min = 1u;
+    const unsigned int seed = 20u;
+
+    Randomizer<unsigned int> rnd(min, max, seed);
+
+    const unsigned int value1 = rnd.get();
+    const unsigned int value2 = rnd.get();
+
+    ASSERT_NE(value1, value2);
+}
