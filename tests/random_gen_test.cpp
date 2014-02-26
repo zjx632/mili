@@ -59,10 +59,17 @@ TEST(RandomGenTest, getMethod)
     const unsigned int min = 1u;
     const unsigned int seed = 20u;
 
+    const unsigned int retrievedValue1 = 15u;
+    const unsigned int retrievedValue2 = 66u;
+    const unsigned int retrievedValue3 = 64u;
+    const unsigned int retrievedValue4 = 41u;
+    const unsigned int retrievedValue5 = 25u;
+
     Randomizer<unsigned int> rnd(min, max, seed);
 
-    const unsigned int value1 = rnd.get();
-    const unsigned int value2 = rnd.get();
-
-    ASSERT_NE(value1, value2);
+    ASSERT_EQ(rnd.get(), retrievedValue1);
+    ASSERT_EQ(rnd.get(), retrievedValue2);
+    ASSERT_EQ(rnd.get(), retrievedValue3);
+    ASSERT_EQ(rnd.get(), retrievedValue4);
+    ASSERT_EQ(rnd.get(), retrievedValue5);
 }
