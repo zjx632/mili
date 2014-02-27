@@ -33,8 +33,8 @@ TEST(RandomGenTest, rnd)
     for (unsigned int i = 0; i < 100; ++i)
     {
         const float r = rnd.get();
-        ASSERT_LE(r, max);
-        ASSERT_GE(r, min);
+        EXPECT_LE(r, max);
+        EXPECT_GE(r, min);
     }
 }
 
@@ -49,7 +49,7 @@ TEST(RandomGenTest, rndSameSeed)
 
     for(unsigned int i(0u); i < 100u; ++i)
     {
-        ASSERT_EQ(randOne.get(), randTwo.get());
+        EXPECT_EQ(randOne.get(), randTwo.get());
     }
 }
 
@@ -67,9 +67,9 @@ TEST(RandomGenTest, getMethod)
 
     Randomizer<unsigned int> rnd(min, max, seed);
 
-    ASSERT_EQ(rnd.get(), retrievedValue1);
-    ASSERT_EQ(rnd.get(), retrievedValue2);
-    ASSERT_EQ(rnd.get(), retrievedValue3);
-    ASSERT_EQ(rnd.get(), retrievedValue4);
-    ASSERT_EQ(rnd.get(), retrievedValue5);
+    EXPECT_EQ(rnd.get(), retrievedValue1);
+    EXPECT_EQ(rnd.get(), retrievedValue2);
+    EXPECT_EQ(rnd.get(), retrievedValue3);
+    EXPECT_EQ(rnd.get(), retrievedValue4);
+    EXPECT_EQ(rnd.get(), retrievedValue5);
 }
