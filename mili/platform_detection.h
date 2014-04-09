@@ -85,8 +85,8 @@ platform_detection:
 /* Texas Instruments Code Composer Studio */
 #elif defined (__TI_COMPILER_VERSION__)       \
     || defined (__TI_COMPILER_VERSION)
-    // The canonical flag seems to be __TI_COMPILER_VERSION__
-    // but some versions of CCS defined __TI_COMPILER_VERSION instead.
+// The canonical flag seems to be __TI_COMPILER_VERSION__
+// but some versions of CCS defined __TI_COMPILER_VERSION instead.
 #    define MILI_COMPILER MILI_COMPILER_TICCS
 
 /* GCC C/C++; this actually matches any gcc-like compiler, so it's left at the bottom. */
