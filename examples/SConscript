@@ -1,5 +1,15 @@
 Import ('env')
 
+comp = ARGUMENTS.get('STD', '11')
+
+if comp == '11':
+    env.Append(CXXFLAGS='-std=c++0x')
+elif comp == '98':
+    env.Append(CXXFLAGS='-std=c++03')
+else:
+    env.cerror("Wrong STD argument. Pass 11 or 98.")
+    import sys; sys.exit(1)
+
 inc = env.Dir('.')
 deps = ['mili']
 alias = ['mili-examples']
@@ -37,3 +47,4 @@ env.CreateProgram(name + 'platform-detection', inc, env.File('example_platform-d
 env.CreateProgram(name + 'license_text', inc, env.File('example_license_text.cpp'), deps, alias)
 env.CreateProgram(name + 'safe_c_functions', inc, env.File('example_safe_c_functions.cpp'), deps, alias)
 env.CreateProgram(name + 'circular-buffer', inc, env.File('example_circular-buffer.cpp'), deps, alias)
+env.CreateProgram(name + 'net_types', inc, env.File('example_net_types.cpp'), deps, alias)
