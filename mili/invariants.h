@@ -93,14 +93,17 @@ public:
             return &t;
         }
 
+#if MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X
+        ~Temp() noexcept(false)
+#else
         ~Temp()
+#endif
         {
             assert_throw<InvariantNotMet>(Invariant(t));
-            // Ask Daniel G for validation about this; it seems valid in the context of this technique.
         }
     };
 
-    InvariantClass(T& t) : t(t) {};
+    InvariantClass(T& t) : t(t) {}
 
     Temp operator -> () const
     {
