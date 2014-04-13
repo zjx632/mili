@@ -469,9 +469,9 @@ public:
     bistream& operator >> (std::string& str)
     {
         uint32_t size;
-        (*this) >> size;
+        (*this) >> NetUint32(size);
 
-        assert_throw<type_too_large>(_s.size() > size + _pos);
+        assert_throw<type_too_large>(_s.size() >= size + _pos);
         str = _s.substr(_pos, size);
 
         _pos += size;
