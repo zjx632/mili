@@ -130,7 +130,7 @@ struct SafePolicy
     static void on_check_safety()
     {
         // is_integral => sizeof(T) == 1
-        template_compile_assert(!template_info<T>::is_integral || (sizeof(T) == 1), integers_types_are_unsafety);
+        template_compile_assert(!template_info<T>::is_integral || (sizeof(T) == 1), integers_types_are_unsafe);
     }
 };
 
