@@ -160,6 +160,9 @@ MiLi: A set of minimal libraries composed only by 1 header file each.
 #   include "circular_buffer.h"
 #endif
 
+#ifndef NO_NET_UTILS
+#   include "net_utils.h"
+#endif
 
 #undef NAMESPACE_BEGIN
 #undef NAMESPACE_END

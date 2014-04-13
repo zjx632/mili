@@ -2,8 +2,9 @@
 bitwise_streams: A minimal library for doing type-safe bitwise operations.
     This file is part of the MiLi Minimalistic Library.
 
-    Copyright (C) Guillermo Biset, FuDePAN 2009 - 2010
-                  Matias Tripode, FuDePAN 2012
+    Copyright (C) Guillermo Biset,  FuDePAN 2009 - 2010
+                  Matias Tripode,   FuDePAN 2012
+                  Emanuel Bringas,  FuDePan 2014
     Distributed under the Boost Software License, Version 1.0.
     (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -31,6 +32,7 @@ bitwise_streams: A minimal library for doing type-safe bitwise operations.
 #include "generic_exception.h"
 #include "template_info.h"
 #include "container_utils.h"
+#include "net_utils.h"
 
 NAMESPACE_BEGIN
 
@@ -135,6 +137,45 @@ struct NoDebugPolicyBistream
  *    http://code.google.com/p/mili/source/browse/trunk/example_binary-streams.cpp
  */
 
+
+template <class IntegralType>
+struct NetIntRef
+{
+    explicit NetIntRef(IntegralType& v)
+        :value(v)
+    {}
+
+    IntegralType& value;
+};
+
+template <class IntegralType>
+struct NetIntConst
+{
+    explicit NetIntConst(const IntegralType v)
+        :value(v)
+    {}
+
+    const IntegralType value;
+};
+
+
+#define CREATE_NET_INT(name,type)       \
+NetIntRef<type> name(type& v)           \
+{                                       \
+    return NetIntRef<type>(v);          \
+}                                       \
+NetIntConst<type> name(const type v)    \
+{                                       \
+    return NetIntConst<type>(v);        \
+}
+
+CREATE_NET_INT(NetInt16, int16_t)
+CREATE_NET_INT(NetInt32, int32_t)
+CREATE_NET_INT(NetInt64, int64_t)
+CREATE_NET_INT(NetUint16, uint16_t)
+CREATE_NET_INT(NetUint32, uint32_t)
+CREATE_NET_INT(NetUint64, uint64_t)
+
 /**
 * @param DebuggingPolicy : Policy for debugging, by default no debugging policy is set
 */
@@ -192,6 +233,23 @@ public:
         DebuggingPolicy<T>::on_debug(_s);
 
         _inserter_helper<T, template_info<T>::is_container >::call(this, x);
+        return *this;
+    }
+
+    /** 
+     * Insert a networking integral type
+     */
+    template <class T>
+    bostream& operator<< (NetIntRef<T> x)
+    {
+        _inserter_helper<T, false>::call(this, mili::hton(x.value));
+        return *this;
+    }
+    
+    template <class T>
+    bostream& operator<< (NetIntConst<T> x)
+    {
+        _inserter_helper<T, false>::call(this, mili::hton(x.value));
         return *this;
     }
 
