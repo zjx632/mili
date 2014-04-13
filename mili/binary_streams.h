@@ -4,6 +4,7 @@ bitwise_streams: A minimal library for doing type-safe bitwise operations.
 
     Copyright (C) Guillermo Biset, FuDePAN 2009 - 2010
                   Matias Tripode, FuDePAN 2012
+                  Leandro Ramos, FuDePAN 2014
     Distributed under the Boost Software License, Version 1.0.
     (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -107,11 +108,20 @@ struct DebugPolicyBistream
     }
 };
 
+/**
+ * Safety Policy: defines no static check of types used in binary_streams
+ * @param T : Type of the object/value to be read from bistream
+ */
 template<typename T>
 struct UnsafePolicy
 {
     static void on_check_safety(){}
 };
+
+/**
+ * Safe Policy: defines static check of types used in binary_streams
+ * @param T : Type of the object/value to be read from bistream
+ */
 
 template<typename T>
 struct SafePolicy
@@ -153,6 +163,7 @@ struct NoDebugPolicyBistream
 
 /**
 * @param DebuggingPolicy : Policy for debugging, by default no debugging policy is set
+* @param SafetyPolicy: Policy for checking types used in binary_streams to provide a secure binary_stream
 */
 template < template <class> class SafetyPolicy, template <class> class DebuggingPolicy = NoDebugPolicyBostream>
 class bostream
@@ -264,6 +275,7 @@ private:
 
 /**
  * @param DebuggingPolicy : Policy for debugging, by default no debugging policy is set
+ * @param SafetyPolicy: Policy for checking types used in binary_streams to provide a secure binary_stream
  */
 template < template <class> class SafetyPolicy, template <class> class DebuggingPolicy = NoDebugPolicyBistream >
 class bistream
@@ -422,6 +434,8 @@ private:
  * such a container for insertion, you want to create it on the go.
  *
  * @param T : The type of the elements in the container.
+ * @param SafetyPolicy: Policy for checking types used in binary_streams to provide a secure binary_stream
+ * @param DebuggingPolicy : Policy for debugging, by default no debugging policy is set
  */
 template<class T, template <class> class SafetyPolicy, template <class> class DebuggingPolicy = NoDebugPolicyBostream >
 class container_writer
@@ -480,6 +494,8 @@ private:
  * elements were inserted.
  *
  * @param T : The type of the elements in the container.
+ * @param SafetyPolicy: Policy for checking types used in binary_streams to provide a secure binary_stream
+ * @param DebuggingPolicy : Policy for debugging, by default no debugging policy is set
  */
 template<class T, template <class> class SafetyPolicy, template <class> class DebuggingPolicy = NoDebugPolicyBistream >
 class container_reader
