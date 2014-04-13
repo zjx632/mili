@@ -187,7 +187,7 @@ struct NetIntConst
 };
 
 /**
- * The following macro create two overloaded functions for one integral type. 
+ * The following macro create two overloaded functions for one integral type.
  * It must to be used in the binary streams in appending and extracting operation with
  * integral numbers.
  */
@@ -273,7 +273,7 @@ public:
         return *this;
     }
 
-    /** 
+    /**
      * Insert a integral reference to string as a netowork format
      *
      * @param x: integral number to be inserted.
@@ -284,8 +284,8 @@ public:
         _inserter_helper<T, false>::call(this, mili::hton(x.value));
         return *this;
     }
-    
-    /** 
+
+    /**
      * Insert a networking integral literal to string
      *
      * @param x: integral number to be inserted.
@@ -304,7 +304,7 @@ public:
      */
     bostream& operator<< (const std::string& s)
     {
-        (*this) << uint32_t(s.size());
+        (*this) << NetUint32(s.size());
         _s += s;
         return *this;
     }
@@ -443,7 +443,7 @@ public:
         return *this;
     }
 
-    /** 
+    /**
      * Insert a integral reference to string as a netowork format
      *
      * @param x: integral number to be inserted.
