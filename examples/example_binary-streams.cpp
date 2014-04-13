@@ -49,7 +49,8 @@ int main()
 
     std::vector<int> v2;
 
-    bis >> nums[0] >> nums[1] >> nums[2] >> str1 >> v2 >> nums[3] >> str2;
+    bis >> NetInt32(nums[0]) >> NetInt32(nums[1]) >> NetInt32(nums[2]) >> str1 >> v2 >> nums[3] >> str2;
+    // bis >> nums[0] >> nums[1] >> nums[2] >> str1 >> v2 >> nums[3] >> str2;
 
     for (int i = 0; i < 4 ; ++i)
         std::cout << nums[i] << std::endl;

@@ -162,7 +162,10 @@ struct NoDebugPolicyBistream
  *    http://code.google.com/p/mili/source/browse/trunk/example_binary-streams.cpp
  */
 
-
+/**
+ * Class that represents a manipulator of binary stream, allows storage a integral
+ * reference.
+ */
 template <class IntegralType>
 struct NetIntRef
 {
@@ -183,17 +186,24 @@ struct NetIntConst
     const IntegralType value;
 };
 
-
+/**
+ * The following macro create two overloaded functions for one integral type. 
+ * It must to be used in the binary streams in appending and extracting operation with
+ * integral numbers.
+ */
 #define CREATE_NET_INT(name,type)       \
 NetIntRef<type> name(type& v)           \
 {                                       \
     return NetIntRef<type>(v);          \
 }                                       \
-NetIntConst<type> name(const type v)    \
+NetIntConst<type> name(const type& v)    \
 {                                       \
     return NetIntConst<type>(v);        \
 }
 
+/**
+ * Specific NetInt manipulators creation
+ */
 CREATE_NET_INT(NetInt16, int16_t)
 CREATE_NET_INT(NetInt32, int32_t)
 CREATE_NET_INT(NetInt64, int64_t)
@@ -264,17 +274,24 @@ public:
     }
 
     /** 
-     * Insert a networking integral type
+     * Insert a integral reference to string as a netowork format
+     *
+     * @param x: integral number to be inserted.
      */
     template <class T>
-    bostream& operator<< (NetIntRef<T> x)
+    bostream& operator<< (const NetIntRef<T>& x)
     {
         _inserter_helper<T, false>::call(this, mili::hton(x.value));
         return *this;
     }
     
+    /** 
+     * Insert a networking integral literal to string
+     *
+     * @param x: integral number to be inserted.
+     */
     template <class T>
-    bostream& operator<< (NetIntConst<T> x)
+    bostream& operator<< (const NetIntConst<T>& x)
     {
         _inserter_helper<T, false>::call(this, mili::hton(x.value));
         return *this;
@@ -423,6 +440,19 @@ public:
 
         _extract_helper<T, template_info<T>::is_container >::call(this, x);
 
+        return *this;
+    }
+
+    /** 
+     * Insert a integral reference to string as a netowork format
+     *
+     * @param x: integral number to be inserted.
+     */
+    template <class T>
+    bistream& operator >> (NetIntRef<T> x)
+    {
+        _extract_helper<T, false >::call(this, x.value);
+        x.value = mili::ntoh(x.value);
         return *this;
     }
 
