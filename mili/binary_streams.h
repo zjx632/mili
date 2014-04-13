@@ -2,9 +2,9 @@
 bitwise_streams: A minimal library for doing type-safe bitwise operations.
     This file is part of the MiLi Minimalistic Library.
 
-    Copyright (C) Guillermo Biset,  FuDePAN 2009 - 2010
-                  Matias Tripode,   FuDePAN 2012
-                  Emanuel Bringas,  FuDePan 2014
+    Copyright (C) Guillermo Biset, FuDePAN 2009 - 2010
+                  Matias Tripode, FuDePAN 2012
+                  Leandro Ramos, Emanuel Brignas FuDePAN 2014
     Distributed under the Boost Software License, Version 1.0.
     (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -38,6 +38,7 @@ NAMESPACE_BEGIN
 
 declare_static_assert(pointers_not_allowed);
 declare_static_assert(must_use_container);
+declare_static_assert(integers_types_are_unsafety);
 
 class BstreamExceptionHierarchy {};
 
@@ -108,6 +109,30 @@ struct DebugPolicyBistream
     }
 };
 
+/**
+ * Safety Policy: defines no static check of types used in binary_streams
+ * @param T : Type of the object/value to be read from bistream
+ */
+template<typename T>
+struct UnsafePolicy
+{
+    static void on_check_safety(){}
+};
+
+/**
+ * Safe Policy: defines static check of types used in binary_streams
+ * @param T : Type of the object/value to be read from bistream
+ */
+
+template<typename T>
+struct SafePolicy
+{
+    static void on_check_safety()
+    {
+        // is_integral => sizeof(T) == 1
+        template_compile_assert(!template_info<T>::is_integral || (sizeof(T) == 1), integers_types_are_unsafety);
+    }
+};
 
 /**
  * NoDebugPolicyBostream makes not debugging info for bostream
@@ -178,8 +203,9 @@ CREATE_NET_INT(NetUint64, uint64_t)
 
 /**
 * @param DebuggingPolicy : Policy for debugging, by default no debugging policy is set
+* @param SafetyPolicy: Policy for checking types used in binary_streams to provide a secure binary_stream
 */
-template < template <class> class DebuggingPolicy = NoDebugPolicyBostream >
+template < template <class> class SafetyPolicy, template <class> class DebuggingPolicy = NoDebugPolicyBostream>
 class bostream
 {
     template<class T,  bool IsContainer> struct _inserter_helper;
@@ -231,6 +257,7 @@ public:
         template_compile_assert(!template_info<T>::is_pointer, pointers_not_allowed);
 
         DebuggingPolicy<T>::on_debug(_s);
+        SafetyPolicy<T>::on_check_safety();
 
         _inserter_helper<T, template_info<T>::is_container >::call(this, x);
         return *this;
@@ -305,8 +332,9 @@ private:
 
 /**
  * @param DebuggingPolicy : Policy for debugging, by default no debugging policy is set
+ * @param SafetyPolicy: Policy for checking types used in binary_streams to provide a secure binary_stream
  */
-template < template <class> class DebuggingPolicy = NoDebugPolicyBistream >
+template < template <class> class SafetyPolicy, template <class> class DebuggingPolicy = NoDebugPolicyBistream >
 class bistream
 {
 
@@ -391,6 +419,7 @@ public:
         template_compile_assert(!template_info<T>::is_pointer, pointers_not_allowed);
 
         DebuggingPolicy<T>::on_debug(_pos, _s);
+        SafetyPolicy<T>::on_check_safety();
 
         _extract_helper<T, template_info<T>::is_container >::call(this, x);
 
@@ -462,8 +491,10 @@ private:
  * such a container for insertion, you want to create it on the go.
  *
  * @param T : The type of the elements in the container.
+ * @param SafetyPolicy: Policy for checking types used in binary_streams to provide a secure binary_stream
+ * @param DebuggingPolicy : Policy for debugging, by default no debugging policy is set
  */
-template<class T, template <class> class DebuggingPolicy = NoDebugPolicyBostream >
+template<class T, template <class> class SafetyPolicy, template <class> class DebuggingPolicy = NoDebugPolicyBostream >
 class container_writer
 {
 
@@ -475,7 +506,7 @@ public:
      * @param bos : A reference to the output stream where you will create the
      *              container.
      */
-    container_writer(uint32_t size, bostream<DebuggingPolicy>& bos) :
+    container_writer(uint32_t size, bostream<SafetyPolicy, DebuggingPolicy>& bos) :
         _elements_left(size),
         _bos(bos)
     {
@@ -511,7 +542,7 @@ private:
     uint32_t    _elements_left;
 
     /** A reference to the output stream. */
-    bostream<DebuggingPolicy>& _bos;
+    bostream<SafetyPolicy, DebuggingPolicy>& _bos;
 };
 
 /**
@@ -520,8 +551,10 @@ private:
  * elements were inserted.
  *
  * @param T : The type of the elements in the container.
+ * @param SafetyPolicy: Policy for checking types used in binary_streams to provide a secure binary_stream
+ * @param DebuggingPolicy : Policy for debugging, by default no debugging policy is set
  */
-template<class T, template <class> class DebuggingPolicy = NoDebugPolicyBistream >
+template<class T, template <class> class SafetyPolicy, template <class> class DebuggingPolicy = NoDebugPolicyBistream >
 class container_reader
 {
 public:
@@ -530,7 +563,7 @@ public:
      *
      * @param bis : The input stream holding the data.
      */
-    container_reader(bistream<DebuggingPolicy>& bis) :
+    container_reader(bistream<SafetyPolicy, DebuggingPolicy>& bis) :
         _elements_left(0),
         _bis(bis)
     {
@@ -596,7 +629,7 @@ private:
     uint32_t    _elements_left;
 
     /** A reference to the input stream. */
-    bistream<DebuggingPolicy>& _bis;
+    bistream<SafetyPolicy, DebuggingPolicy>& _bis;
 };
 
 
