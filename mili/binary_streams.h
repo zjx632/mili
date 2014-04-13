@@ -36,6 +36,7 @@ NAMESPACE_BEGIN
 
 declare_static_assert(pointers_not_allowed);
 declare_static_assert(must_use_container);
+declare_static_assert(integers_types_are_unsafety);
 
 class BstreamExceptionHierarchy {};
 
@@ -106,6 +107,20 @@ struct DebugPolicyBistream
     }
 };
 
+template<typename T>
+struct UnsafePolicy
+{
+    static void on_check_safety(){}
+};
+
+template<typename T>
+struct SafePolicy
+{
+    static void on_check_safety()
+    {
+        template_compile_assert(!template_info<T>::is_integral, integers_types_are_unsafety);
+    }
+};
 
 /**
  * NoDebugPolicyBostream makes not debugging info for bostream
@@ -138,7 +153,7 @@ struct NoDebugPolicyBistream
 /**
 * @param DebuggingPolicy : Policy for debugging, by default no debugging policy is set
 */
-template < template <class> class DebuggingPolicy = NoDebugPolicyBostream >
+template < template <class> class SafetyPolicy, template <class> class DebuggingPolicy = NoDebugPolicyBostream>
 class bostream
 {
     template<class T,  bool IsContainer> struct _inserter_helper;
@@ -190,6 +205,7 @@ public:
         template_compile_assert(!template_info<T>::is_pointer, pointers_not_allowed);
 
         DebuggingPolicy<T>::on_debug(_s);
+        SafetyPolicy<T>::on_check_safety();
 
         _inserter_helper<T, template_info<T>::is_container >::call(this, x);
         return *this;
@@ -248,7 +264,7 @@ private:
 /**
  * @param DebuggingPolicy : Policy for debugging, by default no debugging policy is set
  */
-template < template <class> class DebuggingPolicy = NoDebugPolicyBistream >
+template < template <class> class SafetyPolicy, template <class> class DebuggingPolicy = NoDebugPolicyBistream >
 class bistream
 {
 
@@ -333,6 +349,7 @@ public:
         template_compile_assert(!template_info<T>::is_pointer, pointers_not_allowed);
 
         DebuggingPolicy<T>::on_debug(_pos, _s);
+        SafetyPolicy<T>::on_check_safety();
 
         _extract_helper<T, template_info<T>::is_container >::call(this, x);
 
@@ -405,7 +422,7 @@ private:
  *
  * @param T : The type of the elements in the container.
  */
-template<class T, template <class> class DebuggingPolicy = NoDebugPolicyBostream >
+template<class T, template <class> class SafetyPolicy, template <class> class DebuggingPolicy = NoDebugPolicyBostream >
 class container_writer
 {
 
@@ -417,7 +434,7 @@ public:
      * @param bos : A reference to the output stream where you will create the
      *              container.
      */
-    container_writer(uint32_t size, bostream<DebuggingPolicy>& bos) :
+    container_writer(uint32_t size, bostream<SafetyPolicy, DebuggingPolicy>& bos) :
         _elements_left(size),
         _bos(bos)
     {
@@ -453,7 +470,7 @@ private:
     uint32_t    _elements_left;
 
     /** A reference to the output stream. */
-    bostream<DebuggingPolicy>& _bos;
+    bostream<SafetyPolicy, DebuggingPolicy>& _bos;
 };
 
 /**
@@ -463,7 +480,7 @@ private:
  *
  * @param T : The type of the elements in the container.
  */
-template<class T, template <class> class DebuggingPolicy = NoDebugPolicyBistream >
+template<class T, template <class> class SafetyPolicy, template <class> class DebuggingPolicy = NoDebugPolicyBistream >
 class container_reader
 {
 public:
@@ -472,7 +489,7 @@ public:
      *
      * @param bis : The input stream holding the data.
      */
-    container_reader(bistream<DebuggingPolicy>& bis) :
+    container_reader(bistream<SafetyPolicy, DebuggingPolicy>& bis) :
         _elements_left(0),
         _bis(bis)
     {
@@ -538,7 +555,7 @@ private:
     uint32_t    _elements_left;
 
     /** A reference to the input stream. */
-    bistream<DebuggingPolicy>& _bis;
+    bistream<SafetyPolicy, DebuggingPolicy>& _bis;
 };
 
 

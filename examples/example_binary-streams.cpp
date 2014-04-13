@@ -5,9 +5,9 @@ binary_streams: A minimal library supporting encoding of different data
 
     Copyright (C) Guillermo Biset, FuDePAN 2009-2010
     Distributed under the Boost Software License, Version 1.0.
-    (See accompanying file LICENSE_1_0.txt in the root directory or 
+    (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
-    
+
     MiLi IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
@@ -32,14 +32,14 @@ int main()
     v[1] = 1;
     v[4] = 7; //so it is [3,1,3,3,7]
 
-    bostream<> bos;
+    bostream<UnsafePolicy> bos;
     bos << 1 << 2 << 3 << std::string("Hello ") << v << 4 << std::string("World!");
 
-    bostream<> bos2;
+    bostream<UnsafePolicy> bos2;
     bos2 << 100;
     bos +=  bos2;
 
-    bistream<> bis(bos.str());
+    bistream<UnsafePolicy> bis(bos.str());
 
     int         nums[4];
     std::string str1;
@@ -61,7 +61,7 @@ int main()
 
     bos.clear();
 
-    container_writer<int> cw(5, bos);
+    container_writer<int, UnsafePolicy> cw(5, bos);
 
     cw << 1 << 2 << 3 << 4 << 5;
 
@@ -94,7 +94,7 @@ int main()
     bis.clear();
     bis.str(bos.str());
 
-    container_reader<int> reader(bis);
+    container_reader<int, UnsafePolicy> reader(bis);
 
     int a;
     reader.skip();
