@@ -59,8 +59,8 @@ std::string get_TypeId(const std::string& s)
 
 struct A
 {
-    typedef class mili::bostream<mili::DebugPolicyBostream> bostream;
-    typedef class mili::bistream<mili::DebugPolicyBistream> bistream;
+    typedef class mili::bostream<mili::UnsafePolicy, mili::DebugPolicyBostream> bostream;
+    typedef class mili::bistream<mili::UnsafePolicy, mili::DebugPolicyBistream> bistream;
 
     unsigned int id;
     std::string name;
@@ -96,8 +96,8 @@ struct A
 struct B
 {
 
-    typedef class mili::bostream<mili::NoDebugPolicyBostream> bostream;
-    typedef class mili::bistream<mili::NoDebugPolicyBistream> bistream;
+    typedef class mili::bostream<mili::UnsafePolicy, mili::NoDebugPolicyBostream> bostream;
+    typedef class mili::bistream<mili::UnsafePolicy, mili::NoDebugPolicyBistream> bistream;
 
     unsigned int id;
     std::string name;
@@ -131,7 +131,7 @@ struct B
 
 TEST(BinaryStream, BSTREAMS_DEBUG_identifier_test)
 {
-    typedef class mili::bostream<mili::DebugPolicyBostream> bostream;
+    typedef class mili::bostream<mili::UnsafePolicy, mili::DebugPolicyBostream> bostream;
     bostream bos;
 
     bos << -13;
@@ -166,7 +166,7 @@ TEST(BinaryStream, BSTREAMS_DEBUG_identifier_test)
 TEST(BinaryStream, BSTREAMS_NO_DEBUG_identifier_test)
 {
 
-    typedef class mili::bostream<mili::NoDebugPolicyBostream> bostream;
+    typedef class mili::bostream<mili::UnsafePolicy, mili::NoDebugPolicyBostream> bostream;
     bostream bos;
 
     bos << -13;
@@ -201,8 +201,8 @@ TEST(BinaryStream, BSTREAMS_NO_DEBUG_identifier_test)
 
 TEST(BinaryStream, BSTREAMS_DEBUG_typemismatch_test)
 {
-    typedef class mili::bostream<mili::DebugPolicyBostream> bostream;
-    typedef class mili::bistream<mili::DebugPolicyBistream> bistream;
+    typedef class mili::bostream<mili::UnsafePolicy, mili::DebugPolicyBostream> bostream;
+    typedef class mili::bistream<mili::UnsafePolicy, mili::DebugPolicyBistream> bistream;
 
     bostream bos;
     const int int_loaded = 3;
@@ -222,8 +222,8 @@ TEST(BinaryStream, BSTREAMS_DEBUG_typemismatch_test)
 }
 TEST(BinaryStream, BSTREAMS_NO_DEBUG_typemismatch_test)
 {
-    typedef class mili::bostream<mili::NoDebugPolicyBostream> bostream;
-    typedef class mili::bistream<mili::NoDebugPolicyBistream> bistream;
+    typedef class mili::bostream<mili::UnsafePolicy, mili::NoDebugPolicyBostream> bostream;
+    typedef class mili::bistream<mili::UnsafePolicy, mili::NoDebugPolicyBistream> bistream;
 
     bostream bos;
     const int int_loaded = 3;
@@ -247,8 +247,8 @@ TEST(BinaryStream, BSTREAMS_NO_DEBUG_typemismatch_test)
 TEST(BinaryStream, chainedValues_test)
 {
 
-    typedef class mili::bostream<mili::DebugPolicyBostream> bostream;
-    typedef class mili::bistream<mili::DebugPolicyBistream> bistream;
+    typedef class mili::bostream<mili::UnsafePolicy, mili::DebugPolicyBostream> bostream;
+    typedef class mili::bistream<mili::UnsafePolicy, mili::DebugPolicyBistream> bistream;
 
     bostream bos;
 
@@ -278,8 +278,8 @@ TEST(BinaryStream, chainedValues_test)
 TEST(BinaryStream, chainedValues_No_Debug_test)
 {
 
-    typedef class mili::bostream<mili::NoDebugPolicyBostream> bostream;
-    typedef class mili::bistream<mili::NoDebugPolicyBistream> bistream;
+    typedef class mili::bostream<mili::UnsafePolicy, mili::NoDebugPolicyBostream> bostream;
+    typedef class mili::bistream<mili::UnsafePolicy, mili::NoDebugPolicyBistream> bistream;
 
     bostream bos;
 
@@ -311,8 +311,8 @@ TEST(BinaryStream, chainedValues_No_Debug_test)
 TEST(BinaryStream, contaniers_test)
 {
 
-    typedef class mili::bostream<mili::DebugPolicyBostream> bostream;
-    typedef class mili::bistream<mili::DebugPolicyBistream> bistream;
+    typedef class mili::bostream<mili::UnsafePolicy, mili::DebugPolicyBostream> bostream;
+    typedef class mili::bistream<mili::UnsafePolicy, mili::DebugPolicyBistream> bistream;
 
     bostream bos;
     std::vector<int> integers_original;
@@ -359,8 +359,8 @@ TEST(BinaryStream, contaniers_test)
 
 TEST(BinaryStream, No_Debug_Contaniers_Test)
 {
-    typedef class mili::bostream<mili::NoDebugPolicyBostream> bostream;
-    typedef class mili::bistream<mili::NoDebugPolicyBistream> bistream;
+    typedef class mili::bostream<mili::UnsafePolicy, mili::NoDebugPolicyBostream> bostream;
+    typedef class mili::bistream<mili::UnsafePolicy, mili::NoDebugPolicyBistream> bistream;
 
     bostream bos;
     std::vector<int> integers_original;
@@ -403,4 +403,25 @@ TEST(BinaryStream, No_Debug_Contaniers_Test)
     it could be "const double[9]" (like numbers_original) or 
     "double[9]" (like numbers_loaded). */
     assertArrayEquals<const double[9]>(numbers_original, numbers_loaded, 9);
+}
+
+TEST(BinaryStream, Manipulators)
+{
+    mili::bostream<SafePolicy> bos;
+
+    int x(3);
+    const short int y(5);
+
+    bos << NetInt32(1) << NetInt32(x) << NetInt16(y);
+
+    mili::bistream<SafePolicy> bis(bos.str());
+
+    int a,b;
+    short int c;
+    
+    bis >> NetInt32(a) >> NetInt32(b) >> NetInt16(c);
+
+    ASSERT_EQ(a, 1);
+    ASSERT_EQ(b, x);
+    ASSERT_EQ(c, y);
 }

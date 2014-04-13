@@ -191,14 +191,14 @@ struct NetIntConst
  * It must to be used in the binary streams in appending and extracting operation with
  * integral numbers.
  */
-#define CREATE_NET_INT(name,type)       \
-NetIntRef<type> name(type& v)           \
-{                                       \
-    return NetIntRef<type>(v);          \
-}                                       \
-NetIntConst<type> name(const type& v)    \
-{                                       \
-    return NetIntConst<type>(v);        \
+#define CREATE_NET_INT(name,type)                           \
+inline NetIntRef<type> name(type& v)                        \
+{                                                           \
+    return NetIntRef<type>(v);                              \
+}                                                           \
+inline NetIntConst<type> name(const type& v)                \
+{                                                           \
+    return NetIntConst<type>(v);                            \
 }
 
 /**
@@ -210,6 +210,8 @@ CREATE_NET_INT(NetInt64, int64_t)
 CREATE_NET_INT(NetUint16, uint16_t)
 CREATE_NET_INT(NetUint32, uint32_t)
 CREATE_NET_INT(NetUint64, uint64_t)
+
+#undef CREATE_NET_INT
 
 /**
 * @param DebuggingPolicy : Policy for debugging, by default no debugging policy is set
