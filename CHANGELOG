@@ -22,6 +22,8 @@ Version 18 (UNRELEASED)
     * (Issue 107) Functions that have both throw and nothrow versions only compile
       their nothrow versions if exceptions aren't enabled.
     * (Issue 107) Assert_throw is only available if exceptions are supported.
+    * (Issue 110) platform_detection now detects MAC OS as an operating system; it also supports clang and Code Composer Studio as compilers.
+    * Tests can now be compiled with either STD=11 or STD=98 flags. E.g. fbuild mili:test STD=11
 
 Version 17
 ===========

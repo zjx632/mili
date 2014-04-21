@@ -19,15 +19,16 @@ random_gen.h: A minimal library for generating random numbers.
 #ifndef RANDOM_GEN_H
 #define RANDOM_GEN_H
 
-#include <stdlib.h>
-#ifdef _WIN32
-#    include <Windows.h>
-#    include <time.h>
-#    undef min
-#    undef max
-#else
-#    include <sys/time.h>
-#endif
+#if MILI_COMPILER != MILI_COMPILER_TICCS // There are no suitable system headers in CCS.
+#   include <stdlib.h>
+#   ifdef _WIN32
+#       include <Windows.h>
+#       include <time.h>
+#       undef min
+#       undef max
+#   else
+#       include <sys/time.h>
+#   endif
 
 NAMESPACE_BEGIN
 
@@ -170,4 +171,6 @@ SPECIALIZE_RND(double);
 
 NAMESPACE_END
 
-#endif
+#endif // MILI_COMPILER != MILI_COMPILER_TICCS
+
+#endif // RANDOM_GEN_H

@@ -17,12 +17,14 @@
     This is a test file.
 */
 
-#include <unordered_map>
-#include <unordered_set>
+#include "mili/mili.h"
+#if MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X
+#   include <unordered_map>
+#   include <unordered_set>
+#endif
 #include <vector>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include "mili/mili.h"
 
 using namespace mili;
 
@@ -54,6 +56,7 @@ TEST(DeleteContainerTest, delete_container)
     delete_container(vec1);
 }
 
+#if MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X
 TEST(DeleteContainerTest, UnorderedMap)
 {
     MockObject* o1 = new MockObject;
@@ -79,3 +82,5 @@ TEST(DeleteContainerTest, UnorderedSet)
     EXPECT_CALL(*o3, die()).Times(1);
     delete_container(setToDelete);
 }
+#endif
+
