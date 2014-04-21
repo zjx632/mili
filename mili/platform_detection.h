@@ -45,11 +45,11 @@ platform_detection:
 #    define MILI_OS MILI_OS_LINUX
 
 /* MAC */
-/*#elif defined (macintosh) \
+#elif defined (macintosh)   \
    || defined (Macintosh)   \
    || defined (__APPLE__)   \
    || defined (__MACH__)
-#    define MILI_OS MILI_OS_MAC*/
+#    define MILI_OS MILI_OS_MAC
 
 /* Unknown OS */
 #else
@@ -57,23 +57,19 @@ platform_detection:
 
 #endif /* end OS Detection */
 
-
-
 /* Compiler detection
    See: http://sourceforge.net/apps/mediawiki/predef/index.php?title=Compilers
 */
 #define MILI_COMPILER_VS        1
 #define MILI_COMPILER_GCC       2
 #define MILI_COMPILER_ICC       3
-#define MILI_COMPILER_UNKNOWN   4
+#define MILI_COMPILER_CLANG     4
+#define MILI_COMPILER_TICCS     5
+#define MILI_COMPILER_UNKNOWN   6
 
 /* Microsoft Visual C++ */
 #if   defined (_MSC_VER)
 #    define MILI_COMPILER MILI_COMPILER_VS
-
-/* GCC C/C++ */
-#elif defined (__GNUC__)
-#    define MILI_COMPILER MILI_COMPILER_GCC
 
 /* Intel C/C++ */
 /*#elif defined (__INTEL_COMPILER)  \
@@ -82,12 +78,26 @@ platform_detection:
    || defined (__ICL)
 #    define MILI_COMPILER MILI_COMPILER_ICC*/
 
+/* CLANG */
+#elif defined (__clang__)
+#    define MILI_COMPILER MILI_COMPILER_CLANG
+
+/* Texas Instruments Code Composer Studio */
+#elif defined (__TI_COMPILER_VERSION__)       \
+    || defined (__TI_COMPILER_VERSION)
+// The canonical flag seems to be __TI_COMPILER_VERSION__
+// but some versions of CCS defined __TI_COMPILER_VERSION instead.
+#    define MILI_COMPILER MILI_COMPILER_TICCS
+
+/* GCC C/C++; this actually matches any gcc-like compiler, so it's left at the bottom. */
+#elif defined (__GNUC__)
+#    define MILI_COMPILER MILI_COMPILER_GCC
+
 /* Unknown compiler */
 #else
 #    define MILI_COMPILER MILI_COMPILER_UNKNOWN
 
 #endif /* end Compiler detection */
-
 
 /* Detection of the C++ language standard
    See: http://gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html#Common-Predefined-Macros
@@ -108,11 +118,14 @@ platform_detection:
  * and
  * (ICC) http://software.intel.com/sites/products/documentation/doclib/stdxe/2013/composerxe/compiler/cpp-lin/GUID-E65FC029-9273-4CDD-8C4C-3372B9A60DC7.htm
  */
-#if (MILI_COMPILER == MILI_COMPILER_GCC) || (MILI_COMPILER == MILI_COMPILER_ICC)
-// If we are using gcc or icc, we can ask about exceptions' support (with the same flag).
+#if (MILI_COMPILER == MILI_COMPILER_GCC) || (MILI_COMPILER == MILI_COMPILER_ICC) || (MILI_COMPILER == MILI_COMPILER_CLANG)
+// If we are using gcc, clang or icc, we can ask about exceptions' support (with the same flag).
 #    if defined(__EXCEPTIONS)
 #        define MILI_EXCEPTIONS_COMPILER_ENABLED
 #    endif
+#elif (MILI_COMPILER == MILI_COMPILER_TICCS)
+#    undef MILI_EXCEPTIONS_COMPILER_ENABLED
+// If we build using Code Composer Studio, we cannot use exceptions.
 #else // On other compilers, we leave exceptions enabled by default.
 // TODO: research exceptions' support flags for other compilers.
 #    define MILI_EXCEPTIONS_COMPILER_ENABLED

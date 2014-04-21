@@ -160,7 +160,7 @@ TEST(CircularBuffer, IteratingQueueDequeue)
     cBuf.queue(0);
     cBuf.queue(1);
 
-    for (auto i = 2u; i < 200; ++i)
+    for (unsigned int i = 2u; i < 200; ++i)
     {
         cBuf.queue(i);
         EXPECT_EQ(i - 2, cBuf.dequeue());
@@ -170,18 +170,18 @@ TEST(CircularBuffer, IteratingQueueDequeue)
 TEST(CircularBuffer, FillUpAndEmpty)
 {
     CircBuffer<int, 4, AssertionErrorPolicy, AssertionErrorPolicy, AssertionErrorPolicy> cBuf;
-    for (auto i = 1u; i < 500; ++i)
+    for (unsigned int i = 1u; i < 500; ++i)
     {
         if ((i % 2) == 1)
         {
-            for (auto j = 0u; j < 4 ; ++j)
+            for (unsigned int j = 0u; j < 4 ; ++j)
             {
                 cBuf.queue(j);
             }
         }
         else
         {
-            for (auto j = 0u; j < 4 ; ++j)
+            for (unsigned int j = 0u; j < 4 ; ++j)
             {
                 EXPECT_EQ(j, cBuf.dequeue());
             }
