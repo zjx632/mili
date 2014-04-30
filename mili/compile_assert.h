@@ -44,10 +44,10 @@ struct name<false>                      \
 }
 
 #define compile_assert(condition, name) \
-    typedef name<condition >::CompileTimeAssertion name##__
+    struct name##_dummy__ { name<condition >::CompileTimeAssertion x; }
 
 #define template_compile_assert(condition, name) \
-    typedef typename name<condition >::CompileTimeAssertion name##__
+    struct name##_dummy__ { typename name<condition >::CompileTimeAssertion x; }
 
 declare_static_assert(GenericAssertion);
 
@@ -58,7 +58,7 @@ declare_static_assert(GenericAssertion);
     compile_assert(condition, GenericAssertion)
 
 #else
-#   define declare_static_assert(name)
+#   define declare_static_assert(name) typedef int _dummyX_##name
 #   define compile_assert(condition, name) static_assert(condition, #name)
 #   define template_compile_assert(condition, name) static_assert(condition, #name)
 #   define generic_assert(condition) static_assert(condition, #condition)
@@ -68,4 +68,3 @@ declare_static_assert(GenericAssertion);
 //NAMESPACE_END
 
 #endif
-
