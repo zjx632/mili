@@ -3,9 +3,9 @@
 
     Copyright (C) Lucas Paradisi, Matias Tripode, FuDePAN 2012
     Distributed under the Boost Software License, Version 1.0.
-    (See accompanying file LICENSE_1_0.txt in the root directory or 
+    (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
-    
+
     MiLi IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
@@ -129,7 +129,8 @@ struct B
     }
 };
 
-TEST(BinaryStream, BSTREAMS_DEBUG_identifier_test)
+// The following tests will be enabled when issue59 be resolved.
+TEST(BinaryStream, DISABLED_BSTREAMS_DEBUG_identifier_test)
 {
     typedef class mili::bostream<mili::UnsafePolicy, mili::DebugPolicyBostream> bostream;
     bostream bos;
@@ -352,7 +353,7 @@ TEST(BinaryStream, contaniers_test)
     ASSERT_EQ(list_original, list_loaded);
 
     /* VC2010 can't resolve automatically the template parameter since
-    it could be "const double[9]" (like numbers_original) or 
+    it could be "const double[9]" (like numbers_original) or
     "double[9]" (like numbers_loaded). */
     assertArrayEquals<const double[9]>(numbers_original, numbers_loaded, 9);
 }
@@ -400,7 +401,7 @@ TEST(BinaryStream, No_Debug_Contaniers_Test)
     ASSERT_EQ(list_original, list_loaded);
 
     /* VC2010 can't resolve automatically the template parameter since
-    it could be "const double[9]" (like numbers_original) or 
+    it could be "const double[9]" (like numbers_original) or
     "double[9]" (like numbers_loaded). */
     assertArrayEquals<const double[9]>(numbers_original, numbers_loaded, 9);
 }
@@ -418,10 +419,24 @@ TEST(BinaryStream, Manipulators)
 
     int a,b;
     short int c;
-    
+
     bis >> NetInt32(a) >> NetInt32(b) >> NetInt16(c);
 
     ASSERT_EQ(a, 1);
     ASSERT_EQ(b, x);
     ASSERT_EQ(c, y);
+}
+
+
+// It tests a bug used to occur when a bostream finished in a string type
+TEST(BinaryStream, bugBosStringEnd)
+{
+    const std::string stringTest = "string test";
+    mili::bostream<UnsafePolicy> bos;
+
+    bos << stringTest;
+    mili::bistream<UnsafePolicy> bis(bos.str());
+    std::string s;
+    ASSERT_NO_THROW(bis >> s);
+    ASSERT_EQ(stringTest, s);
 }
