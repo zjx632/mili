@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <stack>    
 #include "mili/mili.h"
 
 using namespace mili;
@@ -220,6 +221,24 @@ TEST(SetTest, general)
     EXPECT_EQ("asd", *find(s, "asd", std::nothrow));
     EXPECT_FALSE(contains(s, "asdffff"));
     EXPECT_TRUE(remove_first_from(s,"asd"));
+}
+
+TEST(ContainerUtilsTest, stack)
+{
+    std::stack<int> stackToTest;
+    insert_into(stackToTest, 1);
+    insert_into(stackToTest, 2);
+    insert_into(stackToTest, 3);
+    EXPECT_EQ(3, stackToTest.size());
+    EXPECT_TRUE(!stackToTest.empty());
+    EXPECT_EQ(3, stackToTest.top());
+}
+
+TEST(ContainerUtilsTest, stackNull)
+{
+    std::stack<int> stackNull;  
+    insert_into(stackNull, 23);
+    EXPECT_FALSE(stackNull.empty());
 }
 
 #endif
