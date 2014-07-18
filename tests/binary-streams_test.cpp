@@ -440,3 +440,21 @@ TEST(BinaryStream, bugBosStringEnd)
     ASSERT_NO_THROW(bis >> s);
     ASSERT_EQ(stringTest, s);
 }
+
+#define makeSafeIntTest(type, safeType)             \
+TEST(BinaryStream, safeType##Test)                  \
+{                                                   \
+    mili::bostream<SafePolicy> bos;                 \
+    bos << safeType(2);                             \
+    mili::bistream<SafePolicy> bis(bos.str());      \
+    type result = 0;                                \
+    bis >> safeType(result);                        \
+    EXPECT_EQ(2, result);                           \
+}                                                   \
+
+makeSafeIntTest(int16_t, NetInt16)
+makeSafeIntTest(int32_t, NetInt32)
+makeSafeIntTest(int64_t, NetInt64)
+makeSafeIntTest(uint16_t, NetUint16)
+makeSafeIntTest(uint32_t, NetUint32)
+makeSafeIntTest(uint64_t, NetUint64)
