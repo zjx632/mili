@@ -27,6 +27,7 @@ container_utils: A minimal library with generic STL container utilities.
 #include <new>
 #include <queue>
 #include <string>
+#include <stack>     
 
 #if MILI_CXX_VERSION == MILI_CXX_VERSION_CXX0X
 #include <unordered_map>
@@ -374,6 +375,13 @@ inline void insert_into(std::queue<T, Container>& cont, const T2& element)
     cont.push(element);
 }
 
+/* This works for stack */
+
+template <class T, class Container, class T2>
+inline void insert_into(std::stack<T, Container>& cont, const T2& element)
+{
+    cont.push(element);
+}
 
 //------------ Remove first Utilities
 
