@@ -77,23 +77,6 @@ struct AutonomousSeedPolicy : TimeBasedSeedPolicy
 };
 #   endif //_POSIX_C_SOURCE >= 1 || _XOPEN_SOURCE || _POSIX_SOURCE
 
-struct NonThreadSafeAutonomousSeedPolicy : TimeBasedSeedPolicy
-{
-    NonThreadSafeAutonomousSeedPolicy(unsigned int seed) :
-        TimeBasedSeedPolicy(seed)
-    {}
-
-    NonThreadSafeAutonomousSeedPolicy() :
-        TimeBasedSeedPolicy()
-    {}
-
-    int get()
-    {
-        srand(seed);
-        return rand();
-    }
-};
-
 #endif //_WIN32
 
 struct GlobalSeedPolicy : TimeBasedSeedPolicy
@@ -122,7 +105,8 @@ typedef GlobalSeedPolicy DefaultSeedPolicy;
 #   if _POSIX_C_SOURCE >= 1 || _XOPEN_SOURCE || _POSIX_SOURCE
 typedef AutonomousSeedPolicy DefaultSeedPolicy;
 #   else
-typedef NonThreadSafeAutonomousSeedPolicy DefaultSeedPolicy;
+//NOTE: This case in not thread-safe.
+typedef GlobalSeedPolicy DefaultSeedPolicy;
 #   endif
 #endif
 
