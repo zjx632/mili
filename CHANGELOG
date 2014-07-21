@@ -1,5 +1,6 @@
 Version 18 (UNRELEASED)
 ============
+    * (issue58) Added safety policy. Implemented safe type for integers.
     * Function trim in "string_utils.h" now support tabs and whitespaces.
     * Changed register name class in Factory_registry.
     * Implemented getConstructibleObjects in Factory_registry to provide a factory iterator.
