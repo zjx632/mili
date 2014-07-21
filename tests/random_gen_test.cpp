@@ -3,9 +3,9 @@
 
     Copyright (C) Hugo Arregui, FuDePAN 2011
     Distributed under the Boost Software License, Version 1.0.
-    (See accompanying file LICENSE_1_0.txt in the root directory or 
+    (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
-    
+
     MiLi IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
@@ -33,8 +33,43 @@ TEST(RandomGenTest, rnd)
     for (unsigned int i = 0; i < 100; ++i)
     {
         const float r = rnd.get();
-        ASSERT_LE(r, max);
-        ASSERT_GE(r, min);
+        EXPECT_LE(r, max);
+        EXPECT_GE(r, min);
     }
 }
 
+TEST(RandomGenTest, rndSameSeed)
+{
+    const unsigned int max = 20u;
+    const unsigned int min = 10u;
+    const unsigned int seed = 5u;
+
+    Randomizer<unsigned int> randOne(min, max, seed);
+    Randomizer<unsigned int> randTwo(min, max, seed);
+
+    for(unsigned int i(0u); i < 100u; ++i)
+    {
+        EXPECT_EQ(randOne.get(), randTwo.get());
+    }
+}
+
+TEST(RandomGenTest, getMethod)
+{
+    const unsigned int max = 100u;
+    const unsigned int min = 1u;
+    const unsigned int seed = 20u;
+
+    const unsigned int retrievedValue1 = 15u;
+    const unsigned int retrievedValue2 = 66u;
+    const unsigned int retrievedValue3 = 64u;
+    const unsigned int retrievedValue4 = 41u;
+    const unsigned int retrievedValue5 = 25u;
+
+    Randomizer<unsigned int> rnd(min, max, seed);
+
+    EXPECT_EQ(rnd.get(), retrievedValue1);
+    EXPECT_EQ(rnd.get(), retrievedValue2);
+    EXPECT_EQ(rnd.get(), retrievedValue3);
+    EXPECT_EQ(rnd.get(), retrievedValue4);
+    EXPECT_EQ(rnd.get(), retrievedValue5);
+}
