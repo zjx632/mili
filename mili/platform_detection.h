@@ -88,6 +88,9 @@ platform_detection:
 // The canonical flag seems to be __TI_COMPILER_VERSION__
 // but some versions of CCS defined __TI_COMPILER_VERSION instead.
 #    define MILI_COMPILER MILI_COMPILER_TICCS
+// We need to include stdlib.h to get the definition of the type size_t.
+// Code Composer Studio provides the file stdlib.h with that definition for the ARM compiler.
+#    include "stdlib.h"
 
 /* GCC C/C++; this actually matches any gcc-like compiler, so it's left at the bottom. */
 #elif defined (__GNUC__)
