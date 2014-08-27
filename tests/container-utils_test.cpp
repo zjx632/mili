@@ -230,15 +230,20 @@ TEST(ContainerUtilsTest, stack)
     insert_into(stackToTest, 2);
     insert_into(stackToTest, 3);
     EXPECT_EQ(3, stackToTest.size());
-    EXPECT_TRUE(!stackToTest.empty());
     EXPECT_EQ(3, stackToTest.top());
 }
 
-TEST(ContainerUtilsTest, stackNull)
+TEST(ContainerUtilsTest, stack)
 {
-    std::stack<int> stackNull;  
-    insert_into(stackNull, 23);
-    EXPECT_FALSE(stackNull.empty());
+    std::stack<int> stackToTest;
+    insert_into(stackToTest, 1);
+    insert_into(stackToTest, 2);
+    insert_into(stackToTest, 3);
+    while (!stackToTest.empty())
+    {
+        stackToTest.pop();
+    }
+    EXPECT_TRUE(stackToTest.empty());
 }
 
 #endif
