@@ -233,7 +233,7 @@ TEST(ContainerUtilsTest, stack)
     EXPECT_EQ(3, stackToTest.top());
 }
 
-TEST(ContainerUtilsTest, stack)
+TEST(ContainerUtilsTest, stackEmpty)
 {
     std::stack<int> stackToTest;
     insert_into(stackToTest, 1);
