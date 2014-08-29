@@ -1,4 +1,4 @@
-/*    
+/*
     Distributed under the Boost Software License, Version 1.0.
     (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -16,7 +16,7 @@
 #define NET_UTILS_H
 
 
-#include <cstdint>
+#include <stdint.h>
 #include <arpa/inet.h>
 
 NAMESPACE_BEGIN
@@ -63,7 +63,7 @@ inline int64_t hton(const int64_t value)
 
     return input.u64;
 }
-   
+
 inline uint64_t hton(const uint64_t value)
 {
     return static_cast<uint64_t>(hton(static_cast<int64_t>(value)));
@@ -100,7 +100,7 @@ inline int64_t ntoh(const int64_t value)
     input.low32 = ntoh(input.low32);
 
     std::swap(input.high32, input.low32);
-    
+
     return input.u64;
 }
 

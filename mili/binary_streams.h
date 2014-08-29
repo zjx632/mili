@@ -38,7 +38,7 @@ NAMESPACE_BEGIN
 
 declare_static_assert(pointers_not_allowed);
 declare_static_assert(must_use_container);
-declare_static_assert(integers_types_are_unsafety);
+declare_static_assert(integers_types_are_unsafe);
 
 class BstreamExceptionHierarchy {};
 
