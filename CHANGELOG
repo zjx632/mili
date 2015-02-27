@@ -25,6 +25,7 @@ Version 18 (UNRELEASED)
     * (Issue 107) Assert_throw is only available if exceptions are supported.
     * (Issue 110) platform_detection now detects MAC OS as an operating system; it also supports clang and Code Composer Studio as compilers.
     * Tests can now be compiled with either STD=11 or STD=98 flags. E.g. fbuild mili:test STD=11
+    * (Issue 115) Replace stringstream in from_string and to_string for C functions in string_utils.h
 
 Version 17
 ===========

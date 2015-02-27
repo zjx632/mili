@@ -258,12 +258,116 @@ inline bool ends_with(const S& s, const E& ending)
         return (s.size() - position) == size(ending);
 }
 
+static const unsigned int charCharAmount = 5u;
+static const unsigned int IntCharAmount = 21u;
+static const unsigned int doubleCharAmount = 25u;
+static const unsigned int longDoubleCharAmount = 45u;
+
 template <class Number>
 inline std::string to_string(Number n)
 {
     std::stringstream ss;
     ss << n;
     return ss.str();
+}
+
+template<>
+inline std::string to_string(short int a)
+{
+    char str[IntCharAmount];
+    sprintf(str, "%hd", a);
+    std::string s(str);
+    return s;
+}
+
+template<>
+inline std::string to_string(unsigned short int a)
+{
+    char str[IntCharAmount];
+    sprintf(str, "%hu", a);
+    std::string s(str);
+    return s;
+}
+
+template<>
+inline std::string to_string(int a)
+{
+    char str[IntCharAmount];
+    sprintf(str, "%d", a);
+    std::string s(str);
+    return s;
+}
+
+template<>
+inline std::string to_string(unsigned int a)
+{
+    char str[IntCharAmount];
+    sprintf(str, "%u", a);
+    std::string s(str);
+    return s;
+}
+
+template<>
+inline std::string to_string(long int a)
+{
+    char str[IntCharAmount];
+    sprintf(str, "%ld", a);
+    std::string s(str);
+    return s;
+}
+
+template<>
+inline std::string to_string(unsigned long int a)
+{
+    char str[IntCharAmount];
+    sprintf(str, "%lu", a);
+    std::string s(str);
+    return s;
+}
+
+template<>
+inline std::string to_string(long long int a)
+{
+    char str[IntCharAmount];
+    sprintf(str, "%lld", a);
+    std::string s(str);
+    return s;
+}
+
+template<>
+inline std::string to_string(unsigned long long int a)
+{
+    char str[IntCharAmount];
+    sprintf(str, "%llu", a);
+    std::string s(str);
+    return s;
+}
+
+template<>
+inline std::string to_string(float f)
+{
+    char str[doubleCharAmount];
+    sprintf(str, "%.6e", f);
+    std::string s(str);
+    return s;
+}
+
+template<>
+inline std::string to_string(double d)
+{
+    char str[doubleCharAmount];
+    sprintf(str, "%.15e", d);
+    std::string s(str);
+    return s;
+}
+
+template<>
+inline std::string to_string(long double ld)
+{
+    char str[longDoubleCharAmount];
+    sprintf(str, "%.34Le", ld);
+    std::string s(str);
+    return s;
 }
 
 template <class T>
@@ -275,11 +379,176 @@ inline T from_string(const std::string& s)
     return t;
 }
 
+template<>
+inline unsigned short int from_string(const std::string& s)
+{
+    unsigned short int ret;
+    sscanf(s.c_str(), "%hu", &ret);
+    return ret;
+}
+
+template<>
+inline short int from_string(const std::string& s)
+{
+    short int ret;
+    sscanf(s.c_str(), "%hd", &ret);
+    return ret;
+}
+
+template<>
+inline unsigned int from_string(const std::string& s)
+{
+    unsigned int ret;
+    sscanf(s.c_str(), "%u", &ret);
+    return ret;
+}
+
+template<>
+inline int from_string(const std::string& s)
+{
+    int ret;
+    sscanf(s.c_str(), "%d", &ret);
+    return ret;
+}
+
+template<>
+inline unsigned long int from_string(const std::string& s)
+{
+    unsigned long int ret;
+    sscanf(s.c_str(), "%lu", &ret);
+    return ret;
+}
+
+template<>
+inline long int from_string(const std::string& s)
+{
+    long int ret;
+    sscanf(s.c_str(), "%ld", &ret);
+    return ret;
+}
+
+template<>
+inline unsigned long long int from_string(const std::string& s)
+{
+    unsigned long long int ret;
+    sscanf(s.c_str(), "%llu", &ret);
+    return ret;
+}
+
+template<>
+inline long long int from_string(const std::string& s)
+{
+    long long int ret;
+    sscanf(s.c_str(), "%lld", &ret);
+    return ret;
+}
+
+template<>
+inline float from_string(const std::string& s)
+{
+    float ret;
+    sscanf(s.c_str(), "%f", &ret);
+    return ret;
+}
+
+template<>
+inline double from_string(const std::string& s)
+{
+    double ret;
+    sscanf(s.c_str(), "%lf", &ret);
+    return ret;
+}
+
+template<>
+inline long double from_string(const std::string& s)
+{
+    long double ret;
+    sscanf(s.c_str(), "%Lf", &ret);
+    return ret;
+}
+
 template <class T>
 inline bool from_string(const std::string& s, T& t)
 {
     std::stringstream ss(s);
     return (ss >> t);
+}
+
+template <>
+inline bool from_string(const std::string& s, unsigned short int& x)
+{
+    bool ret = (1 == sscanf(s.c_str(), "%hu", &x));
+    return ret;
+}
+
+template <>
+inline bool from_string(const std::string& s, short int& x)
+{
+    bool ret = (1 == sscanf(s.c_str(), "%hd", &x));
+    return ret;
+}
+
+template <>
+inline bool from_string(const std::string& s, unsigned int& x)
+{
+    bool ret = (1 == sscanf(s.c_str(), "%u", &x));
+    return ret;
+}
+
+template <>
+inline bool from_string(const std::string& s, int& x)
+{
+    bool ret = (1 == sscanf(s.c_str(), "%d", &x));
+    return ret;
+}
+
+template <>
+inline bool from_string(const std::string& s, unsigned long int& x)
+{
+    bool ret = (1 == sscanf(s.c_str(), "%lu", &x));
+    return ret;
+}
+
+template <>
+inline bool from_string(const std::string& s, long int& x)
+{
+    bool ret = (1 == sscanf(s.c_str(), "%ld", &x));
+    return ret;
+}
+
+template <>
+inline bool from_string(const std::string& s, unsigned long long int& x)
+{
+    bool ret = (1 == sscanf(s.c_str(), "%llu", &x));
+    return ret;
+}
+
+template <>
+inline bool from_string(const std::string& s, long long int& x)
+{
+    bool ret = (1 == sscanf(s.c_str(), "%lld", &x));
+    return ret;
+}
+
+template <>
+inline bool from_string(const std::string& s, float& x)
+{
+    bool ret = (1 == sscanf(s.c_str(), "%f", &x));
+    return ret;
+}
+
+template <>
+inline bool from_string(const std::string& s, double& x)
+{
+    bool ret = (1 == sscanf(s.c_str(), "%lf", &x));
+    return ret;
+}
+
+template <>
+inline bool from_string(const std::string& s, long double& x)
+{
+    bool ret = (1 == sscanf(s.c_str(), "%Lf", &x));
+    return ret;
 }
 
 /* Special case: string -> string */
