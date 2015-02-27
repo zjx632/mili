@@ -48,7 +48,7 @@ TEST(StringUtilsTest, toupper)
 
 TEST(StringUtilsTest, to_string)
 {
-    ASSERT_EQ("123.4", to_string(123.4));
+    ASSERT_EQ("1.234000e+02", to_string(123.4));
 }
 
 TEST(StringUtilsTest, to_number)
@@ -56,6 +56,13 @@ TEST(StringUtilsTest, to_number)
     int n;
     ASSERT_FALSE(to_number("abc", n));
     ASSERT_EQ(123.4f, to_number<float>("123.4"));
+}
+
+TEST(StringUtilsTest, from_string)
+{
+    int n;
+    ASSERT_FALSE(from_string("aaaaaaa", n));
+    ASSERT_EQ(123.4f, from_string<float>("123.4"));
 }
 
 TEST(StringUtilsTest, ensure_found)
