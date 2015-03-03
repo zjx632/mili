@@ -23,6 +23,7 @@ string_utils: A minimal library with string utilities.
 #include <string>
 #include <cstring>
 #include <sstream>
+#include <limits>
 
 #include "generic_exception.h"
 
@@ -475,45 +476,97 @@ inline bool from_string(const std::string& s, T& t)
 }
 
 template <>
-inline bool from_string(const std::string& s, unsigned short int& x)
+inline bool from_string(const std::string& s, unsigned short int& t)
 {
-    bool ret = (1 == sscanf(s.c_str(), "%hu", &x));
-    return ret;
+    //checking than the string is non empty and does not start with a space or '-'
+    if (s.c_str()[0] <= 45)
+        return false;
+    else
+    {
+        char *endptr;
+        unsigned long int aux;
+        aux = strtoul(s.c_str(), &endptr, 0);
+        t = (unsigned short int)(aux);
+        return ((*endptr == 0)&&(aux <= std::numeric_limits<unsigned short int>::max()));
+    }
 }
 
 template <>
-inline bool from_string(const std::string& s, short int& x)
+inline bool from_string(const std::string& s, short int& t)
 {
-    bool ret = (1 == sscanf(s.c_str(), "%hd", &x));
-    return ret;
+    //checking than the string is non empty and does not start with a space
+    if (s.c_str()[0] <= 32)
+        return false;
+    else
+    {
+        char *endptr;
+        long int aux;
+        aux = strtol(s.c_str(), &endptr, 0);
+        t = (short int)(aux);
+        return ((*endptr == 0) && (aux <= std::numeric_limits<short int>::max()))
+               && (aux >= std::numeric_limits<short int>::min());
+    }
 }
 
 template <>
-inline bool from_string(const std::string& s, unsigned int& x)
+inline bool from_string(const std::string& s, unsigned int& t)
 {
-    bool ret = (1 == sscanf(s.c_str(), "%u", &x));
-    return ret;
+    //checking than the string is non empty and does not start with a space or '-'
+    if (s.c_str()[0] <= 45)
+        return false;
+    else
+    {
+        char *endptr;
+        unsigned long int aux;
+        aux = strtoul(s.c_str(), &endptr, 0);
+        t = (unsigned int)(aux);
+        return (*endptr == 0) && (aux <= std::numeric_limits<unsigned int>::max());
+    }
 }
 
 template <>
-inline bool from_string(const std::string& s, int& x)
+inline bool from_string(const std::string& s, int& t)
 {
-    bool ret = (1 == sscanf(s.c_str(), "%d", &x));
-    return ret;
+    //checking than the string is non empty and does not start with a space
+    if (s.c_str()[0] <= 32)
+        return false;
+    else
+    {
+        char* endptr;
+        long int aux;
+        aux = strtol(s.c_str(), &endptr, 0);
+        t = int(aux);
+        return ((*endptr == 0) && (aux <= std::numeric_limits<int>::max()))
+               && (aux >= std::numeric_limits<int>::min());
+    }
 }
 
 template <>
-inline bool from_string(const std::string& s, unsigned long int& x)
+inline bool from_string(const std::string& s, unsigned long int& t)
 {
-    bool ret = (1 == sscanf(s.c_str(), "%lu", &x));
-    return ret;
+    //checking than the string is non empty and does not start with a space or '-'
+    if (s.c_str()[0] <= 45) 
+        return false;
+    else
+    {
+        char *endptr;
+        t = strtoul(s.c_str(), &endptr, 0);
+        return (*endptr == 0);
+    }
 }
 
 template <>
-inline bool from_string(const std::string& s, long int& x)
+inline bool from_string(const std::string& s, long int& t)
 {
-    bool ret = (1 == sscanf(s.c_str(), "%ld", &x));
-    return ret;
+    //checking than the string is non empty and does not start with a space
+    if (s.c_str()[0] <= 32)
+        return false;
+    else
+    {
+        char *endptr;
+        t = strtol(s.c_str(), &endptr, 0);
+        return (*endptr == 0);
+    }
 }
 
 template <>
@@ -531,17 +584,31 @@ inline bool from_string(const std::string& s, long long int& x)
 }
 
 template <>
-inline bool from_string(const std::string& s, float& x)
+inline bool from_string(const std::string& s, float& t)
 {
-    bool ret = (1 == sscanf(s.c_str(), "%f", &x));
-    return ret;
+    //checking than the string is non empty and does not start with a space or '-'
+    if (s.c_str()[0] <= 32)
+        return false;
+    else
+    {
+        char *endptr;
+        t = strtof(s.c_str(), &endptr);
+        return (*endptr == 0);
+    }
 }
 
 template <>
-inline bool from_string(const std::string& s, double& x)
+inline bool from_string(const std::string& s, double& t)
 {
-    bool ret = (1 == sscanf(s.c_str(), "%lf", &x));
-    return ret;
+    //checking than the string is non empty and does not start with a space
+    if (s.c_str()[0] <= 32)
+        return false;
+    else
+    {
+        char *endptr;
+        t = strtod(s.c_str(), &endptr);
+        return (*endptr == 0);
+    }
 }
 
 template <>
