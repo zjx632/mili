@@ -20,6 +20,7 @@ string_utils: A minimal library with string utilities.
 #define STRING_UTILS_H
 
 #include <ctype.h>
+#include <stdio.h>
 #include <string>
 #include <cstring>
 #include <sstream>
