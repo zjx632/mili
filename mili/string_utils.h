@@ -262,7 +262,7 @@ inline bool ends_with(const S& s, const E& ending)
 
 static const unsigned int charCharAmount = 5u;
 static const unsigned int IntCharAmount = 21u;
-static const unsigned int doubleCharAmount = 25u;
+static const unsigned int doubleCharAmount = 33u;
 static const unsigned int longDoubleCharAmount = 45u;
 
 template <class Number>
@@ -349,7 +349,7 @@ template<>
 inline std::string to_string(float f)
 {
     char str[doubleCharAmount];
-    sprintf(str, "%.6e", f);
+    sprintf(str, "%.14e", f);
     std::string s(str);
     return s;
 }
@@ -358,7 +358,7 @@ template<>
 inline std::string to_string(double d)
 {
     char str[doubleCharAmount];
-    sprintf(str, "%.15e", d);
+    sprintf(str, "%.23e", d);
     std::string s(str);
     return s;
 }
