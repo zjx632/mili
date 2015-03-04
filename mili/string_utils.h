@@ -261,6 +261,7 @@ inline bool ends_with(const S& s, const E& ending)
 }
 
 static const unsigned int INT_CHAR_AMOUNT = 21u;
+static const unsigned int FLOAT_CHAR_AMOUNT = 33u;
 static const unsigned int DOUBLE_CHAR_AMOUNT = 33u;
 static const unsigned int LONG_DOUBLE_CHAR_AMOUNT = 45u;
 
@@ -347,7 +348,7 @@ inline std::string to_string(unsigned long long int a)
 template<>
 inline std::string to_string(float f)
 {
-    char cStr[DOUBLE_CHAR_AMOUNT];
+    char cStr[FLOAT_CHAR_AMOUNT];
     sprintf(cStr, "%.14e", f);
     std::string s(cStr);
     return s;
