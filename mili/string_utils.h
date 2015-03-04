@@ -20,9 +20,9 @@ string_utils: A minimal library with string utilities.
 #define STRING_UTILS_H
 
 #include <ctype.h>
-#include <stdio.h>
-#include <string>
+#include <cstdio>
 #include <cstring>
+#include <string>
 #include <sstream>
 #include <limits>
 
@@ -260,10 +260,9 @@ inline bool ends_with(const S& s, const E& ending)
         return (s.size() - position) == size(ending);
 }
 
-static const unsigned int charCharAmount = 5u;
-static const unsigned int IntCharAmount = 21u;
-static const unsigned int doubleCharAmount = 33u;
-static const unsigned int longDoubleCharAmount = 45u;
+static const unsigned int INT_CHAR_AMOUNT = 21u;
+static const unsigned int DOUBLE_CHAR_AMOUNT = 33u;
+static const unsigned int LONG_DOUBLE_CHAR_AMOUNT = 45u;
 
 template <class Number>
 inline std::string to_string(Number n)
@@ -276,99 +275,99 @@ inline std::string to_string(Number n)
 template<>
 inline std::string to_string(short int a)
 {
-    char str[IntCharAmount];
-    sprintf(str, "%hd", a);
-    std::string s(str);
+    char cStr[INT_CHAR_AMOUNT];
+    sprintf(cStr, "%hd", a);
+    std::string s(cStr);
     return s;
 }
 
 template<>
 inline std::string to_string(unsigned short int a)
 {
-    char str[IntCharAmount];
-    sprintf(str, "%hu", a);
-    std::string s(str);
+    char cStr[INT_CHAR_AMOUNT];
+    sprintf(cStr, "%hu", a);
+    std::string s(cStr);
     return s;
 }
 
 template<>
 inline std::string to_string(int a)
 {
-    char str[IntCharAmount];
-    sprintf(str, "%d", a);
-    std::string s(str);
+    char cStr[INT_CHAR_AMOUNT];
+    sprintf(cStr, "%d", a);
+    std::string s(cStr);
     return s;
 }
 
 template<>
 inline std::string to_string(unsigned int a)
 {
-    char str[IntCharAmount];
-    sprintf(str, "%u", a);
-    std::string s(str);
+    char cStr[INT_CHAR_AMOUNT];
+    sprintf(cStr, "%u", a);
+    std::string s(cStr);
     return s;
 }
 
 template<>
 inline std::string to_string(long int a)
 {
-    char str[IntCharAmount];
-    sprintf(str, "%ld", a);
-    std::string s(str);
+    char cStr[INT_CHAR_AMOUNT];
+    sprintf(cStr, "%ld", a);
+    std::string s(cStr);
     return s;
 }
 
 template<>
 inline std::string to_string(unsigned long int a)
 {
-    char str[IntCharAmount];
-    sprintf(str, "%lu", a);
-    std::string s(str);
+    char cStr[INT_CHAR_AMOUNT];
+    sprintf(cStr, "%lu", a);
+    std::string s(cStr);
     return s;
 }
 
 template<>
 inline std::string to_string(long long int a)
 {
-    char str[IntCharAmount];
-    sprintf(str, "%lld", a);
-    std::string s(str);
+    char cStr[INT_CHAR_AMOUNT];
+    sprintf(cStr, "%lld", a);
+    std::string s(cStr);
     return s;
 }
 
 template<>
 inline std::string to_string(unsigned long long int a)
 {
-    char str[IntCharAmount];
-    sprintf(str, "%llu", a);
-    std::string s(str);
+    char cStr[INT_CHAR_AMOUNT];
+    sprintf(cStr, "%llu", a);
+    std::string s(cStr);
     return s;
 }
 
 template<>
 inline std::string to_string(float f)
 {
-    char str[doubleCharAmount];
-    sprintf(str, "%.14e", f);
-    std::string s(str);
+    char cStr[DOUBLE_CHAR_AMOUNT];
+    sprintf(cStr, "%.14e", f);
+    std::string s(cStr);
     return s;
 }
 
 template<>
 inline std::string to_string(double d)
 {
-    char str[doubleCharAmount];
-    sprintf(str, "%.23e", d);
-    std::string s(str);
+    char cStr[DOUBLE_CHAR_AMOUNT];
+    sprintf(cStr, "%.23e", d);
+    std::string s(cStr);
     return s;
 }
 
 template<>
 inline std::string to_string(long double ld)
 {
-    char str[longDoubleCharAmount];
-    sprintf(str, "%.34Le", ld);
-    std::string s(str);
+    char cStr[LONG_DOUBLE_CHAR_AMOUNT];
+    sprintf(cStr, "%.34Le", ld);
+    std::string s(cStr);
     return s;
 }
 
