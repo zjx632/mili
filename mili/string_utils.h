@@ -469,6 +469,16 @@ inline long double from_string(const std::string& s)
     return ret;
 }
 
+inline bool checkStringStartSigned(const std::string& s)
+{
+    return (s.size() != 0) && (s.c_str()[0] != ' ');
+}
+
+inline bool checkStringStartUnsigned(const std::string& s)
+{
+    return (s.size() != 0) && (s.c_str()[0] != ' ') && (s.c_str()[0] != '-');
+}
+
 template <class T>
 inline bool from_string(const std::string& s, T& t)
 {
@@ -479,95 +489,85 @@ inline bool from_string(const std::string& s, T& t)
 template <>
 inline bool from_string(const std::string& s, unsigned short int& t)
 {
+    bool ret = false;
     //checking than the string is non empty and does not start with a space or '-'
-    if (s.c_str()[0] <= 45)
-        return false;
-    else
+    if (checkStringStartUnsigned(s))
     {
         char *endptr;
-        unsigned long int aux;
-        aux = strtoul(s.c_str(), &endptr, 0);
-        t = (unsigned short int)(aux);
-        return ((*endptr == 0)&&(aux <= std::numeric_limits<unsigned short int>::max()));
+        t = static_cast<unsigned short int>(strtoul(s.c_str(), &endptr, 0));
+        ret = (*endptr == 0);
     }
+    return ret;
 }
 
 template <>
 inline bool from_string(const std::string& s, short int& t)
 {
-    //checking than the string is non empty and does not start with a space
-    if (s.c_str()[0] <= 32)
-        return false;
-    else
+    bool ret = false;
+    //checking than the string is non empty and does not start with a space.
+    if (checkStringStartSigned(s))
     {
         char *endptr;
-        long int aux;
-        aux = strtol(s.c_str(), &endptr, 0);
-        t = (short int)(aux);
-        return ((*endptr == 0) && (aux <= std::numeric_limits<short int>::max()))
-               && (aux >= std::numeric_limits<short int>::min());
+        t = static_cast<short int>(strtol(s.c_str(), &endptr, 0));
+        ret = (*endptr == 0);
     }
+    return ret;
 }
 
 template <>
 inline bool from_string(const std::string& s, unsigned int& t)
 {
+    bool ret = false;
     //checking than the string is non empty and does not start with a space or '-'
-    if (s.c_str()[0] <= 45)
-        return false;
-    else
+    if (checkStringStartUnsigned(s))
     {
         char *endptr;
-        unsigned long int aux;
-        aux = strtoul(s.c_str(), &endptr, 0);
-        t = (unsigned int)(aux);
-        return (*endptr == 0) && (aux <= std::numeric_limits<unsigned int>::max());
+        t = static_cast<unsigned int>(strtoul(s.c_str(), &endptr, 0));
+        ret = (*endptr == 0);
     }
+    return ret;
 }
 
 template <>
 inline bool from_string(const std::string& s, int& t)
 {
-    //checking than the string is non empty and does not start with a space
-    if (s.c_str()[0] <= 32)
-        return false;
-    else
+    bool ret = false;
+    //checking than the string is non empty and does not start with a space.
+    if (checkStringStartSigned(s))
     {
         char* endptr;
-        long int aux;
-        aux = strtol(s.c_str(), &endptr, 0);
-        t = int(aux);
-        return ((*endptr == 0) && (aux <= std::numeric_limits<int>::max()))
-               && (aux >= std::numeric_limits<int>::min());
+        t = static_cast<int>(strtol(s.c_str(), &endptr, 0));
+        ret = (*endptr == 0);
     }
+    return ret;
 }
 
 template <>
 inline bool from_string(const std::string& s, unsigned long int& t)
 {
+    bool ret = false;
     //checking than the string is non empty and does not start with a space or '-'
-    if (s.c_str()[0] <= 45) 
-        return false;
-    else
+    if (checkStringStartUnsigned(s))
     {
         char *endptr;
         t = strtoul(s.c_str(), &endptr, 0);
-        return (*endptr == 0);
+        ret = (*endptr == 0);
     }
+    return ret;
 }
 
 template <>
 inline bool from_string(const std::string& s, long int& t)
 {
-    //checking than the string is non empty and does not start with a space
-    if (s.c_str()[0] <= 32)
-        return false;
-    else
+    bool ret = false;
+    //checking than the string is non empty and does not start with a space.
+    if (checkStringStartSigned(s))
     {
         char *endptr;
         t = strtol(s.c_str(), &endptr, 0);
-        return (*endptr == 0);
+        ret = (*endptr == 0);
     }
+    return ret;
 }
 
 template <>
@@ -587,29 +587,33 @@ inline bool from_string(const std::string& s, long long int& x)
 template <>
 inline bool from_string(const std::string& s, float& t)
 {
+    bool ret;
     //checking than the string is non empty and does not start with a space or '-'
     if (s.c_str()[0] <= 32)
-        return false;
+        ret = false;
     else
     {
         char *endptr;
         t = strtof(s.c_str(), &endptr);
-        return (*endptr == 0);
+        ret = (*endptr == 0);
     }
+    return ret;
 }
 
 template <>
 inline bool from_string(const std::string& s, double& t)
 {
+    bool ret;
     //checking than the string is non empty and does not start with a space
     if (s.c_str()[0] <= 32)
-        return false;
+        ret = false;
     else
     {
         char *endptr;
         t = strtod(s.c_str(), &endptr);
-        return (*endptr == 0);
+        ret = (*endptr == 0);
     }
+    return ret;
 }
 
 template <>
