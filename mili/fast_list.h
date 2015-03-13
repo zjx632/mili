@@ -291,9 +291,9 @@ struct MovePrevOrNextAfterDestroy
 };
 
 template < class T,
-         class ShrinkPolicy = NeverShrinkPolicy,
-         class TypeHints = typename DefaultHints<T>::Hints,
-         size_t CHUNK_SIZE = 10 >
+           class ShrinkPolicy = NeverShrinkPolicy,
+           class TypeHints = typename DefaultHints<T>::Hints,
+           size_t CHUNK_SIZE = 10 >
 class FastList
 {
     struct Node;
@@ -572,15 +572,15 @@ public:
     {
     public:
         ElementHandler()
-            : BasicHandler<Node*>(NULL)
+            : BasicHandler<Node * >(NULL)
         {}
 
         ElementHandler(Node* node)
-            : BasicHandler<Node*>(node)
+            : BasicHandler<Node * >(node)
         {}
 
         ElementHandler(const ElementHandler& other)
-            : BasicHandler<Node*>(other)
+            : BasicHandler<Node * >(other)
         {}
 
         ElementHandler& operator = (const ElementHandler& other)

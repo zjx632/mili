@@ -28,7 +28,7 @@ using namespace mili;
 TEST(ContainerUtilsTest, vector)
 {
     std::vector<int> v;
-    insert_into(v,1);
+    insert_into(v, 1);
     ASSERT_EQ(1, find(v, 1));
     ASSERT_FALSE(contains(v, 2));
 }
@@ -113,7 +113,7 @@ TEST(ContainerUtilsTest, derivedlist)
     insert_into(myList, 1);
     insert_into(myList, 2);
     insert_into(myList, 3);
-    EXPECT_EQ(true, contains(myList,1));
+    EXPECT_EQ(true, contains(myList, 1));
     EXPECT_EQ(1, find(myList, 1));
     EXPECT_EQ(1, *find(myList, 1, std::nothrow));
     EXPECT_TRUE(remove_first_from(myList, 2));
@@ -121,7 +121,7 @@ TEST(ContainerUtilsTest, derivedlist)
     EXPECT_EQ(1, myList.aboveN(1));
 }
 
-struct SpecMap: public std::map<char,int>
+struct SpecMap: public std::map<char, int>
 {
 };
 
@@ -129,11 +129,11 @@ TEST(ContainerUtilsTest, derivedMap)
 {
     SpecMap myMap;
 
-    myMap.insert(std::pair<char,int>('a',1));
-    myMap.insert(std::pair<char,int>('b',2));
-    myMap.insert(std::pair<char,int>('c',3));
-    myMap.insert(std::pair<char,int>('d',1));
-    EXPECT_EQ(true, contains(myMap,'a'));
+    myMap.insert(std::pair<char, int>('a', 1));
+    myMap.insert(std::pair<char, int>('b', 2));
+    myMap.insert(std::pair<char, int>('c', 3));
+    myMap.insert(std::pair<char, int>('d', 1));
+    EXPECT_EQ(true, contains(myMap, 'a'));
     EXPECT_EQ(1, find(myMap, 'a'));
     EXPECT_EQ(1, *find(myMap, 'a', std::nothrow));
     EXPECT_TRUE(remove_first_from(myMap, 2));
@@ -203,23 +203,23 @@ TEST_F(UMapTest, not_found)
 TEST(USetTest, general)
 {
     std::unordered_set<int> s;
-    insert_into(s,1);
-    insert_into(s,2);
+    insert_into(s, 1);
+    insert_into(s, 2);
     EXPECT_EQ(1, find(s, 1));
     EXPECT_EQ(1, *find(s, 1, std::nothrow));
     EXPECT_FALSE(contains(s, 3));
-    EXPECT_TRUE(remove_first_from(s,1));
+    EXPECT_TRUE(remove_first_from(s, 1));
 }
 
 TEST(SetTest, general)
 {
     std::set<std::string> s;
-    insert_into(s,"asd");
-    insert_into(s,"asd2");
+    insert_into(s, "asd");
+    insert_into(s, "asd2");
     EXPECT_EQ("asd", find(s, "asd"));
     EXPECT_EQ("asd", *find(s, "asd", std::nothrow));
     EXPECT_FALSE(contains(s, "asdffff"));
-    EXPECT_TRUE(remove_first_from(s,"asd"));
+    EXPECT_TRUE(remove_first_from(s, "asd"));
 }
 
 #endif
