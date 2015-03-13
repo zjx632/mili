@@ -267,7 +267,7 @@ static const unsigned int INT_CHAR_AMOUNT = 21u;
 static const unsigned int FLOAT_CHAR_AMOUNT = 33u;
 static const unsigned int DOUBLE_CHAR_AMOUNT = 33u;
 static const unsigned int LONG_DOUBLE_CHAR_AMOUNT = 45u;
-static const unsigned int SUCCESS = 1u;
+static const int SUCCESS = 1u;
 static const char SPACE_CHAR = 32;
 
 template <class Number>
