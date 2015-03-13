@@ -387,9 +387,8 @@ template<>
 inline unsigned short int from_string(const std::string& s)
 {
     unsigned short int ret;
-
     const int success = sscanf(s.c_str(), "%hu", &ret);
-    assert_throw<sscanf_failure>(success <= 0);
+    assert_throw<sscanf_failure>(success > 0);
     return ret;
 }
 
@@ -398,7 +397,7 @@ inline short int from_string(const std::string& s)
 {
     short int ret;
     const int success = sscanf(s.c_str(), "%hd", &ret);
-    assert_throw<sscanf_failure>(success <= 0);
+    assert_throw<sscanf_failure>(success > 0);
     return ret;
 }
 
@@ -407,7 +406,7 @@ inline unsigned int from_string(const std::string& s)
 {
     unsigned int ret;
     const int success = sscanf(s.c_str(), "%u", &ret);
-    assert_throw<sscanf_failure>(success <= 0);
+    assert_throw<sscanf_failure>(success > 0);
     return ret;
 }
 
@@ -416,7 +415,7 @@ inline int from_string(const std::string& s)
 {
     int ret;
     const int success = sscanf(s.c_str(), "%d", &ret);
-    assert_throw<sscanf_failure>(success <= 0);
+    assert_throw<sscanf_failure>(success > 0);
     return ret;
 }
 
@@ -425,7 +424,7 @@ inline unsigned long int from_string(const std::string& s)
 {
     unsigned long int ret;
     const int success = sscanf(s.c_str(), "%lu", &ret);
-    assert_throw<sscanf_failure>(success <= 0);
+    assert_throw<sscanf_failure>(success > 0);
     return ret;
 }
 
@@ -434,7 +433,7 @@ inline long int from_string(const std::string& s)
 {
     long int ret;
     const int success = sscanf(s.c_str(), "%ld", &ret);
-    assert_throw<sscanf_failure>(success <= 0);
+    assert_throw<sscanf_failure>(success > 0);
     return ret;
 }
 
@@ -443,7 +442,7 @@ inline unsigned long long int from_string(const std::string& s)
 {
     unsigned long long int ret;
     const int success = sscanf(s.c_str(), "%llu", &ret);
-    assert_throw<sscanf_failure>(success <= 0);
+    assert_throw<sscanf_failure>(success > 0);
     return ret;
 }
 
@@ -452,7 +451,7 @@ inline long long int from_string(const std::string& s)
 {
     long long int ret;
     const int success = sscanf(s.c_str(), "%lld", &ret);
-    assert_throw<sscanf_failure>(success <= 0);
+    assert_throw<sscanf_failure>(success > 0);
     return ret;
 }
 
@@ -469,7 +468,7 @@ inline double from_string(const std::string& s)
 {
     double ret;
     const int success = sscanf(s.c_str(), "%lf", &ret);
-    assert_throw<sscanf_failure>(success <= 0);
+    assert_throw<sscanf_failure>(success > 0);
     return ret;
 }
 
@@ -478,7 +477,7 @@ inline long double from_string(const std::string& s)
 {
     long double ret;
     const int success = sscanf(s.c_str(), "%Lf", &ret);
-    assert_throw<sscanf_failure>(success <= 0);
+    assert_throw<sscanf_failure>(success > 0);
     return ret;
 }
 
@@ -515,7 +514,6 @@ inline bool from_string(const std::string& s, unsigned short int& t)
     {
         char* endptr;
         t = static_cast<unsigned short int>(strtoul(s.c_str(), &endptr, 0));
-        std::cout << t << std::endl;
         ret = (isValidValue(endptr) || t != 0);
     }
     return ret;
@@ -530,7 +528,6 @@ inline bool from_string(const std::string& s, short int& t)
     {
         char* endptr;
         t = static_cast<short int>(strtol(s.c_str(), &endptr, 0));
-        std::cout << t << std::endl;
         ret = (isValidValue(endptr) || t != 0);
     }
     return ret;
