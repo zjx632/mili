@@ -398,7 +398,7 @@ inline short int from_string(const std::string& s)
 {
     short int ret;
     const int success = sscanf(s.c_str(), "%hd", &ret);
-    assert_throw<sscanf_failure>(success = <= 0);
+    assert_throw<sscanf_failure>(success <= 0);
     return ret;
 }
 
