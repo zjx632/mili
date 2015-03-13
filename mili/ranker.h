@@ -61,8 +61,8 @@ struct DisposalDeletePolicy
 };
 
 template < class T, SameValueBehavior Behavior = AddAfterEqual,
-         class Comp = std::less<T>,
-         class DisposalPolicy = DisposalNullPolicy<T> >
+           class Comp = std::less<T>,
+           class DisposalPolicy = DisposalNullPolicy<T> >
 class Ranker
 {
 protected:
@@ -203,9 +203,9 @@ public:
 
 
 template < class T,
-         class Comp = std::less<T>,
-         class CompEq = std::less<T>,
-         class DisposalPolicy = DisposalNullPolicy<T> >
+           class Comp = std::less<T>,
+           class CompEq = std::less<T>,
+           class DisposalPolicy = DisposalNullPolicy<T> >
 class UniqueRanker : public BaseUniqueRanker<T, Comp, CompEq, DisposalPolicy>
 {
     typedef BaseUniqueRanker<T, Comp, CompEq, DisposalPolicy> Parent;

@@ -20,11 +20,14 @@ string_utils: A minimal library with string utilities.
 #define STRING_UTILS_H
 
 #include <ctype.h>
+#include <errno.h>
 #include <cstdio>
 #include <cstring>
 #include <string>
 #include <sstream>
+#include <iostream>
 #include <limits>
+#include <climits>
 
 #include "generic_exception.h"
 
@@ -264,6 +267,8 @@ static const unsigned int INT_CHAR_AMOUNT = 21u;
 static const unsigned int FLOAT_CHAR_AMOUNT = 33u;
 static const unsigned int DOUBLE_CHAR_AMOUNT = 33u;
 static const unsigned int LONG_DOUBLE_CHAR_AMOUNT = 45u;
+static const unsigned int SUCCESS = 1u;
+static const char SPACE_CHAR = 32;
 
 template <class Number>
 inline std::string to_string(Number n)
@@ -277,99 +282,88 @@ template<>
 inline std::string to_string(short int a)
 {
     char cStr[INT_CHAR_AMOUNT];
-    sprintf(cStr, "%hd", a);
-    std::string s(cStr);
-    return s;
+    snprintf(cStr, INT_CHAR_AMOUNT, "%hd", a);
+    return cStr;
 }
 
 template<>
 inline std::string to_string(unsigned short int a)
 {
     char cStr[INT_CHAR_AMOUNT];
-    sprintf(cStr, "%hu", a);
-    std::string s(cStr);
-    return s;
+    snprintf(cStr, INT_CHAR_AMOUNT, "%hu", a);
+    return cStr;
 }
 
 template<>
 inline std::string to_string(int a)
 {
     char cStr[INT_CHAR_AMOUNT];
-    sprintf(cStr, "%d", a);
-    std::string s(cStr);
-    return s;
+    snprintf(cStr, INT_CHAR_AMOUNT, "%d", a);
+    return cStr;
 }
 
 template<>
 inline std::string to_string(unsigned int a)
 {
     char cStr[INT_CHAR_AMOUNT];
-    sprintf(cStr, "%u", a);
-    std::string s(cStr);
-    return s;
+    snprintf(cStr, INT_CHAR_AMOUNT, "%u", a);
+    return cStr;
 }
 
 template<>
 inline std::string to_string(long int a)
 {
     char cStr[INT_CHAR_AMOUNT];
-    sprintf(cStr, "%ld", a);
-    std::string s(cStr);
-    return s;
+    snprintf(cStr, INT_CHAR_AMOUNT, "%ld", a);
+    return cStr;
 }
 
 template<>
 inline std::string to_string(unsigned long int a)
 {
     char cStr[INT_CHAR_AMOUNT];
-    sprintf(cStr, "%lu", a);
-    std::string s(cStr);
-    return s;
+    snprintf(cStr, INT_CHAR_AMOUNT, "%lu", a);
+    return cStr;
 }
 
 template<>
 inline std::string to_string(long long int a)
 {
     char cStr[INT_CHAR_AMOUNT];
-    sprintf(cStr, "%lld", a);
-    std::string s(cStr);
-    return s;
+    snprintf(cStr, INT_CHAR_AMOUNT, "%lld", a);
+    return cStr;
 }
 
 template<>
 inline std::string to_string(unsigned long long int a)
 {
     char cStr[INT_CHAR_AMOUNT];
-    sprintf(cStr, "%llu", a);
-    std::string s(cStr);
-    return s;
+    snprintf(cStr, INT_CHAR_AMOUNT, "%llu", a);
+    return cStr;
 }
 
 template<>
 inline std::string to_string(float f)
 {
     char cStr[FLOAT_CHAR_AMOUNT];
-    sprintf(cStr, "%.14e", f);
-    std::string s(cStr);
-    return s;
+    snprintf(cStr, FLOAT_CHAR_AMOUNT, "%.14e", f);
+    return cStr;
 }
 
 template<>
 inline std::string to_string(double d)
 {
     char cStr[DOUBLE_CHAR_AMOUNT];
-    sprintf(cStr, "%.23e", d);
-    std::string s(cStr);
-    return s;
+    snprintf(cStr, DOUBLE_CHAR_AMOUNT, "%.23e", d);
+    return cStr;
 }
 
 template<>
 inline std::string to_string(long double ld)
 {
     char cStr[LONG_DOUBLE_CHAR_AMOUNT];
-    sprintf(cStr, "%.34Le", ld);
-    std::string s(cStr);
-    return s;
+    snprintf(cStr, LONG_DOUBLE_CHAR_AMOUNT, "%.34Le", ld);
+    return cStr;
 }
 
 template <class T>
@@ -381,11 +375,20 @@ inline T from_string(const std::string& s)
     return t;
 }
 
+class StringUtilsExceptionHierarchy {};
+
+typedef GenericException <StringUtilsExceptionHierarchy> StringUtilsException;
+
+DEFINE_SPECIFIC_EXCEPTION_TEXT(sscanf_failure,
+                               StringUtilsException,
+                               "Matching failure in sscanf.");
+
 template<>
 inline unsigned short int from_string(const std::string& s)
 {
     unsigned short int ret;
     sscanf(s.c_str(), "%hu", &ret);
+    assert_throw<sscanf_failure>(ret <= 0);
     return ret;
 }
 
@@ -394,6 +397,7 @@ inline short int from_string(const std::string& s)
 {
     short int ret;
     sscanf(s.c_str(), "%hd", &ret);
+    assert_throw<sscanf_failure>(ret <= 0);
     return ret;
 }
 
@@ -402,6 +406,7 @@ inline unsigned int from_string(const std::string& s)
 {
     unsigned int ret;
     sscanf(s.c_str(), "%u", &ret);
+    assert_throw<sscanf_failure>(ret <= 0);
     return ret;
 }
 
@@ -410,6 +415,7 @@ inline int from_string(const std::string& s)
 {
     int ret;
     sscanf(s.c_str(), "%d", &ret);
+    assert_throw<sscanf_failure>(ret <= 0);
     return ret;
 }
 
@@ -418,6 +424,7 @@ inline unsigned long int from_string(const std::string& s)
 {
     unsigned long int ret;
     sscanf(s.c_str(), "%lu", &ret);
+    assert_throw<sscanf_failure>(ret <= 0);
     return ret;
 }
 
@@ -426,6 +433,7 @@ inline long int from_string(const std::string& s)
 {
     long int ret;
     sscanf(s.c_str(), "%ld", &ret);
+    assert_throw<sscanf_failure>(ret <= 0);
     return ret;
 }
 
@@ -434,6 +442,7 @@ inline unsigned long long int from_string(const std::string& s)
 {
     unsigned long long int ret;
     sscanf(s.c_str(), "%llu", &ret);
+    assert_throw<sscanf_failure>(ret <= 0);
     return ret;
 }
 
@@ -442,6 +451,7 @@ inline long long int from_string(const std::string& s)
 {
     long long int ret;
     sscanf(s.c_str(), "%lld", &ret);
+    assert_throw<sscanf_failure>(ret <= 0);
     return ret;
 }
 
@@ -458,6 +468,7 @@ inline double from_string(const std::string& s)
 {
     double ret;
     sscanf(s.c_str(), "%lf", &ret);
+    assert_throw<sscanf_failure>(ret <= 0);
     return ret;
 }
 
@@ -466,17 +477,20 @@ inline long double from_string(const std::string& s)
 {
     long double ret;
     sscanf(s.c_str(), "%Lf", &ret);
+    assert_throw<sscanf_failure>(ret <= 0);
     return ret;
 }
 
 inline bool checkStringStartSigned(const std::string& s)
 {
-    return (s.size() != 0) && (s.c_str()[0] != ' ');
+    const char* cStr = s.c_str();
+    return (s.size() > 0) && (cStr[0] != ' ');
 }
 
 inline bool checkStringStartUnsigned(const std::string& s)
 {
-    return (s.size() != 0) && (s.c_str()[0] != ' ') && (s.c_str()[0] != '-');
+    const char* cStr = s.c_str();
+    return (s.size() > 0) && (cStr[0] != ' ') && (cStr[0] != '-');
 }
 
 template <class T>
@@ -486,6 +500,11 @@ inline bool from_string(const std::string& s, T& t)
     return (ss >> t);
 }
 
+inline bool isValidValue(char* endptr)
+{
+    return endptr == NULL;
+}
+
 template <>
 inline bool from_string(const std::string& s, unsigned short int& t)
 {
@@ -493,9 +512,10 @@ inline bool from_string(const std::string& s, unsigned short int& t)
     //checking than the string is non empty and does not start with a space or '-'
     if (checkStringStartUnsigned(s))
     {
-        char *endptr;
+        char* endptr;
         t = static_cast<unsigned short int>(strtoul(s.c_str(), &endptr, 0));
-        ret = (*endptr == 0);
+        std::cout << t << std::endl;
+        ret = (isValidValue(endptr) || t != 0);
     }
     return ret;
 }
@@ -507,9 +527,10 @@ inline bool from_string(const std::string& s, short int& t)
     //checking than the string is non empty and does not start with a space.
     if (checkStringStartSigned(s))
     {
-        char *endptr;
+        char* endptr;
         t = static_cast<short int>(strtol(s.c_str(), &endptr, 0));
-        ret = (*endptr == 0);
+        std::cout << t << std::endl;
+        ret = (isValidValue(endptr) || t != 0);
     }
     return ret;
 }
@@ -521,9 +542,9 @@ inline bool from_string(const std::string& s, unsigned int& t)
     //checking than the string is non empty and does not start with a space or '-'
     if (checkStringStartUnsigned(s))
     {
-        char *endptr;
+        char* endptr;
         t = static_cast<unsigned int>(strtoul(s.c_str(), &endptr, 0));
-        ret = (*endptr == 0);
+        ret = (isValidValue(endptr) || t != 0);
     }
     return ret;
 }
@@ -537,7 +558,7 @@ inline bool from_string(const std::string& s, int& t)
     {
         char* endptr;
         t = static_cast<int>(strtol(s.c_str(), &endptr, 0));
-        ret = (*endptr == 0);
+        ret = (isValidValue(endptr) || t != 0);
     }
     return ret;
 }
@@ -549,9 +570,9 @@ inline bool from_string(const std::string& s, unsigned long int& t)
     //checking than the string is non empty and does not start with a space or '-'
     if (checkStringStartUnsigned(s))
     {
-        char *endptr;
+        char* endptr;
         t = strtoul(s.c_str(), &endptr, 0);
-        ret = (*endptr == 0);
+        ret = (isValidValue(endptr) || t != 0);
     }
     return ret;
 }
@@ -563,9 +584,9 @@ inline bool from_string(const std::string& s, long int& t)
     //checking than the string is non empty and does not start with a space.
     if (checkStringStartSigned(s))
     {
-        char *endptr;
+        char* endptr;
         t = strtol(s.c_str(), &endptr, 0);
-        ret = (*endptr == 0);
+        ret = (isValidValue(endptr) || t != 0);
     }
     return ret;
 }
@@ -573,29 +594,36 @@ inline bool from_string(const std::string& s, long int& t)
 template <>
 inline bool from_string(const std::string& s, unsigned long long int& x)
 {
-    bool ret = (1 == sscanf(s.c_str(), "%llu", &x));
+
+    bool ret = (SUCCESS == sscanf(s.c_str(), "%llu", &x));
     return ret;
 }
 
 template <>
 inline bool from_string(const std::string& s, long long int& x)
 {
-    bool ret = (1 == sscanf(s.c_str(), "%lld", &x));
+    bool ret = (SUCCESS == sscanf(s.c_str(), "%lld", &x));
     return ret;
+}
+
+inline bool checkValidString(const std::string& s)
+{
+    const char* cStr = s.c_str();
+    return cStr[0] > SPACE_CHAR;
 }
 
 template <>
 inline bool from_string(const std::string& s, float& t)
 {
-    bool ret;
+    bool ret = false;
     //checking than the string is non empty and does not start with a space or '-'
-    if (s.c_str()[0] <= 32)
-        ret = false;
+    if (checkValidString(s))
+        ret = true;
     else
     {
-        char *endptr;
+        char* endptr;
         t = strtof(s.c_str(), &endptr);
-        ret = (*endptr == 0);
+        ret = isValidValue(endptr);
     }
     return ret;
 }
@@ -603,15 +631,13 @@ inline bool from_string(const std::string& s, float& t)
 template <>
 inline bool from_string(const std::string& s, double& t)
 {
-    bool ret;
+    bool ret = false;
     //checking than the string is non empty and does not start with a space
-    if (s.c_str()[0] <= 32)
-        ret = false;
-    else
+    if (s.c_str()[0] > SPACE_CHAR)
     {
-        char *endptr;
+        char* endptr;
         t = strtod(s.c_str(), &endptr);
-        ret = (*endptr == 0);
+        ret = isValidValue(endptr);
     }
     return ret;
 }
@@ -619,7 +645,7 @@ inline bool from_string(const std::string& s, double& t)
 template <>
 inline bool from_string(const std::string& s, long double& x)
 {
-    bool ret = (1 == sscanf(s.c_str(), "%Lf", &x));
+    bool ret = (SUCCESS == sscanf(s.c_str(), "%Lf", &x));
     return ret;
 }
 
