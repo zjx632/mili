@@ -46,17 +46,53 @@ TEST(StringUtilsTest, toupper)
     ASSERT_EQ("HELLO WORLD!", toupper("Hello World!"));
 }
 
-// TEST(StringUtilsTest, to_string)
-// {
-//     ASSERT_EQ("1.234000e+02", to_string(123.4));
-// }
+/** to_string to short int */
+TEST(StringUtilsTest, to_stringSInt)
+{
+    ASSERT_EQ("-100", to_string(-100));
+}
 
-// TEST(StringUtilsTest, to_number)
-// {
-//     int n;
-//     ASSERT_FALSE(to_number("abc", n));
-//     ASSERT_EQ(123.4f, to_number<float>("123.4"));
-// }
+/** to_string to unsigned short int */
+TEST(StringUtilsTest, to_stringUSInt)
+{
+    ASSERT_EQ("62523", to_string(62523));
+}
+
+/** to_string to int */
+TEST(StringUtilsTest, to_stringInt)
+{
+    ASSERT_EQ("-2150332", to_string(-2150332));
+}
+
+/** to_string to unsigned int */
+TEST(StringUtilsTest, to_stringUInt)
+{
+    ASSERT_EQ("2150332", to_string(2150332));
+}
+
+/** to_string to long int */
+TEST(StringUtilsTest, to_stringLInt)
+{
+    ASSERT_EQ("-1235623", to_string(-1235623));
+}
+
+/** to_string to unsigned long int */
+TEST(StringUtilsTest, to_stringUlInt)
+{
+    ASSERT_EQ("-1235623", to_string(-1235623));
+}
+
+/** to_string to long long int */
+TEST(StringUtilsTest, to_stringLlInt)
+{
+    ASSERT_EQ("-9223372036854", to_string(-9223372036854));
+}
+
+/** to_string to unsigned long long int */
+TEST(StringUtilsTest, to_stringUllInt)
+{
+    ASSERT_EQ("9223372036854", to_string(9223372036854));
+}
 
 /** from_string to unsigned short int */
 
@@ -110,6 +146,8 @@ TEST(StringUtilsTest, from_string_ui_negative)
 {
     unsigned int uInt;
     ASSERT_FALSE(from_string("-10", uInt));
+    const unsigned int ui = from_string<unsigned int>("124");
+    ASSERT_EQ(124u, ui);
 }
 
 TEST(StringUtilsTest, from_string_ui_empty)

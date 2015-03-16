@@ -73,7 +73,8 @@ struct CurriedOperation
 struct CurriedAdder : public CurriedOperation
 {
     CurriedAdder(int x): CurriedOperation(x) {};
-    virtual int binaryOperation(int x) {
+    virtual int binaryOperation(int x)
+    {
         return _fixedArg + x;
     };
 };
@@ -82,7 +83,8 @@ REGISTER_FACTORIZABLE_CLASS_WITH_ARG(CurriedOperation, CurriedAdder, std::string
 struct CurriedMultiplication : public CurriedOperation
 {
     CurriedMultiplication(int x): CurriedOperation(x) {};
-    virtual int binaryOperation(int x) {
+    virtual int binaryOperation(int x)
+    {
         return _fixedArg * x;
     };
 };
