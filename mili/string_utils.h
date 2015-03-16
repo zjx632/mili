@@ -20,14 +20,12 @@ string_utils: A minimal library with string utilities.
 #define STRING_UTILS_H
 
 #include <ctype.h>
-#include <errno.h>
 #include <cstdio>
 #include <cstring>
 #include <string>
 #include <sstream>
 #include <iostream>
 #include <limits>
-#include <climits>
 
 #include "generic_exception.h"
 
@@ -267,7 +265,7 @@ static const unsigned int INT_CHAR_AMOUNT = 21u;
 static const unsigned int FLOAT_CHAR_AMOUNT = 33u;
 static const unsigned int DOUBLE_CHAR_AMOUNT = 33u;
 static const unsigned int LONG_DOUBLE_CHAR_AMOUNT = 45u;
-static const int SUCCESS = 1u;
+static const int SUCCESS = 1;
 static const char SPACE_CHAR = 32;
 
 template <class Number>
@@ -459,7 +457,8 @@ template<>
 inline float from_string(const std::string& s)
 {
     float ret;
-    sscanf(s.c_str(), "%f", &ret);
+    const int success = sscanf(s.c_str(), "%f", &ret);
+    assert_throw<sscanf_failure>(success > 0);
     return ret;
 }
 
