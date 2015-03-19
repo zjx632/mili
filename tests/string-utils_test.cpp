@@ -46,194 +46,209 @@ TEST(StringUtilsTest, toupper)
     ASSERT_EQ("HELLO WORLD!", toupper("Hello World!"));
 }
 
-/** to_string to short int */
-TEST(StringUtilsTest, to_stringSInt)
+/** to_string short int */
+TEST(StringUtilsTest, to_string_sInt)
 {
-    ASSERT_EQ("-100", to_string(-100));
+    ASSERT_EQ("123654", to_string(123654));
 }
 
-/** to_string to unsigned short int */
-TEST(StringUtilsTest, to_stringUSInt)
+TEST(StringUtilsTest, to_string_sIntNegative)
 {
-    ASSERT_EQ("62523", to_string(62523));
+    ASSERT_EQ("-123654", to_string(-123654));
 }
 
-/** to_string to int */
-TEST(StringUtilsTest, to_stringInt)
+/** to_string unsigned short int */
+TEST(StringUtilsTest, to_string_uSInt)
 {
-    ASSERT_EQ("-2150332", to_string(-2150332));
+    ASSERT_EQ("65535", to_string(65535));
 }
 
-/** to_string to unsigned int */
-TEST(StringUtilsTest, to_stringUInt)
+/** to_string int */
+TEST(StringUtilsTest, to_string_Int)
 {
-    ASSERT_EQ("2150332", to_string(2150332));
+    ASSERT_EQ("2147563", to_string(2147563));
 }
 
-/** to_string to long int */
-TEST(StringUtilsTest, to_stringLInt)
+TEST(StringUtilsTest, to_string_IntNegative)
 {
-    ASSERT_EQ("-1235623", to_string(-1235623));
+    ASSERT_EQ("-2147563", to_string(-2147563));
 }
 
-/** to_string to unsigned long int */
-TEST(StringUtilsTest, to_stringUlInt)
+/** to_string unsigned int */
+TEST(StringUtilsTest, to_string_uInt)
 {
-    ASSERT_EQ("-1235623", to_string(-1235623));
+    ASSERT_EQ("2147561", to_string(2147561));
 }
 
-/** to_string to long long int */
-TEST(StringUtilsTest, to_stringLlInt)
+/** to_string long int */
+TEST(StringUtilsTest, to_string_lInt)
 {
-    ASSERT_EQ("-9223372036854", to_string(-9223372036854));
+    ASSERT_EQ("2147999", to_string(2147999));
 }
 
-/** to_string to unsigned long long int */
-TEST(StringUtilsTest, to_stringUllInt)
+TEST(StringUtilsTest, to_string_lIntNegative)
 {
-    ASSERT_EQ("9223372036854", to_string(9223372036854));
+    ASSERT_EQ("-2147999", to_string(-2147999));
+}
+
+/** to_string unsigned long int */
+TEST(StringUtilsTest, to_string_ulInt)
+{
+    ASSERT_EQ("2147483647", to_string(2147483647));
+}
+
+/** to_string long long int */
+TEST(StringUtilsTest, to_string_llInt)
+{
+    ASSERT_EQ("9223372036854775807", to_string(9223372036854775807));
+}
+
+TEST(StringUtilsTest, to_string_llIntNegative)
+{
+    ASSERT_EQ("-9223372036854775807", to_string(-9223372036854775807));
+}
+
+/** to_string unsigned long long int */
+TEST(StringUtilsTest, to_string_ullInt)
+{
+    ASSERT_EQ("9223372036854775805", to_string(9223372036854775805));
 }
 
 /** from_string to unsigned short int */
-
-TEST(StringUtilsTest, from_string_usi_negative)
+TEST(StringUtilsTest, from_string_usi_invalide)
 {
     unsigned short int usInt;
     ASSERT_FALSE(from_string("-15", usInt));
-}
-
-TEST(StringUtilsTest, from_string_usi_empty)
-{
-    unsigned short int usInt;
     ASSERT_FALSE(from_string("", usInt));
-}
-
-TEST(StringUtilsTest, from_string_usi_garbage)
-{
-    unsigned short int usInt;
     ASSERT_FALSE(from_string("aaaaaaaaaa", usInt));
+    ASSERT_THROW(from_string<unsigned short int>("asdasd"), SscanfFailure);
+    ASSERT_THROW(from_string<unsigned short int>(""), SscanfFailure);
 }
 
 TEST(StringUtilsTest, from_string_usi_valide)
 {
     unsigned short int usInt;
     ASSERT_TRUE(from_string("15", usInt));
+    ASSERT_NO_THROW(from_string<unsigned short int>("15"));
 }
 
 /** from_string to short int */
-
 TEST(StringUtilsTest, from_string_si_empty)
 {
     short int sInt;
     ASSERT_FALSE(from_string("", sInt));
-}
-
-TEST(StringUtilsTest, from_string_si_garbage)
-{
-    short int sInt;
     ASSERT_FALSE(from_string("aaaaaaaaaa", sInt));
+    ASSERT_THROW(from_string<short int>("asdasd"), SscanfFailure);
+    ASSERT_THROW(from_string<short int>(""), SscanfFailure);
 }
 
 TEST(StringUtilsTest, from_string_si_valide)
 {
     short int sInt;
     ASSERT_TRUE(from_string("15", sInt));
+    ASSERT_NO_THROW(from_string<short int>("32365"));
 }
 
 /** from_string to unsigned int */
-
-TEST(StringUtilsTest, from_string_ui_negative)
+TEST(StringUtilsTest, from_string_ui_invalide)
 {
     unsigned int uInt;
     ASSERT_FALSE(from_string("-10", uInt));
-    const unsigned int ui = from_string<unsigned int>("124");
-    ASSERT_EQ(124u, ui);
-}
-
-TEST(StringUtilsTest, from_string_ui_empty)
-{
-    unsigned int uInt;
     ASSERT_FALSE(from_string("", uInt));
-}
-
-TEST(StringUtilsTest, from_string_ui_garbage)
-{
-    unsigned int uInt;
     ASSERT_FALSE(from_string("asdfasfas", uInt));
+    ASSERT_THROW(from_string<unsigned int>("bgcdbcdvb"), SscanfFailure);
+    ASSERT_THROW(from_string<unsigned int>(""), SscanfFailure);
 }
 
 TEST(StringUtilsTest, from_string_ui_valide)
 {
     unsigned int uInt;
     ASSERT_TRUE(from_string("20", uInt));
+    ASSERT_NO_THROW(from_string<unsigned int>("1236542"));
 }
 
 /** from_string to int */
-
-TEST(StringUtilsTest, from_string_i_empty)
+TEST(StringUtilsTest, from_string_i_invalide)
 {
     int i;
     ASSERT_FALSE(from_string("", i));
-}
-
-TEST(StringUtilsTest, from_string_i_garbage)
-{
-    int i;
     ASSERT_FALSE(from_string("qweqwewq", i));
+    ASSERT_THROW(from_string<int>("ghkhjl"), SscanfFailure);
+    ASSERT_THROW(from_string<int>(""), SscanfFailure);
 }
 
 TEST(StringUtilsTest, from_string_i_valide)
 {
     int i;
     ASSERT_TRUE(from_string("32", i));
+    ASSERT_NO_THROW(from_string<int>("21365465"));
 }
 
 /** from_string to unsigned long int */
-
-TEST(StringUtilsTest, from_string_uli_negative)
-{
-    unsigned long int ulInt;
-    ASSERT_FALSE(from_string("-3", ulInt));
-}
-
 TEST(StringUtilsTest, from_string_uli_empty)
 {
     unsigned long int ulInt;
-    ASSERT_FALSE(from_string("", ulInt));
-}
-
-TEST(StringUtilsTest, from_string_uli_garbage)
-{
-    unsigned long int ulInt;
+    ASSERT_FALSE(from_string("-3", ulInt));
     ASSERT_FALSE(from_string("qweqweqw", ulInt));
+    ASSERT_FALSE(from_string("", ulInt));
+    ASSERT_THROW(from_string<unsigned long int>("ghkhjk"), SscanfFailure);
+    ASSERT_THROW(from_string<unsigned long int>(""), SscanfFailure);
 }
 
 TEST(StringUtilsTest, from_string_uli_valide)
 {
     unsigned long int ulInt;
     ASSERT_TRUE(from_string("98", ulInt));
+    ASSERT_NO_THROW(from_string<unsigned long int>("22365421"));
 }
 
 /** from_string to long int */
-
-TEST(StringUtilsTest, from_string_li_empty)
-{
-    long int lInt;
-    ASSERT_FALSE(from_string("", lInt));
-}
-
 TEST(StringUtilsTest, from_string_li_garbage)
 {
     long int lInt;
+    ASSERT_FALSE(from_string("", lInt));
     ASSERT_FALSE(from_string("klhklh", lInt));
+    ASSERT_THROW(from_string<long int>("asdasd"), SscanfFailure);
+    ASSERT_THROW(from_string<long int>(""), SscanfFailure);
 }
 
 TEST(StringUtilsTest, from_string_li_valide)
 {
     long int lInt;
     ASSERT_TRUE(from_string("56", lInt));
+    ASSERT_NO_THROW(from_string<long int>("12354863"));
 }
 
+TEST(StringUtilsTest, from_string_double)
+{
+    double d;
+    ASSERT_TRUE(from_string("132048.988", d));
+    from_string("132048.988", d);
+    ASSERT_DOUBLE_EQ(132048.988, d);
+    double d1;
+    from_string("-62.235643", d1);
+    ASSERT_DOUBLE_EQ(-62.235643, d1);
+
+}
+
+TEST(StringUtilsTest, from_string_long_double)
+{
+    long double d;
+    ASSERT_TRUE(from_string("132048.988654", d));
+    from_string("132048.988654", d);
+    ASSERT_DOUBLE_EQ(132048.988654, d);
+    long double d1;
+    from_string("-62.235643", d1);
+    ASSERT_DOUBLE_EQ(-62.235643, d1);
+}
+
+TEST(StringUtilsTest, from_string_float_valide)
+{
+    float f;
+    ASSERT_TRUE(from_string("6410.671356", f));
+    from_string("6410.671356", f);
+    ASSERT_FLOAT_EQ(6410.671356, f);
+}
 
 TEST(StringUtilsTest, ensure_found)
 {
