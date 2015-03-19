@@ -27,8 +27,6 @@ string_utils: A minimal library with string utilities.
 #include <sstream>
 #include <iostream>
 #include <limits>
-#include <climits>
-#include <iomanip>
 
 #include "generic_exception.h"
 
@@ -269,7 +267,6 @@ static const unsigned int FLOAT_CHAR_AMOUNT = 33u;
 static const unsigned int DOUBLE_CHAR_AMOUNT = 33u;
 static const unsigned int LONG_DOUBLE_CHAR_AMOUNT = 45u;
 static const int SUCCESS = 1u;
-static const char SPACE_CHAR = 32;
 
 template <class Number>
 inline std::string to_string(Number n)
@@ -347,6 +344,8 @@ template<>
 inline std::string to_string(float f)
 {
     char cStr[FLOAT_CHAR_AMOUNT];
+    // %.14e is the maximum amount of decimal if
+    // the number is written in scientific notation.
     snprintf(cStr, FLOAT_CHAR_AMOUNT, "%.14e", f);
     return cStr;
 }
@@ -355,6 +354,8 @@ template<>
 inline std::string to_string(double d)
 {
     char cStr[DOUBLE_CHAR_AMOUNT];
+    // %.23e is the maximum amount of decimal if
+    // the number is written in scientific notation
     snprintf(cStr, DOUBLE_CHAR_AMOUNT, "%.23e", d);
     return cStr;
 }
@@ -363,6 +364,9 @@ template<>
 inline std::string to_string(long double ld)
 {
     char cStr[LONG_DOUBLE_CHAR_AMOUNT];
+    // %.34Le is the maximum amount of decimal if
+    // the number is written in scientific notation that
+    // snprintf supports.
     snprintf(cStr, LONG_DOUBLE_CHAR_AMOUNT, "%.34Le", ld);
     return cStr;
 }
@@ -605,38 +609,20 @@ inline bool from_string(const std::string& s, long long int& x)
     return ret;
 }
 
-inline bool checkValidString(const std::string& s)
+template <>
+inline bool from_string(const std::string& s, float& f)
 {
-    const char* cStr = s.c_str();
-    return cStr[0] > SPACE_CHAR;
+    errno = 0;
+    f = strtof(s.c_str(), NULL);
+    return errno == 0;
 }
 
 template <>
-inline bool from_string(const std::string& s, float& t)
+inline bool from_string(const std::string& s, double& d)
 {
-    bool ret = false;
-    //checking than the string is non empty and does not start with a space
-    if (s.c_str()[0] > 32)
-    {
-        char* endptr;
-        t = strtof(s.c_str(), &endptr);
-        ret = (isValidValue(endptr) || (t != 0));
-    }
-    return ret;
-}
-
-template <>
-inline bool from_string(const std::string& s, double& t)
-{
-    bool ret = false;
-    //checking than the string is non empty and does not start with a space
-    if (s.c_str()[0] > 32)
-    {
-        char* endptr;
-        t = strtod(s.c_str(), &endptr);
-        ret = (isValidValue(endptr) || (t != 0));
-    }
-    return ret;
+    errno = 0;
+    d = strtod(s.c_str(), NULL);
+    return errno == 0;
 }
 
 template <>
