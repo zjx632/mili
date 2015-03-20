@@ -114,122 +114,161 @@ TEST(StringUtilsTest, to_string_ullInt)
     ASSERT_EQ("9223372036854775805", to_string(9223372036854775805));
 }
 
-/** from_string to unsigned short int */
-TEST(StringUtilsTest, from_string_usi_invalide)
+template <class T>
+static void executeUnsignedIntegersBasicTests()
 {
-    unsigned short int usInt;
-    ASSERT_FALSE(from_string("-15", usInt));
-    ASSERT_FALSE(from_string("", usInt));
-    ASSERT_FALSE(from_string("aaaaaaaaaa", usInt));
-    ASSERT_THROW(from_string<unsigned short int>("asdasd"), SscanfFailure);
-    ASSERT_THROW(from_string<unsigned short int>(""), SscanfFailure);
+    T value;
+    EXPECT_FALSE(from_string("-3", value));
+    EXPECT_FALSE(from_string("3234.3", value));
+    EXPECT_FALSE(from_string("3234SD", value));
+    EXPECT_FALSE(from_string("qweqweqw", value));
+    EXPECT_FALSE(from_string("", value));
+
+    EXPECT_TRUE(from_string("23424", value));
+    EXPECT_EQ(23424, value);
+    EXPECT_TRUE(from_string("  786", value));
+    EXPECT_EQ(786, value);
+    EXPECT_TRUE(from_string("0", value));
+    EXPECT_EQ(0, value);
+
+    EXPECT_THROW(value = from_string<T>("-3"), ConversionFailed);
+    EXPECT_THROW(value = from_string<T>("3234.3"), ConversionFailed);
+    EXPECT_THROW(value = from_string<T>("3234SD"), ConversionFailed);
+    EXPECT_THROW(value = from_string<T>("qweqweqw"), ConversionFailed);
+    EXPECT_THROW(value = from_string<T>(""), ConversionFailed);
+
+    EXPECT_NO_THROW(value = from_string<T>("23424"));
+    EXPECT_EQ(23424, value);
+    EXPECT_NO_THROW(value = from_string<T>(" 243"));
+    EXPECT_EQ(243, value);
+    EXPECT_NO_THROW(value = from_string<T>("0"));
+    EXPECT_EQ(0, value);
 }
 
-TEST(StringUtilsTest, from_string_usi_valide)
+template <class T>
+static void executeSignedIntegersBasicTests()
 {
-    unsigned short int usInt;
-    ASSERT_TRUE(from_string("15", usInt));
-    ASSERT_NO_THROW(from_string<unsigned short int>("15"));
+    T value;
+    EXPECT_FALSE(from_string("", value));
+    EXPECT_FALSE(from_string("234DF", value));
+    EXPECT_FALSE(from_string("234.435", value));
+    EXPECT_FALSE(from_string("qweqwewq", value));
+    EXPECT_TRUE(from_string("234", value));
+    EXPECT_EQ(234, value);
+    EXPECT_TRUE(from_string("-5004", value));
+    EXPECT_EQ(-5004, value);
+    EXPECT_TRUE(from_string("0", value));
+    EXPECT_EQ(0, value);
+
+    EXPECT_THROW(value = from_string<T>(""), ConversionFailed);
+    EXPECT_THROW(value = from_string<T>("234DF"), ConversionFailed);
+    EXPECT_THROW(value = from_string<T>("234.435"), ConversionFailed);
+    EXPECT_THROW(value = from_string<T>("qweqwewq"), ConversionFailed);
+
+    EXPECT_NO_THROW(value = from_string<T>("234"));
+    EXPECT_EQ(234, value);
+    EXPECT_NO_THROW(value = from_string<T>("-5004"));
+    EXPECT_EQ(-5004, value);
+    EXPECT_NO_THROW(value = from_string<T>("0"));
+    EXPECT_EQ(0, value);
 }
 
-/** from_string to short int */
-TEST(StringUtilsTest, from_string_si_empty)
+template <class T>
+static void executeFloatPointBasicTests()
 {
-    short int sInt;
-    ASSERT_FALSE(from_string("", sInt));
-    ASSERT_FALSE(from_string("aaaaaaaaaa", sInt));
-    ASSERT_THROW(from_string<short int>("asdasd"), SscanfFailure);
-    ASSERT_THROW(from_string<short int>(""), SscanfFailure);
+    T value;
+    EXPECT_FALSE(from_string("6410..671356", value));
+    EXPECT_FALSE(from_string("6410.671DD", value));
+    EXPECT_FALSE(from_string("-6410.671DD", value));
+    EXPECT_FALSE(from_string("", value));
+    EXPECT_FALSE(from_string("ADSsaf", value));
+
+    EXPECT_TRUE(from_string("6410.671356", value));
+    EXPECT_FLOAT_EQ(6410.671356f, value);
+
+    EXPECT_TRUE(from_string("0.0", value));
+    EXPECT_FLOAT_EQ(0.0f, value);
+
+    EXPECT_TRUE(from_string("-45466.45656", value));
+    EXPECT_FLOAT_EQ(-45466.45656f, value);
+
+    EXPECT_THROW(value = from_string<T>("6410..671356"), ConversionFailed);
+    EXPECT_THROW(value = from_string<T>("6410.671DD"), ConversionFailed);
+    EXPECT_THROW(value = from_string<T>("-6410.671DD"), ConversionFailed);
+    EXPECT_THROW(value = from_string<T>(""), ConversionFailed);
+    EXPECT_THROW(value = from_string<T>("ADSsaf"), ConversionFailed);
+
+    EXPECT_NO_THROW(value = from_string<T>("6410.671356"));
+    EXPECT_FLOAT_EQ(6410.671356f, value);
+
+    EXPECT_NO_THROW(value = from_string<T>("0.0"));
+    EXPECT_FLOAT_EQ(0.0f, value);
+
+    EXPECT_NO_THROW(value = from_string<T>("-45466.45656"));
+    EXPECT_FLOAT_EQ(-45466.45656f, value);
 }
 
-TEST(StringUtilsTest, from_string_si_valide)
+
+
+// TODO Add test cases to check overflows and underflows.
+
+
+TEST(StringUtilsTest, from_string_to_unsigned_short_int)
 {
-    short int sInt;
-    ASSERT_TRUE(from_string("15", sInt));
-    ASSERT_NO_THROW(from_string<short int>("32365"));
+    executeUnsignedIntegersBasicTests<unsigned short int>();
 }
 
-/** from_string to unsigned int */
-TEST(StringUtilsTest, from_string_ui_invalide)
+
+TEST(StringUtilsTest, from_string_to_short_int)
 {
-    unsigned int uInt;
-    ASSERT_FALSE(from_string("-10", uInt));
-    ASSERT_FALSE(from_string("", uInt));
-    ASSERT_FALSE(from_string("asdfasfas", uInt));
-    ASSERT_THROW(from_string<unsigned int>("bgcdbcdvb"), SscanfFailure);
-    ASSERT_THROW(from_string<unsigned int>(""), SscanfFailure);
+    executeSignedIntegersBasicTests<short int>();
 }
 
-TEST(StringUtilsTest, from_string_ui_valide)
+
+TEST(StringUtilsTest, from_string_to_unsigned_int)
 {
-    unsigned int uInt;
-    ASSERT_TRUE(from_string("20", uInt));
-    ASSERT_NO_THROW(from_string<unsigned int>("1236542"));
+    executeUnsignedIntegersBasicTests<unsigned int>();
 }
 
-/** from_string to int */
-TEST(StringUtilsTest, from_string_i_invalide)
+
+TEST(StringUtilsTest, from_string_to_int)
 {
-    int i;
-    ASSERT_FALSE(from_string("", i));
-    ASSERT_FALSE(from_string("qweqwewq", i));
-    ASSERT_THROW(from_string<int>("ghkhjl"), SscanfFailure);
-    ASSERT_THROW(from_string<int>(""), SscanfFailure);
+    executeSignedIntegersBasicTests<int>();
 }
 
-TEST(StringUtilsTest, from_string_i_valide)
+
+TEST(StringUtilsTest, from_string_to_unsigned_long_int)
 {
-    int i;
-    ASSERT_TRUE(from_string("32", i));
-    ASSERT_NO_THROW(from_string<int>("21365465"));
+    executeUnsignedIntegersBasicTests<unsigned long int>();
 }
 
-/** from_string to unsigned long int */
-TEST(StringUtilsTest, from_string_uli_empty)
+
+TEST(StringUtilsTest, from_string_to_long_int)
 {
-    unsigned long int ulInt;
-    ASSERT_FALSE(from_string("-3", ulInt));
-    ASSERT_FALSE(from_string("qweqweqw", ulInt));
-    ASSERT_FALSE(from_string("", ulInt));
-    ASSERT_THROW(from_string<unsigned long int>("ghkhjk"), SscanfFailure);
-    ASSERT_THROW(from_string<unsigned long int>(""), SscanfFailure);
+    executeSignedIntegersBasicTests<long int>();
 }
 
-TEST(StringUtilsTest, from_string_uli_valide)
+TEST(StringUtilsTest, from_string_to_unsigned_long_long_int)
 {
-    unsigned long int ulInt;
-    ASSERT_TRUE(from_string("98", ulInt));
-    ASSERT_NO_THROW(from_string<unsigned long int>("22365421"));
+    executeUnsignedIntegersBasicTests<unsigned long long int>();
 }
 
-/** from_string to long int */
-TEST(StringUtilsTest, from_string_li_garbage)
+TEST(StringUtilsTest, from_string_to_long_long_int)
 {
-    long int lInt;
-    ASSERT_FALSE(from_string("", lInt));
-    ASSERT_FALSE(from_string("klhklh", lInt));
-    ASSERT_THROW(from_string<long int>("asdasd"), SscanfFailure);
-    ASSERT_THROW(from_string<long int>(""), SscanfFailure);
+    executeSignedIntegersBasicTests<long long int>();
 }
 
-TEST(StringUtilsTest, from_string_li_valide)
+TEST(StringUtilsTest, from_string_to_float)
 {
-    long int lInt;
-    ASSERT_TRUE(from_string("56", lInt));
-    ASSERT_NO_THROW(from_string<long int>("12354863"));
+    executeFloatPointBasicTests<float>();
 }
 
-TEST(StringUtilsTest, from_string_double)
-{
-    double d;
-    ASSERT_TRUE(from_string("132048.988", d));
-    from_string("132048.988", d);
-    ASSERT_DOUBLE_EQ(132048.988, d);
-    double d1;
-    from_string("-62.235643", d1);
-    ASSERT_DOUBLE_EQ(-62.235643, d1);
 
+TEST(StringUtilsTest, from_string_to_double)
+{
+    executeFloatPointBasicTests<double>();
 }
+
 
 TEST(StringUtilsTest, from_string_long_double)
 {
@@ -242,13 +281,6 @@ TEST(StringUtilsTest, from_string_long_double)
     ASSERT_DOUBLE_EQ(-62.235643, d1);
 }
 
-TEST(StringUtilsTest, from_string_float_valide)
-{
-    float f;
-    ASSERT_TRUE(from_string("6410.671356", f));
-    from_string("6410.671356", f);
-    ASSERT_FLOAT_EQ(6410.671356, f);
-}
 
 TEST(StringUtilsTest, ensure_found)
 {
