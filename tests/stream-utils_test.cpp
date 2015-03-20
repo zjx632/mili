@@ -50,7 +50,7 @@ static void load_file(const char* name)
     while (f >> v)  /* PROVIDED BY MiLi */
     {
         Separator(v, '\t');  /* PROVIDED BY MiLi */
-        for (int j = 0; j < v.size(); j++)
+        for (size_t j = 0u; j < v.size(); j++)
             ASSERT_EQ(v[j], j);
         v.clear();
         ++i;
@@ -64,6 +64,7 @@ TEST(StreamUtilsTest, test)
     generate_file(file);
     load_file(file);
     remove(file);
+
 }
 
 static void generate_file_with_separator(const char* name, char sep)
@@ -95,7 +96,7 @@ static void load_file_with_separator_v(const char* name, char sep)
 
     while (f >> s)  /* PROVIDED BY MiLi */
     {
-        for (int j = 0; j < s.v.size(); ++j)
+        for (size_t j = 0u; j < s.v.size(); ++j)
         {
             ASSERT_EQ(s.v[j], j);
         }

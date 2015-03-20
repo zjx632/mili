@@ -32,6 +32,11 @@ string_utils: A minimal library with string utilities.
 
 NAMESPACE_BEGIN
 
+class StringUtilsExceptionHierarchy {};
+typedef GenericException <StringUtilsExceptionHierarchy> StringUtilsException;
+DEFINE_SPECIFIC_EXCEPTION_TEXT(ConversionFailed, StringUtilsException, "Conversion error occurred.");
+
+
 template <class NORMALIZER>
 struct normalized_string : std::string
 {
@@ -371,266 +376,291 @@ inline std::string to_string(long double ld)
     return cStr;
 }
 
+
 template <class T>
-inline T from_string(const std::string& s)
+inline T from_string(const std::string& str)
 {
-    T t;
-    std::stringstream ss(s);
-    ss >> t;
-    return t;
-}
-
-class StringUtilsExceptionHierarchy {};
-
-typedef GenericException <StringUtilsExceptionHierarchy> StringUtilsException;
-
-DEFINE_SPECIFIC_EXCEPTION_TEXT(SscanfFailure,
-                               StringUtilsException,
-                               "Matching failure in sscanf.");
-
-template<>
-inline unsigned short int from_string(const std::string& s)
-{
-    unsigned short int ret;
-    const int success = sscanf(s.c_str(), "%hu", &ret);
-    assert_throw<SscanfFailure>(success > 0);
-    return ret;
-}
-
-template<>
-inline short int from_string(const std::string& s)
-{
-    short int ret;
-    const int success = sscanf(s.c_str(), "%hd", &ret);
-    assert_throw<SscanfFailure>(success > 0);
-    return ret;
-}
-
-template<>
-inline unsigned int from_string(const std::string& s)
-{
-    unsigned int ret;
-    const int success = sscanf(s.c_str(), "%u", &ret);
-    assert_throw<SscanfFailure>(success > 0);
-    return ret;
-}
-
-template<>
-inline int from_string(const std::string& s)
-{
-    int ret;
-    const int success = sscanf(s.c_str(), "%d", &ret);
-    assert_throw<SscanfFailure>(success > 0);
-    return ret;
-}
-
-template<>
-inline unsigned long int from_string(const std::string& s)
-{
-    unsigned long int ret;
-    const int success = sscanf(s.c_str(), "%lu", &ret);
-    assert_throw<SscanfFailure>(success > 0);
-    return ret;
-}
-
-template<>
-inline long int from_string(const std::string& s)
-{
-    long int ret;
-    const int success = sscanf(s.c_str(), "%ld", &ret);
-    assert_throw<SscanfFailure>(success > 0);
-    return ret;
-}
-
-template<>
-inline unsigned long long int from_string(const std::string& s)
-{
-    unsigned long long int ret;
-    const int success = sscanf(s.c_str(), "%llu", &ret);
-    assert_throw<SscanfFailure>(success > 0);
-    return ret;
-}
-
-template<>
-inline long long int from_string(const std::string& s)
-{
-    long long int ret;
-    const int success = sscanf(s.c_str(), "%lld", &ret);
-    assert_throw<SscanfFailure>(success > 0);
-    return ret;
-}
-
-template<>
-inline float from_string(const std::string& s)
-{
-    float ret;
-    sscanf(s.c_str(), "%f", &ret);
-    return ret;
-}
-
-template<>
-inline double from_string(const std::string& s)
-{
-    double ret;
-    const int success = sscanf(s.c_str(), "%lf", &ret);
-    assert_throw<SscanfFailure>(success > 0);
-    return ret;
-}
-
-template<>
-inline long double from_string(const std::string& s)
-{
-    long double ret;
-    const int success = sscanf(s.c_str(), "%Lf", &ret);
-    assert_throw<SscanfFailure>(success > 0);
-    return ret;
-}
-
-inline bool checkStringStartSigned(const std::string& s)
-{
-    const char* cStr = s.c_str();
-    return (s.size() > 0) && (cStr[0] != ' ');
-}
-
-inline bool checkStringStartUnsigned(const std::string& s)
-{
-    const char* cStr = s.c_str();
-    return (s.size() > 0) && (cStr[0] != ' ') && (cStr[0] != '-');
+    T value;
+    std::stringstream ss(str);
+    return ss >> value;
+    return value;
 }
 
 template <class T>
-inline bool from_string(const std::string& s, T& t)
+inline bool from_string(const std::string& str, T& value)
 {
-    std::stringstream ss(s);
-    return (ss >> t);
+    std::stringstream ss(str);
+    return (ss >> value);
 }
 
-inline bool isValidValue(char* endptr)
+
+inline bool _isUnsigned(const std::string& str)
 {
-    return endptr == NULL;
+    return !str.empty() && str.front() != '-';
 }
 
-template <>
-inline bool from_string(const std::string& s, unsigned short int& t)
+template <class T>
+inline bool _strtoul(const std::string& str, T& value)
 {
-    bool ret = false;
-    //checking than the string is non empty and does not start with a space or '-'
-    if (checkStringStartUnsigned(s))
+    bool success = false;
+    if (_isUnsigned(str))
     {
+        errno = 0;
+        const char* const cstr = str.c_str();
         char* endptr;
-        t = static_cast<unsigned short int>(strtoul(s.c_str(), &endptr, 0));
-        ret = (isValidValue(endptr) || t != 0);
+        value = static_cast<T>(strtoul(cstr, &endptr, 0));
+        success = *cstr != '\0' && *endptr == '\0';
     }
-    return ret;
+    return success;
 }
 
-template <>
-inline bool from_string(const std::string& s, short int& t)
-{
-    bool ret = false;
-    //checking than the string is non empty and does not start with a space.
-    if (checkStringStartSigned(s))
-    {
-        char* endptr;
-        t = static_cast<short int>(strtol(s.c_str(), &endptr, 0));
-        ret = (isValidValue(endptr) || t != 0);
-    }
-    return ret;
-}
-
-template <>
-inline bool from_string(const std::string& s, unsigned int& t)
-{
-    bool ret = false;
-    //checking than the string is non empty and does not start with a space or '-'
-    if (checkStringStartUnsigned(s))
-    {
-        char* endptr;
-        t = static_cast<unsigned int>(strtoul(s.c_str(), &endptr, 0));
-        ret = (isValidValue(endptr) || t != 0);
-    }
-    return ret;
-}
-
-template <>
-inline bool from_string(const std::string& s, int& t)
-{
-    bool ret = false;
-    //checking than the string is non empty and does not start with a space.
-    if (checkStringStartSigned(s))
-    {
-        char* endptr;
-        t = static_cast<int>(strtol(s.c_str(), &endptr, 0));
-        ret = (isValidValue(endptr) || t != 0);
-    }
-    return ret;
-}
-
-template <>
-inline bool from_string(const std::string& s, unsigned long int& t)
-{
-    bool ret = false;
-    //checking than the string is non empty and does not start with a space or '-'
-    if (checkStringStartUnsigned(s))
-    {
-        char* endptr;
-        t = strtoul(s.c_str(), &endptr, 0);
-        ret = (isValidValue(endptr) || t != 0);
-    }
-    return ret;
-}
-
-template <>
-inline bool from_string(const std::string& s, long int& t)
-{
-    bool ret = false;
-    //checking than the string is non empty and does not start with a space.
-    if (checkStringStartSigned(s))
-    {
-        char* endptr;
-        t = strtol(s.c_str(), &endptr, 0);
-        ret = (isValidValue(endptr) || t != 0);
-    }
-    return ret;
-}
-
-template <>
-inline bool from_string(const std::string& s, unsigned long long int& x)
-{
-
-    bool ret = (SUCCESS == sscanf(s.c_str(), "%llu", &x));
-    return ret;
-}
-
-template <>
-inline bool from_string(const std::string& s, long long int& x)
-{
-    bool ret = (SUCCESS == sscanf(s.c_str(), "%lld", &x));
-    return ret;
-}
-
-template <>
-inline bool from_string(const std::string& s, float& f)
+template <class T>
+inline bool _strtol(const std::string& str, T& value)
 {
     errno = 0;
-    f = strtof(s.c_str(), NULL);
-    return errno == 0;
+    const char* const cstr = str.c_str();
+    char* endptr;
+    value = static_cast<T>(strtol(cstr, &endptr, 0));
+    return *cstr != '\0' && *endptr == '\0';
 }
 
-template <>
-inline bool from_string(const std::string& s, double& d)
+template <class T>
+inline bool _strtoull(const std::string& str, T& value)
+{
+    bool success = false;
+    if (_isUnsigned(str))
+    {
+        errno = 0;
+        const char* const cstr = str.c_str();
+        char* endptr;
+        value = static_cast<T>(strtoull(cstr, &endptr, 0));
+        success = *cstr != '\0' && *endptr == '\0';
+    }
+    return success;
+}
+
+template <class T>
+inline bool _strtoll(const std::string& str, T& value)
 {
     errno = 0;
-    d = strtod(s.c_str(), NULL);
-    return errno == 0;
+    const char* const cstr = str.c_str();
+    char* endptr;
+    value = static_cast<T>(strtoll(cstr, &endptr, 0));
+    return *cstr != '\0' && *endptr == '\0';
+}
+
+
+
+/* string to unsigned short int */
+
+template<>
+inline unsigned short int from_string(const std::string& str)
+{
+    unsigned short int value;
+    const bool success = _strtoul<unsigned short int>(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
 }
 
 template <>
-inline bool from_string(const std::string& s, long double& x)
+inline bool from_string(const std::string& str, unsigned short int& value)
 {
-    bool ret = (SUCCESS == sscanf(s.c_str(), "%Lf", &x));
-    return ret;
+    return _strtoul<unsigned short int>(str, value);
 }
+
+
+/* string to short int */
+
+template<>
+inline short int from_string(const std::string& str)
+{
+    short int value;
+    const bool success = _strtol<short int>(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+template <>
+inline bool from_string(const std::string& str, short int& value)
+{
+    return _strtol<short int>(str, value);
+}
+
+
+/* string to unsigned int */
+
+template<>
+inline unsigned int from_string(const std::string& str)
+{
+    unsigned int value;
+    const bool success = _strtoul<unsigned int>(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+template <>
+inline bool from_string(const std::string& str, unsigned int& value)
+{
+    return _strtoul<unsigned int>(str, value);
+}
+
+
+/* string to int */
+
+template <>
+inline int from_string(const std::string& str)
+{
+    int value;
+    const bool success = _strtol<int>(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+template <>
+inline bool from_string(const std::string& str, int& value)
+{
+    return _strtol<int>(str, value);
+}
+
+
+/* string to unsigned long int */
+
+template<>
+inline unsigned long int from_string(const std::string& str)
+{
+    unsigned long int value;
+    const bool success = _strtoul<unsigned long int>(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+template <>
+inline bool from_string(const std::string& str, unsigned long int& value)
+{
+    return _strtoul<unsigned long int>(str, value);
+}
+
+
+/* string to long int */
+
+template<>
+inline long int from_string(const std::string& str)
+{
+    long int value;
+    const bool success = _strtol<long int>(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+template <>
+inline bool from_string(const std::string& str, long int& value)
+{
+    return _strtol<long int>(str, value);
+}
+
+
+/* string to unsigned long long int */
+
+template<>
+inline unsigned long long int from_string(const std::string& str)
+{
+    unsigned long long int value;
+    const bool success = _strtoull<unsigned long long int>(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+template <>
+inline bool from_string(const std::string& str, unsigned long long int& value)
+{
+    return _strtoull<unsigned long long int>(str, value);
+}
+
+
+/* string to long long int */
+
+template<>
+inline long long int from_string(const std::string& str)
+{
+    long long int value;
+    const bool success = _strtoll<long long int>(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+template <>
+inline bool from_string(const std::string& str, long long int& value)
+{
+    return _strtoll<long long int>(str, value);
+}
+
+
+/* string to float */
+
+template <>
+inline bool from_string(const std::string& str, float& value)
+{
+    errno = 0;
+    const char* const cstr = str.c_str();
+    char* endptr;
+    value = strtof(cstr, &endptr);
+    return *cstr != '\0' && *endptr == '\0';
+}
+
+template<>
+inline float from_string(const std::string& str)
+{
+    float value;
+    const bool success = from_string(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+
+/* string to double */
+
+template <>
+inline bool from_string(const std::string& str, double& value)
+{
+    errno = 0;
+    const char* const cstr = str.c_str();
+    char* endptr;
+    value = strtod(cstr, &endptr);
+    return *cstr != '\0' && *endptr == '\0';
+}
+
+template<>
+inline double from_string(const std::string& str)
+{
+    double value;
+    const bool success = from_string(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+
+/* string to long double */
+
+template <>
+inline bool from_string(const std::string& str, long double& value)
+{
+    errno = 0;
+    const char* const cstr = str.c_str();
+    char* endptr;
+    value = strtold(cstr, &endptr);
+    return *cstr != '\0' && *endptr == '\0';
+}
+
+
+template<>
+inline long double from_string(const std::string& str)
+{
+    long double value;
+    const bool success = from_string(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
 
 /* Special case: string -> string */
 
