@@ -34,7 +34,7 @@ NAMESPACE_BEGIN
 
 class StringUtilsExceptionHierarchy {};
 typedef GenericException <StringUtilsExceptionHierarchy> StringUtilsException;
-DEFINE_SPECIFIC_EXCEPTION_TEXT(ConversionFailed, StringUtilsException, "Conversion error occurred.");
+DEFINE_SPECIFIC_EXCEPTION_TEXT(ConversionFailed, StringUtilsException, "Conversion error occurred in from_string.");
 
 
 template <class NORMALIZER>
@@ -271,7 +271,6 @@ static const unsigned int INT_CHAR_AMOUNT = 21u;
 static const unsigned int FLOAT_CHAR_AMOUNT = 33u;
 static const unsigned int DOUBLE_CHAR_AMOUNT = 33u;
 static const unsigned int LONG_DOUBLE_CHAR_AMOUNT = 45u;
-static const int SUCCESS = 1u;
 
 template <class Number>
 inline std::string to_string(Number n)
@@ -382,7 +381,7 @@ inline T from_string(const std::string& str)
 {
     T value;
     std::stringstream ss(str);
-    return ss >> value;
+    assert_throw<ConversionFailed>(ss >> value);
     return value;
 }
 
@@ -396,7 +395,7 @@ inline bool from_string(const std::string& str, T& value)
 
 inline bool _isUnsigned(const std::string& str)
 {
-    return !str.empty() && str.front() != '-';
+    return str.size() > 0 && str.front() != '-';
 }
 
 template <class T>
