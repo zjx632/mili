@@ -395,7 +395,7 @@ inline bool from_string(const std::string& str, T& value)
 
 inline bool _isUnsigned(const std::string& str)
 {
-    return !str.empty() && str.front() != '-';
+    return not str.empty() && str.front() != '-';
 }
 
 template <class T>
@@ -419,7 +419,7 @@ inline bool _strtol(const std::string& str, T& value)
     const char* const cstr = str.c_str();
     char* endptr;
     value = static_cast<T>(strtol(cstr, &endptr, 0));
-    return !str.empty() && *endptr == '\0';
+    return not str.empty() && *endptr == '\0';
 }
 
 template <class T>
@@ -443,7 +443,7 @@ inline bool _strtoll(const std::string& str, T& value)
     const char* const cstr = str.c_str();
     char* endptr;
     value = static_cast<T>(strtoll(cstr, &endptr, 0));
-    return !str.empty() && *endptr == '\0';
+    return not str.empty() && *endptr == '\0';
 }
 
 
@@ -600,7 +600,7 @@ inline bool from_string(const std::string& str, float& value)
     const char* const cstr = str.c_str();
     char* endptr;
     value = strtof(cstr, &endptr);
-    return !str.empty() && *endptr == '\0';
+    return not str.empty() && *endptr == '\0';
 }
 
 template<>
@@ -621,7 +621,7 @@ inline bool from_string(const std::string& str, double& value)
     const char* const cstr = str.c_str();
     char* endptr;
     value = strtod(cstr, &endptr);
-    return !str.empty() && *endptr == '\0';
+    return not str.empty() && *endptr == '\0';
 }
 
 template<>
@@ -642,7 +642,7 @@ inline bool from_string(const std::string& str, long double& value)
     const char* const cstr = str.c_str();
     char* endptr;
     value = strtold(cstr, &endptr);
-    return !str.empty() && *endptr == '\0';
+    return not str.empty() && *endptr == '\0';
 }
 
 
