@@ -47,10 +47,10 @@ typedef unsigned int CircularBufferSizeType;
  * DropTooManyPolicy    The action to perform when drop() is invoked on a buffer that has too few elements to drop. Assertion by default.
  */
 template < typename T,
-         CircularBufferSizeType Size,
-         class DequeueOnEmptyPolicy = AssertionErrorPolicy,
-         class EnqueueOnFullPolicy = AssertionErrorPolicy,
-         class DropTooManyPolicy = AssertionErrorPolicy >
+           CircularBufferSizeType Size,
+           class DequeueOnEmptyPolicy = AssertionErrorPolicy,
+           class EnqueueOnFullPolicy = AssertionErrorPolicy,
+           class DropTooManyPolicy = AssertionErrorPolicy >
 class CircBuffer
 {
 public:
@@ -125,9 +125,9 @@ public:
     * @return The amount of elements moved.
     */
     template < CircularBufferSizeType SrcSize,
-             class SrcDequeueOnEmptyPolicy,
-             class SrcEnqueueOnFullPolicy,
-             class SrcDropTooManyPolicy >
+               class SrcDequeueOnEmptyPolicy,
+               class SrcEnqueueOnFullPolicy,
+               class SrcDropTooManyPolicy >
     CircularBufferSizeType moveFrom(CircBuffer<T, SrcSize, SrcDequeueOnEmptyPolicy, SrcEnqueueOnFullPolicy, SrcDropTooManyPolicy>& src);
 
 private:

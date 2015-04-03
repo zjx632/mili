@@ -47,7 +47,7 @@ TEST(RandomGenTest, rndSameSeed)
     Randomizer<unsigned int> randOne(min, max, seed);
     Randomizer<unsigned int> randTwo(min, max, seed);
 
-    for(unsigned int i(0u); i < 100u; ++i)
+    for (unsigned int i(0u); i < 100u; ++i)
     {
         EXPECT_EQ(randOne.get(), randTwo.get());
     }

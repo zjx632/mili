@@ -46,7 +46,7 @@ std::string get_TypeId(const std::string& s)
     uint32_t a = 0;
 
 #if (MILI_COMPILER == MILI_COMPILER_VS)
-    s._Copy_s(reinterpret_cast<char*>(&a),sizeof(a),sizeof(a),0);
+    s._Copy_s(reinterpret_cast<char*>(&a), sizeof(a), sizeof(a), 0);
 #else
     s.copy(reinterpret_cast<char*>(&a), sizeof(uint32_t), 0);
 #endif
@@ -417,7 +417,7 @@ TEST(BinaryStream, Manipulators)
 
     mili::bistream<SafePolicy> bis(bos.str());
 
-    int a,b;
+    int a, b;
     short int c;
 
     bis >> NetInt32(a) >> NetInt32(b) >> NetInt16(c);

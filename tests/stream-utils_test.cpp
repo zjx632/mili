@@ -3,9 +3,9 @@
 
     Copyright (C) Hugo Arregui, FuDePAN 2011
     Distributed under the Boost Software License, Version 1.0.
-    (See accompanying file LICENSE_1_0.txt in the root directory or 
+    (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
-    
+
     MiLi IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
@@ -50,7 +50,7 @@ static void load_file(const char* name)
     while (f >> v)  /* PROVIDED BY MiLi */
     {
         Separator(v, '\t');  /* PROVIDED BY MiLi */
-        for (int j = 0; j < v.size(); j++)
+        for (size_t j = 0u; j < v.size(); j++)
             ASSERT_EQ(v[j], j);
         v.clear();
         ++i;
@@ -64,6 +64,7 @@ TEST(StreamUtilsTest, test)
     generate_file(file);
     load_file(file);
     remove(file);
+
 }
 
 static void generate_file_with_separator(const char* name, char sep)
@@ -95,7 +96,7 @@ static void load_file_with_separator_v(const char* name, char sep)
 
     while (f >> s)  /* PROVIDED BY MiLi */
     {
-        for (int j = 0; j < s.v.size(); ++j)
+        for (size_t j = 0u; j < s.v.size(); ++j)
         {
             ASSERT_EQ(s.v[j], j);
         }
