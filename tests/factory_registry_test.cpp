@@ -3,9 +3,9 @@
 
     Copyright (C) Leandro Ramos, FuDePAN 2012
     Distributed under the Boost Software License, Version 1.0.
-    (See accompanying file LICENSE_1_0.txt in the root directory or 
+    (See accompanying file LICENSE_1_0.txt in the root directory or
     copy at http://www.boost.org/LICENSE_1_0.txt)
-    
+
     MiLi IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
@@ -65,22 +65,28 @@ REGISTER_FACTORIZABLE_CLASS(IntOperation, TimesFive, string, "TimesFive");
 struct CurriedOperation
 {
     const int _fixedArg;
-    CurriedOperation(int fixedArg): _fixedArg(fixedArg){};
-    virtual ~CurriedOperation(){};
+    CurriedOperation(int fixedArg): _fixedArg(fixedArg) {};
+    virtual ~CurriedOperation() {};
     virtual int binaryOperation(int x) = 0;
 };
 
 struct CurriedAdder : public CurriedOperation
 {
-    CurriedAdder(int x):CurriedOperation(x){};
-    virtual int binaryOperation(int x) {return _fixedArg + x;};
+    CurriedAdder(int x): CurriedOperation(x) {};
+    virtual int binaryOperation(int x)
+    {
+        return _fixedArg + x;
+    };
 };
 REGISTER_FACTORIZABLE_CLASS_WITH_ARG(CurriedOperation, CurriedAdder, std::string, "CurriedAdder", int);
 
 struct CurriedMultiplication : public CurriedOperation
 {
-    CurriedMultiplication(int x):CurriedOperation(x){};
-    virtual int binaryOperation(int x) {return _fixedArg * x;};
+    CurriedMultiplication(int x): CurriedOperation(x) {};
+    virtual int binaryOperation(int x)
+    {
+        return _fixedArg * x;
+    };
 };
 REGISTER_FACTORIZABLE_CLASS_WITH_ARG(CurriedOperation, CurriedMultiplication, std::string, "CurriedMultiplication", int);
 
@@ -112,11 +118,11 @@ TEST(FactoryRegistryTest, ReturnTestWithArg)
     CurriedOperation* curriedMultiplication;
     curriedMultiplication = FactoryRegistry<CurriedOperation, string, int>::new_class("CurriedMultiplication", 3);
     ASSERT_NE(static_cast<CurriedOperation*>(NULL), curriedMultiplication);
-    
+
     EXPECT_EQ(6, curriedAdder->binaryOperation(1));
     delete curriedAdder;
     EXPECT_EQ(12, curriedMultiplication->binaryOperation(4));
-    delete curriedMultiplication;    
+    delete curriedMultiplication;
 }
 
 TEST(FactoryRegistryTest, NoRegisteredClassTest)
@@ -136,7 +142,7 @@ TEST(FactoryRegistryTest, NoRegisteredClassTestWithArg)
 
 TEST(FactoryRegistryTest, getConstructibleObjectsTest)
 {
-    mili::Factory<std::string,IntOperation>::KeyIterator it(mili::FactoryRegistry<IntOperation, std::string>::getConstructibleObjectsKeys());
+    mili::Factory<std::string, IntOperation>::KeyIterator it(mili::FactoryRegistry<IntOperation, std::string>::getConstructibleObjectsKeys());
     EXPECT_EQ("MinusOne", *it);
     ++it;
     EXPECT_EQ("PlusOne", *it);

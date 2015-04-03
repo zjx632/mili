@@ -82,10 +82,10 @@ public:
     struct KeyIterator: public CAutonomousIterator<std::map<Key, Creator*> >
     {
         KeyIterator(const std::map<Key, Creator*>& m):
-            CAutonomousIterator<std::map<Key, Creator*> >(m) {}
+            CAutonomousIterator<std::map<Key, Creator * > >(m) {}
 
         KeyIterator(const KeyIterator& it):
-            CAutonomousIterator<std::map<Key, Creator*> >(it) {}
+            CAutonomousIterator<std::map<Key, Creator * > >(it) {}
 
         const typename std::map<Key, Creator*>::key_type& operator*() const
         {

@@ -244,7 +244,7 @@ inline typename BitwiseEnumMapper<Enum, BitwiseEnumEnabler<Enum>::EnabledConvers
 
 IMPLEMENT_BITWISE_OPERATOR( | , Or)
 IMPLEMENT_BITWISE_OPERATOR(&, And)
-IMPLEMENT_BITWISE_OPERATOR(^ , Xor)
+IMPLEMENT_BITWISE_OPERATOR(^, Xor)
 
 /* this NAMESPACE stuff will be deprecated soon */
 #ifdef NO_MILI_NAMESPACE

@@ -62,7 +62,7 @@ TEST(DeleteContainerTest, UnorderedMap)
     MockObject* o1 = new MockObject;
     MockObject* o2 = new MockObject;
     MockObject* o3 = new MockObject;
-    std::unordered_map<std::string, MockObject*> mapToDelete({{"milk", o1},{"flour", o2}, {"eggs", o3}});
+    std::unordered_map<std::string, MockObject*> mapToDelete({{"milk", o1}, {"flour", o2}, {"eggs", o3}});
 
     EXPECT_CALL(*o1, die()).Times(1);
     EXPECT_CALL(*o2, die()).Times(1);

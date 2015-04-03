@@ -116,7 +116,7 @@ struct DebugPolicyBistream
 template<typename T>
 struct UnsafePolicy
 {
-    static void on_check_safety(){}
+    static void on_check_safety() {}
 };
 
 /**
@@ -170,7 +170,7 @@ template <class IntegralType>
 struct NetIntRef
 {
     explicit NetIntRef(IntegralType& v)
-        :value(v)
+        : value(v)
     {}
 
     IntegralType& value;
@@ -180,7 +180,7 @@ template <class IntegralType>
 struct NetIntConst
 {
     explicit NetIntConst(const IntegralType v)
-        :value(v)
+        : value(v)
     {}
 
     const IntegralType value;

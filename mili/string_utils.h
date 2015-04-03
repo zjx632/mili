@@ -20,13 +20,22 @@ string_utils: A minimal library with string utilities.
 #define STRING_UTILS_H
 
 #include <ctype.h>
-#include <string>
+#include <errno.h>
+#include <cstdio>
 #include <cstring>
+#include <string>
 #include <sstream>
+#include <iostream>
+#include <limits>
 
 #include "generic_exception.h"
 
 NAMESPACE_BEGIN
+
+class StringUtilsExceptionHierarchy {};
+typedef GenericException <StringUtilsExceptionHierarchy> StringUtilsException;
+DEFINE_SPECIFIC_EXCEPTION_TEXT(ConversionFailed, StringUtilsException, "Conversion error occurred: input failed.");
+
 
 template <class NORMALIZER>
 struct normalized_string : std::string
@@ -258,6 +267,11 @@ inline bool ends_with(const S& s, const E& ending)
         return (s.size() - position) == size(ending);
 }
 
+static const unsigned int INT_CHAR_AMOUNT = 21u;
+static const unsigned int FLOAT_CHAR_AMOUNT = 33u;
+static const unsigned int DOUBLE_CHAR_AMOUNT = 33u;
+static const unsigned int LONG_DOUBLE_CHAR_AMOUNT = 45u;
+
 template <class Number>
 inline std::string to_string(Number n)
 {
@@ -266,21 +280,381 @@ inline std::string to_string(Number n)
     return ss.str();
 }
 
-template <class T>
-inline T from_string(const std::string& s)
+template<>
+inline std::string to_string(short int a)
 {
-    T t;
-    std::stringstream ss(s);
-    ss >> t;
-    return t;
+    char cStr[INT_CHAR_AMOUNT];
+    snprintf(cStr, INT_CHAR_AMOUNT, "%hd", a);
+    return cStr;
+}
+
+template<>
+inline std::string to_string(unsigned short int a)
+{
+    char cStr[INT_CHAR_AMOUNT];
+    snprintf(cStr, INT_CHAR_AMOUNT, "%hu", a);
+    return cStr;
+}
+
+template<>
+inline std::string to_string(int a)
+{
+    char cStr[INT_CHAR_AMOUNT];
+    snprintf(cStr, INT_CHAR_AMOUNT, "%d", a);
+    return cStr;
+}
+
+template<>
+inline std::string to_string(unsigned int a)
+{
+    char cStr[INT_CHAR_AMOUNT];
+    snprintf(cStr, INT_CHAR_AMOUNT, "%u", a);
+    return cStr;
+}
+
+template<>
+inline std::string to_string(long int a)
+{
+    char cStr[INT_CHAR_AMOUNT];
+    snprintf(cStr, INT_CHAR_AMOUNT, "%ld", a);
+    return cStr;
+}
+
+template<>
+inline std::string to_string(unsigned long int a)
+{
+    char cStr[INT_CHAR_AMOUNT];
+    snprintf(cStr, INT_CHAR_AMOUNT, "%lu", a);
+    return cStr;
+}
+
+template<>
+inline std::string to_string(long long int a)
+{
+    char cStr[INT_CHAR_AMOUNT];
+    snprintf(cStr, INT_CHAR_AMOUNT, "%lld", a);
+    return cStr;
+}
+
+template<>
+inline std::string to_string(unsigned long long int a)
+{
+    char cStr[INT_CHAR_AMOUNT];
+    snprintf(cStr, INT_CHAR_AMOUNT, "%llu", a);
+    return cStr;
+}
+
+template<>
+inline std::string to_string(float f)
+{
+    char cStr[FLOAT_CHAR_AMOUNT];
+    // %.14e is the maximum amount of decimal if
+    // the number is written in scientific notation.
+    snprintf(cStr, FLOAT_CHAR_AMOUNT, "%.14e", f);
+    return cStr;
+}
+
+template<>
+inline std::string to_string(double d)
+{
+    char cStr[DOUBLE_CHAR_AMOUNT];
+    // %.23e is the maximum amount of decimal if
+    // the number is written in scientific notation
+    snprintf(cStr, DOUBLE_CHAR_AMOUNT, "%.23e", d);
+    return cStr;
+}
+
+template<>
+inline std::string to_string(long double ld)
+{
+    char cStr[LONG_DOUBLE_CHAR_AMOUNT];
+    // %.34Le is the maximum amount of decimal if
+    // the number is written in scientific notation that
+    // snprintf supports.
+    snprintf(cStr, LONG_DOUBLE_CHAR_AMOUNT, "%.34Le", ld);
+    return cStr;
+}
+
+
+template <class T>
+inline T from_string(const std::string& str)
+{
+    T value;
+    std::stringstream ss(str);
+    assert_throw<ConversionFailed>(ss >> value);
+    return value;
 }
 
 template <class T>
-inline bool from_string(const std::string& s, T& t)
+inline bool from_string(const std::string& str, T& value)
 {
-    std::stringstream ss(s);
-    return (ss >> t);
+    std::stringstream ss(str);
+    return (ss >> value);
 }
+
+
+inline bool _isUnsigned(const std::string& str)
+{
+    return not str.empty() && str.front() != '-';
+}
+
+template <class T>
+inline bool _strtoul(const std::string& str, T& value)
+{
+    bool success = false;
+    if (_isUnsigned(str))
+    {
+
+        const char* const cstr = str.c_str();
+        char* endptr;
+        value = static_cast<T>(strtoul(cstr, &endptr, 0));
+        success = *endptr == '\0';
+    }
+    return success;
+}
+
+template <class T>
+inline bool _strtol(const std::string& str, T& value)
+{
+    const char* const cstr = str.c_str();
+    char* endptr;
+    value = static_cast<T>(strtol(cstr, &endptr, 0));
+    return not str.empty() && *endptr == '\0';
+}
+
+template <class T>
+inline bool _strtoull(const std::string& str, T& value)
+{
+    bool success = false;
+    if (_isUnsigned(str))
+    {
+
+        const char* const cstr = str.c_str();
+        char* endptr;
+        value = static_cast<T>(strtoull(cstr, &endptr, 0));
+        success = *endptr == '\0';
+    }
+    return success;
+}
+
+template <class T>
+inline bool _strtoll(const std::string& str, T& value)
+{
+    const char* const cstr = str.c_str();
+    char* endptr;
+    value = static_cast<T>(strtoll(cstr, &endptr, 0));
+    return not str.empty() && *endptr == '\0';
+}
+
+
+
+/* string to unsigned short int */
+
+template<>
+inline unsigned short int from_string(const std::string& str)
+{
+    unsigned short int value;
+    const bool success = _strtoul<unsigned short int>(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+template <>
+inline bool from_string(const std::string& str, unsigned short int& value)
+{
+    return _strtoul<unsigned short int>(str, value);
+}
+
+
+/* string to short int */
+
+template<>
+inline short int from_string(const std::string& str)
+{
+    short int value;
+    const bool success = _strtol<short int>(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+template <>
+inline bool from_string(const std::string& str, short int& value)
+{
+    return _strtol<short int>(str, value);
+}
+
+
+/* string to unsigned int */
+
+template<>
+inline unsigned int from_string(const std::string& str)
+{
+    unsigned int value;
+    const bool success = _strtoul<unsigned int>(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+template <>
+inline bool from_string(const std::string& str, unsigned int& value)
+{
+    return _strtoul<unsigned int>(str, value);
+}
+
+
+/* string to int */
+
+template <>
+inline int from_string(const std::string& str)
+{
+    int value;
+    const bool success = _strtol<int>(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+template <>
+inline bool from_string(const std::string& str, int& value)
+{
+    return _strtol<int>(str, value);
+}
+
+
+/* string to unsigned long int */
+
+template<>
+inline unsigned long int from_string(const std::string& str)
+{
+    unsigned long int value;
+    const bool success = _strtoul<unsigned long int>(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+template <>
+inline bool from_string(const std::string& str, unsigned long int& value)
+{
+    return _strtoul<unsigned long int>(str, value);
+}
+
+
+/* string to long int */
+
+template<>
+inline long int from_string(const std::string& str)
+{
+    long int value;
+    const bool success = _strtol<long int>(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+template <>
+inline bool from_string(const std::string& str, long int& value)
+{
+    return _strtol<long int>(str, value);
+}
+
+
+/* string to unsigned long long int */
+
+template<>
+inline unsigned long long int from_string(const std::string& str)
+{
+    unsigned long long int value;
+    const bool success = _strtoull<unsigned long long int>(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+template <>
+inline bool from_string(const std::string& str, unsigned long long int& value)
+{
+    return _strtoull<unsigned long long int>(str, value);
+}
+
+
+/* string to long long int */
+
+template<>
+inline long long int from_string(const std::string& str)
+{
+    long long int value;
+    const bool success = _strtoll<long long int>(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+template <>
+inline bool from_string(const std::string& str, long long int& value)
+{
+    return _strtoll<long long int>(str, value);
+}
+
+
+/* string to float */
+
+template <>
+inline bool from_string(const std::string& str, float& value)
+{
+    const char* const cstr = str.c_str();
+    char* endptr;
+    value = strtof(cstr, &endptr);
+    return not str.empty() && *endptr == '\0';
+}
+
+template<>
+inline float from_string(const std::string& str)
+{
+    float value;
+    const bool success = from_string(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+
+/* string to double */
+
+template <>
+inline bool from_string(const std::string& str, double& value)
+{
+    const char* const cstr = str.c_str();
+    char* endptr;
+    value = strtod(cstr, &endptr);
+    return not str.empty() && *endptr == '\0';
+}
+
+template<>
+inline double from_string(const std::string& str)
+{
+    double value;
+    const bool success = from_string(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
+
+/* string to long double */
+
+template <>
+inline bool from_string(const std::string& str, long double& value)
+{
+    const char* const cstr = str.c_str();
+    char* endptr;
+    value = strtold(cstr, &endptr);
+    return not str.empty() && *endptr == '\0';
+}
+
+
+template<>
+inline long double from_string(const std::string& str)
+{
+    long double value;
+    const bool success = from_string(str, value);
+    assert_throw<ConversionFailed>(success);
+    return value;
+}
+
 
 /* Special case: string -> string */
 

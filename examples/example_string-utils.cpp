@@ -48,8 +48,8 @@ int main()
 
     cout << to_string(123.4) << endl;
     int n;
-    cout << to_number("abc", n) << endl;        /* prints 0 (false), because "abc" is not valid */
-    cout << to_number<float>("123.4") << endl;
+    cout << from_string("abc", n) << endl;        /* prints 0 (false), because "abc" is not valid */
+    cout << from_string<float>("123.4") << endl;
 
     std::string str = "Why?";
     cout << ensure_found(str.find_first_of("h", 0)) << endl;    /* prints 1 */
